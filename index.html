@@ -672,9 +672,17 @@
 
     .modal-filters {
       display: grid;
-      grid-template-columns: minmax(260px, 1fr) 220px 90px;
+      grid-template-columns: minmax(220px, 1fr) 150px 220px 90px;
       gap: 10px;
       margin-bottom: 12px;
+    }
+
+    .modal-filters.no-category-filter {
+      grid-template-columns: minmax(260px, 1fr) 220px 90px;
+    }
+
+    .modal-filters.no-category-filter .video-category-filter {
+      display: none;
     }
 
     .scope-pill {
@@ -1160,6 +1168,7 @@
         <div class="limit-tip" id="limitTip">最多可选择 10 条运营指定内容，移除后可继续添加。</div>
         <div class="modal-filters" id="videoFilters">
           <input class="input" id="videoKeyword" placeholder="请输入视频名称" />
+          <select class="select video-category-filter" id="videoCategoryFilter"></select>
           <div class="scope-pill" id="videoScopeLabel">当前范围：全部</div>
           <button class="search-btn" type="button" id="filterVideos">查询</button>
         </div>
@@ -1276,8 +1285,8 @@
             <li>选择「全部」时，自动选择和运营指定均可覆盖全部分类内容。</li>
             <li>「全部」与具体分类互斥；选择「全部」时取消已选具体分类，选择具体分类时自动取消「全部」。</li>
             <li>选择多个具体分类时，多个分类合并为一个内容池，自动选择内容、运营指定可选内容、搜推补足内容均限制在该分类范围内。</li>
-            <li>添加内容弹窗不提供二次选择分类能力，只展示外层已选分类对应的内容范围。</li>
-            <li>选择具体分类后，添加内容弹窗不得切换到其他分类，也不得选择分类范围外的内容。</li>
+            <li>添加内容弹窗的内容范围由外层已选分类决定，不允许选择分类范围外的内容。</li>
+            <li>添加内容弹窗可提供分类筛选，用于在当前分类范围内快速查看内容；该筛选不改变外层分类范围。</li>
             <li>运营指定内容必须同时满足当前分类范围、设为推荐、已上架三个条件。</li>
             <li>当展示内容来源为「运营指定」且已存在运营指定内容时，切换分类范围需提示用户确认；确认后保留仍符合新分类范围的内容，自动移除不符合范围的内容。</li>
             <li>当展示内容来源为「自动选择」时，切换分类范围不需要清空确认；如系统中暂存有运营指定内容，切换后自动移除不符合新分类范围的内容。</li>
@@ -1291,7 +1300,9 @@
             <li>点击「添加内容」时，系统打开视频选择弹窗。</li>
             <li>弹窗仅展示当前分类范围内设为推荐且已上架的视频。</li>
             <li>当前分类范围为「全部」时，弹窗可展示全部分类下设为推荐且已上架的视频。</li>
-            <li>弹窗不允许二次选择分类，分类范围由外层「选择分类」决定。</li>
+            <li>弹窗分类范围由外层「选择分类」决定，不允许选择分类范围外的内容。</li>
+            <li>当外层分类范围为「全部」或选择多个具体分类时，弹窗展示分类筛选；当外层仅选择一个具体分类时，隐藏分类筛选。</li>
+            <li>弹窗分类筛选仅用于在当前分类范围内缩小列表，不改变外层分类范围。</li>
             <li>支持按视频名称搜索。</li>
             <li>弹窗列表展示「视频名称」；当前分类范围为「全部」或选择多个具体分类时，额外展示「分类」列。</li>
             <li>当前仅选择一个具体分类时，弹窗隐藏「分类」列。</li>
@@ -1395,7 +1406,7 @@
 
 查看全部 10 条</div>
           <div class="prd-code" style="margin-top: 10px;">选择推荐视频弹窗：
-[请输入视频名称]  当前范围：已选 5 个分类  [查询]
+[请输入视频名称]  [全部已选分类]  当前范围：已选 5 个分类  [查询]
 
 已选 3/10                         本次还可选择 7 条
 当前可选范围：二次元、欧美、日韩 等 5 个分类下设为推荐且已上架的视频。展开
@@ -1408,7 +1419,7 @@
 异世界冒险日记  二次元
 星海爆料        欧美
 
-说明：弹窗不提供分类二次选择，不展示推荐状态和选择状态；已选内容通过复选框回显，取消勾选并确认后移除。</div>
+说明：弹窗分类筛选仅在当前范围内缩小列表，不改变外层分类范围；不展示推荐状态和选择状态；已选内容通过复选框回显，取消勾选并确认后移除。</div>
         </section>
 
         <section class="prd-section">
@@ -1424,7 +1435,9 @@
             <li>运营指定时，点击添加内容打开视频选择弹窗。</li>
             <li>视频选择弹窗仅展示当前分类范围内设为推荐且已上架的视频。</li>
             <li>当前分类范围为「全部」时，视频选择弹窗可展示全部分类下设为推荐且已上架的视频。</li>
-            <li>视频选择弹窗不提供分类二次选择入口。</li>
+            <li>视频选择弹窗的内容范围由外层「选择分类」决定，不允许选择分类范围外的内容。</li>
+            <li>当外层分类范围为「全部」或选择多个具体分类时，视频选择弹窗展示分类筛选；当外层仅选择一个具体分类时，隐藏分类筛选。</li>
+            <li>视频选择弹窗分类筛选仅用于在当前分类范围内缩小列表，不改变外层分类范围。</li>
             <li>视频选择弹窗支持按视频名称搜索。</li>
             <li>视频选择弹窗不展示「推荐状态」列。</li>
             <li>视频选择弹窗不展示「选择状态」列，是否可选通过复选框状态表达。</li>
@@ -1517,6 +1530,7 @@
     const videoTableHead = document.getElementById('videoTableHead');
     const videoRows = document.getElementById('videoRows');
     const videoKeyword = document.getElementById('videoKeyword');
+    const videoCategoryFilter = document.getElementById('videoCategoryFilter');
     const videoScopeLabel = document.getElementById('videoScopeLabel');
     const filterVideos = document.getElementById('filterVideos');
     const modalTitle = document.getElementById('modalTitle');
@@ -1747,7 +1761,9 @@
       modalTip.textContent = '仅展示设为推荐且已上架的视频；确认后加入运营指定内容。';
       modalSelectedNames = new Set(getSelectedNames());
       scopeDetailExpanded = false;
+      videoCategoryFilter.value = '__all__';
       syncVideoCategoryFilter();
+      renderVideoCategoryFilter();
       renderVideoTableHead();
       renderVideoRows();
       contentModal.classList.add('open');
@@ -1901,6 +1917,37 @@
       return getSelectedCategories();
     }
 
+    function getFilterableVideoCategories() {
+      const scopeCategories = getSelectedCategories();
+      if (isAllCategoryScope(scopeCategories)) {
+        return [...new Set(videoList.map((video) => video.category))];
+      }
+      return scopeCategories;
+    }
+
+    function renderVideoCategoryFilter() {
+      const scopeCategories = getSelectedCategories();
+      const filterableCategories = getFilterableVideoCategories();
+      const shouldShowFilter = isAllCategoryScope(scopeCategories) || scopeCategories.length > 1;
+      videoFilters.classList.toggle('no-category-filter', !shouldShowFilter);
+
+      if (!shouldShowFilter) {
+        videoCategoryFilter.innerHTML = '<option value="__all__">全部分类</option>';
+        videoCategoryFilter.value = '__all__';
+        return;
+      }
+
+      const allLabel = isAllCategoryScope(scopeCategories) ? '全部分类' : '全部已选分类';
+      videoCategoryFilter.innerHTML = [
+        `<option value="__all__">${allLabel}</option>`,
+        ...filterableCategories.map((category) => `<option value="${category}">${category}</option>`)
+      ].join('');
+
+      if (![...videoCategoryFilter.options].some((option) => option.value === videoCategoryFilter.value)) {
+        videoCategoryFilter.value = '__all__';
+      }
+    }
+
     function shouldShowCategoryColumn() {
       const categories = getSelectedCategories();
       return isAllCategoryScope(categories) || categories.length > 1;
@@ -1920,11 +1967,13 @@
     function renderVideoRows() {
       const keyword = videoKeyword.value.trim();
       const categories = getEffectiveVideoCategories();
+      const selectedFilterCategory = videoCategoryFilter.value;
       const reachedLimit = modalSelectedNames.size >= MAX_SELECTED;
       const filtered = videoList.filter((video) => {
         const matchKeyword = !keyword || video.name.includes(keyword);
         const matchCategory = isCategoryInScope(video.category, categories);
-        return matchKeyword && matchCategory;
+        const matchFilterCategory = selectedFilterCategory === '__all__' || video.category === selectedFilterCategory;
+        return matchKeyword && matchCategory && matchFilterCategory;
       });
 
       videoRows.innerHTML = filtered.map((video) => {
@@ -1990,6 +2039,7 @@
     cancelModal.addEventListener('click', closeContentModal);
     filterVideos.addEventListener('click', renderVideoRows);
     videoKeyword.addEventListener('input', renderVideoRows);
+    videoCategoryFilter.addEventListener('change', renderVideoRows);
     videoRows.addEventListener('change', (event) => {
       if (event.target.matches('input[type="checkbox"]')) {
         const name = event.target.dataset.name;
