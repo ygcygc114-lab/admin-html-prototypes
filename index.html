@@ -281,6 +281,74 @@
       padding: 0 12px;
     }
 
+    .multi-select {
+      position: relative;
+      width: 100%;
+    }
+
+    .multi-select-trigger {
+      width: 100%;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fff;
+      color: #586174;
+      padding: 0 12px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .multi-select-trigger::after {
+      content: "⌄";
+      color: #9aa3b2;
+      font-size: 14px;
+    }
+
+    .multi-select.open .multi-select-trigger {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px rgba(47, 134, 255, .12);
+    }
+
+    .multi-select-menu {
+      display: none;
+      position: absolute;
+      z-index: 10;
+      top: 40px;
+      left: 0;
+      right: 0;
+      padding: 6px 0;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .multi-select.open .multi-select-menu {
+      display: block;
+    }
+
+    .multi-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      padding: 0 12px;
+      color: #5f6878;
+      cursor: pointer;
+    }
+
+    .multi-select-option:hover {
+      background: #f5f9ff;
+    }
+
+    .multi-select-option input {
+      accent-color: var(--blue);
+    }
+
     .stepper {
       display: inline-grid;
       grid-template-columns: 38px 100px 38px;
@@ -425,6 +493,21 @@
       display: none;
     }
 
+    .empty-selected {
+      display: none;
+      padding: 18px 12px;
+      border: 1px solid var(--line);
+      border-top: 0;
+      color: #9aa3b2;
+      background: #fff;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .empty-selected.show {
+      display: block;
+    }
+
     .order-input {
       width: 44px;
       height: 26px;
@@ -528,8 +611,7 @@
       background: var(--blue);
     }
 
-    .save-btn:disabled,
-    .add-btn:disabled {
+    .save-btn:disabled {
       cursor: not-allowed;
       opacity: .55;
     }
@@ -590,7 +672,7 @@
 
     .modal-filters {
       display: grid;
-      grid-template-columns: 1fr 160px 90px;
+      grid-template-columns: minmax(260px, 1fr) 220px 90px;
       gap: 10px;
       margin-bottom: 12px;
     }
@@ -600,12 +682,15 @@
       min-width: 0;
       height: 36px;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       padding: 0 12px;
       border: 1px solid var(--line);
       border-radius: 4px;
       color: #5f6878;
       background: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .selection-status {
@@ -682,6 +767,38 @@
     .modal-tip {
       margin-top: 10px;
       color: #8a93a3;
+      font-size: 12px;
+    }
+
+    .scope-detail-toggle {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      cursor: pointer;
+      padding: 0 2px;
+      font-size: 12px;
+    }
+
+    .scope-tags {
+      display: none;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .scope-tags.show {
+      display: flex;
+    }
+
+    .scope-tag {
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 8px;
+      border: 1px solid #cfe2ff;
+      border-radius: 3px;
+      color: #2f6fd6;
+      background: #f5f9ff;
       font-size: 12px;
     }
 
@@ -938,19 +1055,22 @@
             <div class="form-row">
               <div class="label">选择分类</div>
               <div>
-                <select class="select" id="hotCategory">
-                  <option>全部</option>
-                  <option>二次元</option>
-                  <option>欧美</option>
-                  <option>国漫</option>
-                  <option>日韩</option>
-                  <option>长视频</option>
-                  <option>短视频</option>
-                  <option>漫画</option>
-                  <option>短剧</option>
-                  <option>影视解说</option>
-                </select>
-                <div class="field-hint">分类选项来源于商户管理后台「老司机标签」的分类设置；热门推荐仅支持选择一个分类，运营指定内容只能在当前分类范围内选择。</div>
+                <div class="multi-select" id="hotCategorySelect">
+                  <button class="multi-select-trigger" type="button" id="hotCategoryTrigger">全部</button>
+                  <div class="multi-select-menu" id="hotCategoryMenu">
+                    <label class="multi-select-option"><input type="checkbox" value="全部" checked /> 全部</label>
+                    <label class="multi-select-option"><input type="checkbox" value="二次元" /> 二次元</label>
+                    <label class="multi-select-option"><input type="checkbox" value="欧美" /> 欧美</label>
+                    <label class="multi-select-option"><input type="checkbox" value="国漫" /> 国漫</label>
+                    <label class="multi-select-option"><input type="checkbox" value="日韩" /> 日韩</label>
+                    <label class="multi-select-option"><input type="checkbox" value="长视频" /> 长视频</label>
+                    <label class="multi-select-option"><input type="checkbox" value="短视频" /> 短视频</label>
+                    <label class="multi-select-option"><input type="checkbox" value="漫画" /> 漫画</label>
+                    <label class="multi-select-option"><input type="checkbox" value="短剧" /> 短剧</label>
+                    <label class="multi-select-option"><input type="checkbox" value="影视解说" /> 影视解说</label>
+                  </div>
+                </div>
+                <div class="field-hint">分类选项来源于商户管理后台「老司机标签」的分类设置；可选择多个分类合并为一个内容范围，「全部」与具体分类互斥。</div>
               </div>
             </div>
 
@@ -964,17 +1084,17 @@
 
             <div id="autoCard" class="source-card">
               <div class="source-title">自动选择规则</div>
-              <div class="hint">首页热门推荐直接展示第三方搜推引擎返回内容，展示顺序使用搜推引擎默认排序；内容范围受当前选择分类限制。</div>
+              <div class="hint">首页热门推荐直接展示第三方搜推引擎返回内容，展示顺序使用搜推引擎默认排序；内容范围受当前分类范围限制。</div>
             </div>
 
             <div id="manualCard" class="source-card hidden">
               <div class="source-title">运营指定内容</div>
-              <div class="hint">仅可选择当前分类下设为推荐且已上架的内容；可选择多条。该配置只影响首页展示层编排，不改变搜推引擎真实内容流排序。排序数值越大越靠前。</div>
+              <div class="hint">仅可选择当前分类范围内设为推荐且已上架的内容；可选择多条。该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。排序数值越大越靠前。</div>
 
               <div class="selected-header">
                 <div class="selected-title">
                   <span>已选内容</span>
-                  <span class="selected-count" id="selectedCount">2/10</span>
+                  <span class="selected-count" id="selectedCount">0/10</span>
                 </div>
                 <button class="add-btn" type="button" id="addContent">添加内容</button>
               </div>
@@ -988,27 +1108,15 @@
                     <th>操作</th>
                   </tr>
                 </thead>
-                <tbody id="contentRows">
-                  <tr>
-                    <td>凡人修仙传</td>
-                    <td>二次元</td>
-                    <td><input class="order-input" value="10" /></td>
-                    <td><button class="link-btn danger" type="button">移除</button></td>
-                  </tr>
-                  <tr>
-                    <td>星海爆料</td>
-                    <td>欧美</td>
-                    <td><input class="order-input" value="9" /></td>
-                    <td><button class="link-btn danger" type="button">移除</button></td>
-                  </tr>
-                </tbody>
+                <tbody id="contentRows"></tbody>
               </table>
+              <div class="empty-selected" id="emptySelected">暂无已选内容</div>
               <div class="sort-error" id="sortError">排序值需为 1-10 的整数，且不可重复。</div>
               <button class="manage-all" type="button" id="manageAll">查看全部</button>
             </div>
 
             <div class="rule-box">
-              热门推荐真实内容流仍由搜推引擎提供；本配置仅影响首页列表中展示给用户的内容编排。运营指定内容优先用于展示位，剩余展示位由搜推内容补足，重复内容默认去重。
+              搜推引擎仍负责默认推荐结果及默认排序；本配置仅影响首页列表中展示给用户的内容编排。运营指定内容优先用于展示位，剩余展示位由搜推内容补足，重复内容默认去重。
             </div>
           </div>
 
@@ -1052,14 +1160,18 @@
         <div class="limit-tip" id="limitTip">最多可选择 10 条运营指定内容，移除后可继续添加。</div>
         <div class="modal-filters" id="videoFilters">
           <input class="input" id="videoKeyword" placeholder="请输入视频名称" />
-          <div class="scope-pill" id="videoScopeLabel">当前分类：全部</div>
+          <div class="scope-pill" id="videoScopeLabel">当前范围：全部</div>
           <button class="search-btn" type="button" id="filterVideos">查询</button>
         </div>
         <div class="selection-status" id="selectionStatus">
           <span>已选 <strong id="modalSelectedCount">0</strong>/<strong id="modalMaxCount">10</strong></span>
           <span class="muted" id="modalRemainCount">本次还可选择 10 条</span>
         </div>
-        <div class="modal-tip" id="categoryScopeTip">当前可选范围：全部分类下设为推荐且已上架的视频。</div>
+        <div class="modal-tip" id="categoryScopeTip">
+          <span id="categoryScopeText">当前可选范围：全部分类下设为推荐且已上架的视频。</span>
+          <button class="scope-detail-toggle" type="button" id="toggleScopeDetail" style="display: none;">展开</button>
+          <div class="scope-tags" id="scopeTags"></div>
+        </div>
 
         <div class="video-table-wrap" id="videoPickerWrap">
           <table class="video-table">
@@ -1080,7 +1192,7 @@
             <tbody id="manageRows"></tbody>
           </table>
         </div>
-        <div class="modal-tip">仅展示设为推荐且已上架的视频；确认后加入运营指定内容。</div>
+        <div class="modal-tip" id="contentModalTip">仅展示设为推荐且已上架的视频；确认后加入运营指定内容。</div>
       </div>
       <div class="modal-actions">
         <button class="ghost-btn" type="button" id="cancelModal">取消</button>
@@ -1099,11 +1211,11 @@
         <div class="prd-summary">
           <div class="prd-summary-item">
             <strong>功能目标</strong>
-            <span>支持运营指定首页热门推荐展示内容，同时不影响搜推引擎真实内容流排序。</span>
+            <span>支持运营指定首页热门推荐展示内容，同时不回写、不修改搜推引擎默认推荐结果。</span>
           </div>
           <div class="prd-summary-item">
             <strong>核心限制</strong>
-            <span>运营指定内容最多 10 条，且只能从当前分类下设为推荐、已上架的视频中选择。</span>
+            <span>运营指定内容最多 10 条，且只能从当前分类范围内设为推荐、已上架的视频中选择。</span>
           </div>
           <div class="prd-summary-item">
             <strong>展示边界</strong>
@@ -1120,8 +1232,8 @@
         <section class="prd-section">
           <h3>二、需求目标</h3>
           <ol>
-            <li>热门推荐真实内容流仍由第三方搜推引擎提供。</li>
-            <li>后台配置不影响搜推引擎返回结果及默认排序。</li>
+            <li>搜推引擎仍负责热门推荐的默认推荐结果及默认排序。</li>
+            <li>后台配置不回写、不修改搜推引擎返回结果及默认排序。</li>
             <li>运营可指定一条或多条设为推荐且已上架的视频，用于首页热门推荐模块展示。</li>
             <li>运营指定内容仅作用于首页热门推荐模块的展示层编排。</li>
             <li>热门推荐的展示位置和展示样式由首页模板决定，后台不提供样式配置。</li>
@@ -1146,11 +1258,11 @@
             <tbody>
               <tr>
                 <td>自动选择</td>
-                <td>使用第三方搜推引擎返回的默认推荐内容；展示顺序使用搜推引擎默认排序，后台不额外配置排序值；内容范围受当前选择分类限制。</td>
+                <td>使用第三方搜推引擎返回的默认推荐内容；展示顺序使用搜推引擎默认排序，后台不额外配置排序值；内容范围受当前选择的分类范围限制。</td>
               </tr>
               <tr>
                 <td>运营指定</td>
-                <td>运营从当前分类下设为推荐且已上架的视频中选择内容用于首页展示；可选择多条，最多 10 条。</td>
+                <td>运营从当前分类范围内设为推荐且已上架的视频中选择内容用于首页展示；可选择多条，最多 10 条。</td>
               </tr>
             </tbody>
           </table>
@@ -1159,16 +1271,17 @@
         <section class="prd-section">
           <h3>五、分类范围规则</h3>
           <ol>
-            <li>「选择分类」用于控制热门推荐的内容范围，热门推荐仅支持选择一个分类。</li>
+            <li>「选择分类」用于控制热门推荐的内容范围，支持选择一个或多个分类。</li>
             <li>分类选项来源于商户管理后台「老司机标签」的分类设置；除「全部」外，其余分类均读取该配置。</li>
             <li>选择「全部」时，自动选择和运营指定均可覆盖全部分类内容。</li>
-            <li>选择具体分类时，自动选择内容、运营指定可选内容、搜推补足内容均限制在当前分类范围内。</li>
+            <li>「全部」与具体分类互斥；选择「全部」时取消已选具体分类，选择具体分类时自动取消「全部」。</li>
+            <li>选择多个具体分类时，多个分类合并为一个内容池，自动选择内容、运营指定可选内容、搜推补足内容均限制在该分类范围内。</li>
             <li>添加内容弹窗不提供二次选择分类能力，只展示外层已选分类对应的内容范围。</li>
-            <li>选择具体分类后，添加内容弹窗不得切换到其他分类，也不得选择其他分类下的内容。</li>
-            <li>运营指定内容必须同时满足当前分类、设为推荐、已上架三个条件。</li>
-            <li>当展示内容来源为「运营指定」且已存在运营指定内容时，切换分类需提示用户确认；确认后清空已选运营指定内容，并按新分类重新选择。</li>
-            <li>当展示内容来源为「自动选择」时，切换分类不需要清空确认；如存在隐藏的已选运营指定内容，系统直接清空，避免切换分类后残留不符合新分类的指定内容。</li>
-            <li>用户取消切换时，分类保持原值，已选运营指定内容不变。</li>
+            <li>选择具体分类后，添加内容弹窗不得切换到其他分类，也不得选择分类范围外的内容。</li>
+            <li>运营指定内容必须同时满足当前分类范围、设为推荐、已上架三个条件。</li>
+            <li>当展示内容来源为「运营指定」且已存在运营指定内容时，切换分类范围需提示用户确认；确认后保留仍符合新分类范围的内容，自动移除不符合范围的内容。</li>
+            <li>当展示内容来源为「自动选择」时，切换分类范围不需要清空确认；如系统中暂存有运营指定内容，切换后自动移除不符合新分类范围的内容。</li>
+            <li>用户取消切换时，分类范围保持原值，已选运营指定内容不变。</li>
           </ol>
         </section>
 
@@ -1176,19 +1289,24 @@
           <h3>六、运营指定内容选择规则</h3>
           <ol>
             <li>点击「添加内容」时，系统打开视频选择弹窗。</li>
-            <li>弹窗仅展示当前分类下设为推荐且已上架的视频。</li>
-            <li>当前分类为「全部」时，弹窗可展示全部分类下设为推荐且已上架的视频。</li>
+            <li>弹窗仅展示当前分类范围内设为推荐且已上架的视频。</li>
+            <li>当前分类范围为「全部」时，弹窗可展示全部分类下设为推荐且已上架的视频。</li>
             <li>弹窗不允许二次选择分类，分类范围由外层「选择分类」决定。</li>
             <li>支持按视频名称搜索。</li>
-            <li>弹窗列表展示「视频名称」；当前分类为「全部」时额外展示「分类」列。</li>
-            <li>当前分类为「全部」时，弹窗列表展示「分类」列；当前分类为具体分类时，隐藏「分类」列。</li>
+            <li>弹窗列表展示「视频名称」；当前分类范围为「全部」或选择多个具体分类时，额外展示「分类」列。</li>
+            <li>当前仅选择一个具体分类时，弹窗隐藏「分类」列。</li>
+            <li>弹窗顶部「当前范围」在选择 1-2 个具体分类时直接展示分类名称；选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
+            <li>选择 3 个及以上具体分类时，当前可选范围说明展示前 3 个分类和总数量，并提供「展开 / 收起」查看全部分类标签。</li>
             <li>弹窗不展示「推荐状态」列，因为列表内容均已满足设为推荐条件。</li>
             <li>弹窗不展示「选择状态」列，是否可选通过复选框状态表达。</li>
             <li>支持勾选一条或多条视频。</li>
+            <li>首次进入运营指定配置时，默认无已选内容；视频选择弹窗不默认勾选任何视频。</li>
             <li>已添加的视频复选框默认选中，用户可取消勾选；确认后从已选内容中移除。</li>
             <li>弹窗中展示当前已选数量和最大可选数量，例如「已选 3/10」。</li>
             <li>弹窗中展示剩余可选数量，例如「本次还可选择 7 条」。</li>
-            <li>达到 10 条上限后，不允许继续选择。</li>
+            <li>达到 10 条上限后，不允许继续勾选新增内容。</li>
+            <li>达到 10 条上限后，添加入口可展示为「调整内容」，用于进入弹窗取消已选内容。</li>
+            <li>达到 10 条上限后，仍允许进入视频选择弹窗取消已选内容；取消后可继续选择新内容。</li>
             <li>移除已选内容后，可继续添加新内容。</li>
           </ol>
         </section>
@@ -1197,6 +1315,7 @@
           <h3>七、已选内容管理规则</h3>
           <ol>
             <li>右侧区域显示已选数量，例如「已选内容 3/10」。</li>
+            <li>无已选内容时，右侧区域显示「暂无已选内容」。</li>
             <li>默认仅展示前 3 条已选内容，避免右侧面板过长。</li>
             <li>当已选内容超过 3 条时，显示「查看全部 X 条」。</li>
             <li>点击「查看全部」打开管理弹窗。</li>
@@ -1213,10 +1332,10 @@
             <li>排序字段仅作用于运营指定内容在首页热门推荐展示层中的展示优先级。</li>
             <li>排序值范围为 1-10，且同一批运营指定内容中必须唯一。</li>
             <li>排序数值越大，展示优先级越高，越靠前展示。</li>
-            <li>添加内容时，系统自动分配未占用的排序值。</li>
+            <li>添加内容时，系统自动分配未占用的排序值，优先分配当前可用的最大排序值。</li>
             <li>展示内容来源为「运营指定」时，排序值为空、非整数、超出 1-10 或与其他内容重复，系统需提示错误并禁止保存。</li>
             <li>展示内容来源为「自动选择」时，运营指定内容不生效，隐藏的排序错误不阻塞保存。</li>
-            <li>排序规则不影响第三方搜推引擎真实内容流排序。</li>
+            <li>排序规则不回写、不修改第三方搜推引擎默认推荐结果及默认排序。</li>
           </ol>
         </section>
 
@@ -1224,10 +1343,11 @@
           <h3>九、展示层规则</h3>
           <ol>
             <li>热门推荐启用后，首页展示热门推荐模块。</li>
-            <li>热门推荐真实内容流仍由第三方搜推引擎返回。</li>
-            <li>若展示内容来源为「自动选择」，直接按当前分类下的搜推引擎默认结果展示。</li>
+            <li>搜推引擎仍负责热门推荐的默认推荐结果及默认排序。</li>
+            <li>若展示内容来源为「自动选择」，直接按当前分类范围内的搜推引擎默认结果展示。</li>
             <li>若展示内容来源为「运营指定」，首页展示层优先展示运营指定内容。</li>
-            <li>运营指定内容不足时，剩余展示位置由当前分类下的搜推引擎返回内容补足。</li>
+            <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，剩余展示位置由当前分类范围内的搜推引擎默认推荐内容补足。</li>
+            <li>展示位数量由首页模板或前端展示规则决定，后台不配置展示位数量。</li>
             <li>如运营指定内容与搜推引擎返回内容重复，展示层默认去重。</li>
             <li>该配置不回写、不修改、不影响搜推引擎内容排序。</li>
             <li>热门推荐展示位置和展示样式由首页模板决定。</li>
@@ -1238,31 +1358,32 @@
           <h3>十、异常规则</h3>
           <ol>
             <li>热门推荐未启用时，首页不展示热门推荐模块。</li>
-            <li>选择「运营指定」但未选择内容时，按「自动选择」逻辑展示。</li>
+            <li>展示内容来源为「运营指定」但未选择内容时，允许保存；首页按当前分类范围内的搜推引擎默认推荐内容展示。</li>
             <li>运营指定内容未设为推荐或未上架时，该内容不展示。</li>
-            <li>运营指定内容不足时，由当前分类下的搜推引擎内容补足。</li>
+            <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，由当前分类范围内的搜推引擎默认推荐内容补足。</li>
             <li>搜推引擎无返回内容，且无已上架运营指定内容时，热门推荐模块不展示内容。</li>
-            <li>已选内容达到 10 条时，添加入口不可继续添加。</li>
+            <li>已选内容达到 10 条时，不允许继续勾选新增内容；用户仍可进入视频选择弹窗取消已选内容后再新增。</li>
             <li>已添加的视频在弹窗中回显为已勾选，取消勾选并确认后可移除。</li>
-            <li>展示内容来源为「运营指定」且存在已选内容时，切换分类并确认后，已选运营指定内容清空。</li>
-            <li>展示内容来源为「运营指定」且存在已选内容时，切换分类并取消后，分类和已选运营指定内容保持不变。</li>
-            <li>展示内容来源为「自动选择」时，切换分类不触发清空确认；如存在隐藏的已选运营指定内容，系统直接清空。</li>
+            <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可暂存但不生效；再次切回「运营指定」时，如内容仍符合当前分类范围、设为推荐、已上架条件，则继续回显，否则不展示。</li>
+            <li>展示内容来源为「运营指定」且存在已选内容时，切换分类范围并确认后，保留仍符合新范围的内容，自动移除不符合范围的内容。</li>
+            <li>展示内容来源为「运营指定」且存在已选内容时，切换分类范围并取消后，分类范围和已选运营指定内容保持不变。</li>
+            <li>展示内容来源为「自动选择」时，切换分类范围不触发确认；如系统中暂存有运营指定内容，切换后自动移除不符合新分类范围的内容。</li>
           </ol>
         </section>
 
         <section class="prd-section">
           <h3>十一、后台交互示例</h3>
           <div class="prd-code">热门推荐：启用 / 禁用
-选择分类：全部
-说明：分类选项来源于商户管理后台「老司机标签」的分类设置；热门推荐仅支持选择一个分类；选择具体分类后，只能在该分类内选择运营指定内容。
+选择分类：二次元、欧美
+说明：分类选项来源于商户管理后台「老司机标签」的分类设置；可选择多个分类合并为一个内容范围；「全部」与具体分类互斥。
 
 展示内容来源：
 ○ 自动选择
-  首页热门推荐直接展示当前分类下的搜推引擎返回内容，展示顺序使用搜推引擎默认排序。
+  首页热门推荐直接展示当前分类范围内的搜推引擎返回内容，展示顺序使用搜推引擎默认排序。
 
 ○ 运营指定
-  仅可选择当前分类下设为推荐且已上架的内容；可选择多条。
-  该配置只影响首页展示层编排，不改变搜推引擎真实内容流排序。
+  仅可选择当前分类范围内设为推荐且已上架的内容；可选择多条。
+  该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。
   排序数值越大越靠前。
 
 已选内容 3/10        添加内容
@@ -1274,15 +1395,18 @@
 
 查看全部 10 条</div>
           <div class="prd-code" style="margin-top: 10px;">选择推荐视频弹窗：
-[请输入视频名称]  当前分类：二次元  [查询]
+[请输入视频名称]  当前范围：已选 5 个分类  [查询]
 
 已选 3/10                         本次还可选择 7 条
-当前可选范围：二次元分类下设为推荐且已上架的视频
+当前可选范围：二次元、欧美、日韩 等 5 个分类下设为推荐且已上架的视频。展开
 
-视频名称
-凡人修仙传
-异世界冒险日记
-星河战队物语
+展开后：
+二次元  欧美  日韩  短剧  影视解说
+
+视频名称        分类
+凡人修仙传      二次元
+异世界冒险日记  二次元
+星海爆料        欧美
 
 说明：弹窗不提供分类二次选择，不展示推荐状态和选择状态；已选内容通过复选框回显，取消勾选并确认后移除。</div>
         </section>
@@ -1292,21 +1416,30 @@
           <ol>
             <li>热门推荐配置中支持选择「展示内容来源」。</li>
             <li>热门推荐分类下拉选项来源于商户管理后台「老司机标签」的分类设置。</li>
+            <li>热门推荐「选择分类」支持选择一个或多个分类。</li>
+            <li>「全部」与具体分类互斥；选择「全部」时取消已选具体分类，选择具体分类时取消「全部」。</li>
+            <li>选择多个具体分类时，多个分类合并为一个内容池。</li>
             <li>展示内容来源支持「自动选择」和「运营指定」。</li>
-            <li>自动选择时，首页热门推荐使用当前分类下的搜推引擎默认推荐内容。</li>
+            <li>自动选择时，首页热门推荐使用当前分类范围内的搜推引擎默认推荐内容。</li>
             <li>运营指定时，点击添加内容打开视频选择弹窗。</li>
-            <li>视频选择弹窗仅展示当前分类下设为推荐且已上架的视频。</li>
-            <li>当前分类为「全部」时，视频选择弹窗可展示全部分类下设为推荐且已上架的视频。</li>
+            <li>视频选择弹窗仅展示当前分类范围内设为推荐且已上架的视频。</li>
+            <li>当前分类范围为「全部」时，视频选择弹窗可展示全部分类下设为推荐且已上架的视频。</li>
             <li>视频选择弹窗不提供分类二次选择入口。</li>
             <li>视频选择弹窗支持按视频名称搜索。</li>
             <li>视频选择弹窗不展示「推荐状态」列。</li>
             <li>视频选择弹窗不展示「选择状态」列，是否可选通过复选框状态表达。</li>
-            <li>当前分类为「全部」时，视频选择弹窗展示「分类」列；当前分类为具体分类时隐藏「分类」列。</li>
+            <li>当前分类范围为「全部」或选择多个具体分类时，视频选择弹窗展示「分类」列；当前仅选择一个具体分类时隐藏「分类」列。</li>
+            <li>视频选择弹窗顶部「当前范围」在选择 1-2 个具体分类时展示分类名称，选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
+            <li>选择 3 个及以上具体分类时，视频选择弹窗支持展开查看全部分类标签，并支持收起。</li>
             <li>视频选择弹窗显示已选数量和最大可选数量。</li>
             <li>运营指定内容最多支持选择 10 条。</li>
-            <li>达到 10 条后，不允许继续选择。</li>
+            <li>达到 10 条后，不允许继续勾选新增内容。</li>
+            <li>达到 10 条后，添加入口可展示为「调整内容」，用于进入弹窗取消已选内容。</li>
+            <li>达到 10 条后，仍允许进入视频选择弹窗取消已选内容；取消后可继续选择新内容。</li>
+            <li>首次进入运营指定配置时，默认无已选内容，视频选择弹窗不默认勾选任何视频。</li>
             <li>已添加的视频在弹窗中回显为已勾选，支持取消勾选后移除。</li>
             <li>右侧已选内容区域显示「已选内容 X/10」。</li>
+            <li>右侧无已选内容时显示「暂无已选内容」。</li>
             <li>右侧默认展示前 3 条已选内容。</li>
             <li>超过 3 条时，支持通过「查看全部」管理全部内容。</li>
             <li>已选内容支持移除。</li>
@@ -1314,17 +1447,19 @@
             <li>排序值只能填写 1-10 的整数。</li>
             <li>同一批运营指定内容中的排序值不可重复。</li>
             <li>排序数值越大，展示优先级越高。</li>
-            <li>添加内容时，系统自动分配未占用的排序值。</li>
+            <li>添加内容时，系统自动分配未占用的排序值，优先分配当前可用的最大排序值。</li>
             <li>展示内容来源为「运营指定」时，排序值为空、非整数、超出范围或重复，系统提示错误并禁止保存。</li>
             <li>展示内容来源为「自动选择」时，运营指定内容不生效，隐藏的排序错误不影响保存。</li>
-            <li>运营指定内容仅影响首页热门推荐模块展示。</li>
-            <li>运营指定内容不影响搜推引擎真实内容流排序。</li>
-            <li>运营指定内容不足时，可由当前分类下的搜推引擎内容补足。</li>
+            <li>运营指定内容仅影响首页热门推荐模块中的展示内容选择与展示优先级，不回写、不修改搜推引擎默认推荐结果。</li>
+            <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，可由当前分类范围内的搜推引擎默认推荐内容补足。</li>
+            <li>展示位数量由首页模板或前端展示规则决定，后台不配置展示位数量。</li>
+            <li>展示内容来源为「运营指定」但未选择内容时允许保存，首页按当前分类范围内的搜推引擎默认推荐内容展示。</li>
+            <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可暂存但不生效；再次切回「运营指定」时，符合当前条件的内容继续回显。</li>
             <li>运营指定内容与搜推引擎内容重复时，展示层只展示一次。</li>
             <li>后台不支持配置热门推荐展示样式和展示位置。</li>
-            <li>展示内容来源为「运营指定」且已存在运营指定内容时切换分类，系统需提示确认；确认后清空已选内容。</li>
-            <li>展示内容来源为「运营指定」且已存在运营指定内容时切换分类，用户取消后分类保持原值，已选内容不变。</li>
-            <li>展示内容来源为「自动选择」时切换分类，不触发清空确认；如存在隐藏的已选运营指定内容，系统直接清空。</li>
+            <li>展示内容来源为「运营指定」且已存在运营指定内容时切换分类范围，系统需提示确认；确认后保留仍符合新分类范围的内容，自动移除不符合范围的内容。</li>
+            <li>展示内容来源为「运营指定」且已存在运营指定内容时切换分类范围，用户取消后分类范围保持原值，已选内容不变。</li>
+            <li>展示内容来源为「自动选择」时切换分类范围，不触发确认；如系统中暂存有运营指定内容，切换后自动移除不符合新分类范围的内容。</li>
           </ol>
         </section>
       </div>
@@ -1341,7 +1476,7 @@
         <button class="modal-close" type="button" id="cancelCategoryByClose">×</button>
       </div>
       <div class="confirm-body">
-        当前已选择运营指定内容。热门推荐只能选择一个分类，切换到 <strong id="pendingCategoryText">新分类</strong> 后，已选运营指定内容将被清空，需要重新选择。
+        当前已选择运营指定内容。切换到 <strong id="pendingCategoryText">新分类范围</strong> 后，部分已选内容可能不在新的分类范围内，确认后将自动移除不符合范围的内容。
       </div>
       <div class="modal-actions">
         <button class="ghost-btn" type="button" id="cancelCategoryChange">取消</button>
@@ -1363,13 +1498,17 @@
     const confirmCategoryChange = document.getElementById('confirmCategoryChange');
     const autoCard = document.getElementById('autoCard');
     const manualCard = document.getElementById('manualCard');
-    const hotCategory = document.getElementById('hotCategory');
+    const hotCategorySelect = document.getElementById('hotCategorySelect');
+    const hotCategoryTrigger = document.getElementById('hotCategoryTrigger');
+    const hotCategoryMenu = document.getElementById('hotCategoryMenu');
+    const hotCategoryInputs = [...hotCategoryMenu.querySelectorAll('input[type="checkbox"]')];
     const addContent = document.getElementById('addContent');
     const manageAll = document.getElementById('manageAll');
     const selectedCount = document.getElementById('selectedCount');
     const sortError = document.getElementById('sortError');
     const saveSettings = document.getElementById('saveSettings');
     const contentRows = document.getElementById('contentRows');
+    const emptySelected = document.getElementById('emptySelected');
     const contentModal = document.getElementById('contentModal');
     const contentModalPanel = document.getElementById('contentModalPanel');
     const closeModal = document.getElementById('closeModal');
@@ -1387,17 +1526,21 @@
     const modalMaxCount = document.getElementById('modalMaxCount');
     const modalRemainCount = document.getElementById('modalRemainCount');
     const categoryScopeTip = document.getElementById('categoryScopeTip');
+    const categoryScopeText = document.getElementById('categoryScopeText');
+    const toggleScopeDetail = document.getElementById('toggleScopeDetail');
+    const scopeTags = document.getElementById('scopeTags');
     const videoPickerWrap = document.getElementById('videoPickerWrap');
     const manageWrap = document.getElementById('manageWrap');
     const manageRows = document.getElementById('manageRows');
     const limitTip = document.getElementById('limitTip');
-    const modalTip = document.querySelector('.modal-tip');
+    const modalTip = document.getElementById('contentModalTip');
     const MAX_SELECTED = 10;
     const SUMMARY_LIMIT = 3;
     let modalMode = 'select';
-    let previousHotCategory = hotCategory.value;
-    let pendingHotCategory = '';
+    let previousHotCategories = ['全部'];
+    let pendingHotCategories = ['全部'];
     let modalSelectedNames = new Set();
+    let scopeDetailExpanded = false;
     const videoList = [
       { id: 'v001', name: '凡人修仙传', category: '二次元', status: '已上架' },
       { id: 'v003', name: '异世界冒险日记', category: '二次元', status: '已上架' },
@@ -1450,13 +1593,92 @@
       validateSortValues();
     }
 
+    function pruneSelectedContentByCategories(categories) {
+      const rows = [...contentRows.querySelectorAll('tr')];
+      rows.forEach((row) => {
+        const category = row.querySelectorAll('td')[1].textContent.trim();
+        if (!isCategoryInScope(category, categories)) {
+          row.remove();
+        }
+      });
+      updateSelectedSummary();
+      validateSortValues();
+    }
+
     function isManualSourceActive() {
       return document.querySelector('input[name="source"]:checked').value === 'manual';
     }
 
-    function openCategoryConfirmModal(nextCategory) {
-      pendingHotCategory = nextCategory;
-      pendingCategoryText.textContent = nextCategory;
+    function getRawSelectedCategories() {
+      return hotCategoryInputs.filter((input) => input.checked).map((input) => input.value);
+    }
+
+    function getSelectedCategories() {
+      const selected = getRawSelectedCategories();
+      return selected.length ? selected : ['全部'];
+    }
+
+    function isAllCategoryScope(categories = getSelectedCategories()) {
+      return categories.includes('全部');
+    }
+
+    function getCategoryScopeText(categories = getSelectedCategories()) {
+      return isAllCategoryScope(categories) ? '全部' : categories.join('、');
+    }
+
+    function getShortCategoryScopeText(categories = getSelectedCategories()) {
+      if (isAllCategoryScope(categories)) return '全部';
+      if (categories.length <= 2) return categories.join('、');
+      return `已选 ${categories.length} 个分类`;
+    }
+
+    function getCategoryScopeTipText(categories = getSelectedCategories()) {
+      if (isAllCategoryScope(categories)) {
+        return '当前可选范围：全部分类下设为推荐且已上架的视频。';
+      }
+      if (categories.length <= 2) {
+        return `当前可选范围：${categories.join('、')}分类下设为推荐且已上架的视频。`;
+      }
+      return `当前可选范围：${categories.slice(0, 3).join('、')} 等 ${categories.length} 个分类下设为推荐且已上架的视频。`;
+    }
+
+    function isCategoryInScope(category, categories = getSelectedCategories()) {
+      return isAllCategoryScope(categories) || categories.includes(category);
+    }
+
+    function setSelectedCategories(categories) {
+      const nextCategories = categories.length ? categories : ['全部'];
+      hotCategoryInputs.forEach((input) => {
+        input.checked = nextCategories.includes(input.value);
+      });
+      updateHotCategoryTrigger();
+    }
+
+    function updateHotCategoryTrigger() {
+      hotCategoryTrigger.textContent = getCategoryScopeText();
+    }
+
+    function normalizeCategorySelection(changedInput) {
+      if (changedInput.value === '全部' && changedInput.checked) {
+        setSelectedCategories(['全部']);
+        return;
+      }
+
+      if (changedInput.value !== '全部' && changedInput.checked) {
+        hotCategoryInputs.find((input) => input.value === '全部').checked = false;
+      }
+
+      if (getRawSelectedCategories().length === 0) {
+        setSelectedCategories(['全部']);
+        return;
+      }
+
+      updateHotCategoryTrigger();
+    }
+
+    function openCategoryConfirmModal(nextCategories) {
+      pendingHotCategories = nextCategories;
+      pendingCategoryText.textContent = getCategoryScopeText(nextCategories);
       categoryConfirmModal.classList.add('open');
       categoryConfirmModal.setAttribute('aria-hidden', 'false');
     }
@@ -1466,25 +1688,42 @@
       categoryConfirmModal.setAttribute('aria-hidden', 'true');
     }
 
-    hotCategory.addEventListener('change', () => {
-      const nextCategory = hotCategory.value;
-      if (getSelectedCount() > 0) {
-        if (isManualSourceActive()) {
-          hotCategory.value = previousHotCategory;
-          openCategoryConfirmModal(nextCategory);
-          return;
-        }
-        resetSelectedContent();
+    hotCategoryTrigger.addEventListener('click', () => {
+      hotCategorySelect.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!hotCategorySelect.contains(event.target)) {
+        hotCategorySelect.classList.remove('open');
       }
-      previousHotCategory = nextCategory;
+    });
+
+    hotCategoryInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        normalizeCategorySelection(input);
+        const nextCategories = getSelectedCategories();
+        if (getSelectedCount() > 0) {
+          if (isManualSourceActive()) {
+            const hasOutOfScopeContent = getSelectedRowData().some((item) => !isCategoryInScope(item.category, nextCategories));
+            if (hasOutOfScopeContent) {
+              setSelectedCategories(previousHotCategories);
+              openCategoryConfirmModal(nextCategories);
+              return;
+            }
+          } else {
+            pruneSelectedContentByCategories(nextCategories);
+          }
+        }
+        previousHotCategories = [...nextCategories];
+      });
     });
 
     cancelCategoryByClose.addEventListener('click', closeCategoryConfirmModal);
     cancelCategoryChange.addEventListener('click', closeCategoryConfirmModal);
     confirmCategoryChange.addEventListener('click', () => {
-      hotCategory.value = pendingHotCategory;
-      previousHotCategory = pendingHotCategory;
-      resetSelectedContent();
+      setSelectedCategories(pendingHotCategories);
+      previousHotCategories = [...pendingHotCategories];
+      pruneSelectedContentByCategories(pendingHotCategories);
       closeCategoryConfirmModal();
     });
 
@@ -1507,6 +1746,7 @@
       confirmVideos.style.display = 'inline-block';
       modalTip.textContent = '仅展示设为推荐且已上架的视频；确认后加入运营指定内容。';
       modalSelectedNames = new Set(getSelectedNames());
+      scopeDetailExpanded = false;
       syncVideoCategoryFilter();
       renderVideoTableHead();
       renderVideoRows();
@@ -1569,8 +1809,8 @@
     function updateSelectedSummary() {
       const rows = [...contentRows.querySelectorAll('tr')];
       selectedCount.textContent = `${rows.length}/${MAX_SELECTED}`;
-      addContent.disabled = rows.length >= MAX_SELECTED;
-      addContent.textContent = rows.length >= MAX_SELECTED ? '已达上限' : '添加内容';
+      addContent.textContent = rows.length >= MAX_SELECTED ? '调整内容' : '添加内容';
+      emptySelected.classList.toggle('show', rows.length === 0);
       rows.forEach((row, index) => {
         row.classList.toggle('summary-hidden', index >= SUMMARY_LIMIT);
       });
@@ -1639,24 +1879,31 @@
     }
 
     function syncVideoCategoryFilter() {
-      const scopeCategory = hotCategory.value;
-      if (scopeCategory === '全部') {
-        videoScopeLabel.textContent = '当前分类：全部';
-        categoryScopeTip.textContent = '当前可选范围：全部分类下设为推荐且已上架的视频。';
-        return;
-      }
-
-      videoScopeLabel.textContent = `当前分类：${scopeCategory}`;
-      categoryScopeTip.textContent = `当前可选范围：${scopeCategory}分类下设为推荐且已上架的视频。`;
+      const scopeCategories = getSelectedCategories();
+      const shouldShowDetail = !isAllCategoryScope(scopeCategories) && scopeCategories.length > 2;
+      videoScopeLabel.textContent = `当前范围：${getShortCategoryScopeText(scopeCategories)}`;
+      videoScopeLabel.title = shouldShowDetail ? getCategoryScopeText(scopeCategories) : '';
+      categoryScopeText.textContent = getCategoryScopeTipText(scopeCategories);
+      toggleScopeDetail.style.display = shouldShowDetail ? 'inline' : 'none';
+      toggleScopeDetail.textContent = scopeDetailExpanded ? '收起' : '展开';
+      scopeTags.classList.toggle('show', shouldShowDetail && scopeDetailExpanded);
+      scopeTags.innerHTML = shouldShowDetail
+        ? scopeCategories.map((category) => `<span class="scope-tag">${category}</span>`).join('')
+        : '';
     }
 
-    function getEffectiveVideoCategory() {
-      const scopeCategory = hotCategory.value;
-      return scopeCategory === '全部' ? '全部分类' : scopeCategory;
+    toggleScopeDetail.addEventListener('click', () => {
+      scopeDetailExpanded = !scopeDetailExpanded;
+      syncVideoCategoryFilter();
+    });
+
+    function getEffectiveVideoCategories() {
+      return getSelectedCategories();
     }
 
     function shouldShowCategoryColumn() {
-      return hotCategory.value === '全部';
+      const categories = getSelectedCategories();
+      return isAllCategoryScope(categories) || categories.length > 1;
     }
 
     function renderVideoTableHead() {
@@ -1672,11 +1919,11 @@
 
     function renderVideoRows() {
       const keyword = videoKeyword.value.trim();
-      const category = getEffectiveVideoCategory();
+      const categories = getEffectiveVideoCategories();
       const reachedLimit = modalSelectedNames.size >= MAX_SELECTED;
       const filtered = videoList.filter((video) => {
         const matchKeyword = !keyword || video.name.includes(keyword);
-        const matchCategory = category === '全部分类' || video.category === category;
+        const matchCategory = isCategoryInScope(video.category, categories);
         return matchKeyword && matchCategory;
       });
 
