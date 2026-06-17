@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>商户后台角色管理原型</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --line: #dfe5ef;
+      --line-soft: #edf1f7;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --soft: #9ca3af;
+      --blue: #2f80ed;
+      --blue-soft: #eaf3ff;
+      --green: #24a148;
+      --green-soft: #eaf8ee;
+      --orange: #f59e0b;
+      --red: #dc2626;
+      --red-soft: #fff1f2;
+      --shadow: 0 14px 40px rgba(31, 41, 55, .13);
+      --radius: 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .topbar {
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+
+    .topbar h1 {
+      font-size: 18px;
+      font-weight: 650;
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    .user-menu {
+      color: #4b5563;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page {
+      padding: 24px 32px 48px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .filters {
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 220px 150px 300px 1fr auto auto;
+      align-items: end;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      color: #4b5563;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      height: 36px;
+      border: 1px solid #cfd8e6;
+      border-radius: 5px;
+      padding: 0 10px;
+      background: #fff;
+      color: #374151;
+      outline: none;
+    }
+
+    .date-pair {
+      display: grid;
+      grid-template-columns: 1fr 24px 1fr;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .date-pair span {
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .btn {
+      height: 36px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 5px;
+      padding: 0 14px;
+      color: #374151;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn.danger {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    .btn.warn {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+
+    .btn.ghost {
+      color: var(--blue);
+      border-color: #9ec8ff;
+      background: #fff;
+    }
+
+    .toolbar {
+      padding: 18px 18px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    table {
+      width: calc(100% - 36px);
+      margin: 18px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line-soft);
+      border-right: 1px solid var(--line-soft);
+      text-align: left;
+      padding: 12px;
+      color: #374151;
+      vertical-align: middle;
+      word-break: break-word;
+    }
+
+    th {
+      color: #6b7280;
+      font-weight: 650;
+      background: #fbfcff;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tag.green { background: var(--green-soft); color: var(--green); }
+    .tag.blue { background: var(--blue-soft); color: var(--blue); }
+    .tag.gray { background: #f3f4f6; color: #6b7280; }
+    .tag.red { background: var(--red-soft); color: var(--red); }
+    .tag.orange { background: #fff7ed; color: #c2410c; }
+    .tag.purple { background: #f3e8ff; color: #7e22ce; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .link-btn {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      padding: 0;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      min-width: 48px;
+      height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .action-btn.edit,
+    .action-btn.enable {
+      color: var(--blue);
+      border-color: #9ec8ff;
+      background: var(--blue-soft);
+    }
+
+    .action-btn.disable {
+      color: #c2410c;
+      border-color: #fed7aa;
+      background: #fff7ed;
+    }
+
+    .pagination {
+      padding: 0 18px 18px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 14px;
+      color: #4b5563;
+    }
+
+    .drawer-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .36);
+      display: none;
+      justify-content: flex-end;
+      z-index: 20;
+    }
+
+    .drawer-mask.open {
+      display: flex;
+    }
+
+    .drawer {
+      width: min(1120px, calc(100vw - 72px));
+      height: 100%;
+      background: #fff;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer-head {
+      height: 58px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+    }
+
+    .drawer-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .close {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .drawer-body {
+      overflow: auto;
+      padding: 20px 22px 92px;
+    }
+
+    .form-section {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin-bottom: 16px;
+      background: #fff;
+    }
+
+    .form-section h3 {
+      margin: 0;
+      padding: 13px 16px;
+      font-size: 15px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fbfcff;
+    }
+
+    .form-grid {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .required::before {
+      content: "* ";
+      color: var(--red);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 7px;
+      line-height: 1.6;
+    }
+
+    .radio-row,
+    .checkbox-row {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      min-height: 36px;
+      flex-wrap: wrap;
+    }
+
+    .radio-row label,
+    .checkbox-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #374151;
+      margin: 0;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .compact-radio-row {
+      gap: 20px;
+      align-items: flex-start;
+      min-height: auto;
+    }
+
+    .compact-radio-row label {
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.45;
+      max-width: 210px;
+    }
+
+    .compact-radio-row input[type="radio"] {
+      width: 14px;
+      height: 14px;
+      margin: 2px 0 0;
+      flex: 0 0 14px;
+    }
+
+    .compact-radio-row .option-text {
+      display: block;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .compact-radio-row .option-title {
+      display: block;
+      color: #374151;
+    }
+
+    .compact-radio-row .option-desc {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .status-radio-row {
+      gap: 28px;
+      min-height: 30px;
+    }
+
+    .status-radio-row label {
+      gap: 7px;
+      line-height: 1.4;
+    }
+
+    .status-radio-row input[type="radio"] {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      flex: 0 0 14px;
+    }
+
+    .alert {
+      margin: 0 16px 16px;
+      padding: 11px 12px;
+      border-radius: 6px;
+      border: 1px solid #fed7aa;
+      background: #fff7ed;
+      color: #9a3412;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .permission-tools {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .perm-table {
+      width: 100%;
+      margin: 0;
+      border: 0;
+      border-collapse: collapse;
+    }
+
+    .perm-table th:first-child,
+    .perm-table td:first-child {
+      width: 36%;
+    }
+
+    .perm-table th:last-child,
+    .perm-table td:last-child {
+      width: 24%;
+    }
+
+    .menu-node {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 24px;
+    }
+
+    .indent-1 { padding-left: 22px; }
+    .indent-2 { padding-left: 44px; color: #4b5563; }
+
+    .ops {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .op {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 26px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: #4b5563;
+      background: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .op input { margin: 0; }
+
+    .drawer-foot {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      width: min(1120px, calc(100vw - 72px));
+      height: 72px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      z-index: 22;
+    }
+
+    .save-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%);
+      background: #111827;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      display: none;
+      z-index: 40;
+    }
+
+    .toast.show { display: block; }
+
+    .prd-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .34);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .prd-mask.open { display: flex; }
+
+    .prd-panel {
+      width: min(1180px, calc(100vw - 48px));
+      height: min(94vh, 1040px);
+      background: #fff;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .prd-layout {
+      min-height: 0;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+    }
+
+    .prd-body {
+      padding: 22px 34px 48px;
+      overflow: auto;
+      line-height: 1.72;
+      scroll-behavior: smooth;
+    }
+
+    .prd-body h3 {
+      margin: 30px 0 12px;
+      font-size: 17px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .prd-body h3::after {
+      content: "收起";
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .prd-body h3.collapsed::after {
+      content: "展开";
+    }
+
+    .prd-body h4 {
+      margin: 18px 0 8px;
+      font-size: 15px;
+    }
+
+    .prd-body p,
+    .prd-body li {
+      color: #4b5563;
+    }
+
+    .prd-body ul {
+      margin: 8px 0 14px;
+      padding-left: 22px;
+    }
+
+    .prd-body table {
+      width: 100%;
+      margin: 10px 0 18px;
+      table-layout: auto;
+    }
+
+    .prd-summary {
+      border: 1px solid #bfdbfe;
+      background: #f4f8ff;
+      color: #1f2937;
+      padding: 18px 20px;
+      border-radius: 0;
+      margin-bottom: 18px;
+    }
+
+    .prd-summary strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 17px;
+      color: #111827;
+    }
+
+    .prd-highlights {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .prd-card {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 14px 16px;
+      min-height: 92px;
+    }
+
+    .prd-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+
+    .prd-card p {
+      margin: 0;
+      color: #4b5563;
+    }
+
+    .prd-tools {
+      min-height: 0;
+      overflow: auto;
+      background: #f6f8fb;
+      border-right: 1px solid var(--line);
+      padding: 22px 16px;
+    }
+
+    .prd-tool-head {
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .prd-tool-head strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .prd-tool-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .prd-mini-btn {
+      height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #fff;
+      color: #374151;
+      padding: 0 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .prd-toc {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .prd-toc button {
+      border: 0;
+      background: transparent;
+      color: #4b5563;
+      border-radius: 4px;
+      min-height: 34px;
+      padding: 0 10px;
+      cursor: pointer;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .prd-toc button:hover,
+    .prd-toc button.active,
+    .prd-mini-btn:hover {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    @media (max-width: 1180px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .prd-panel {
+        width: calc(100vw - 24px);
+        height: calc(100vh - 24px);
+      }
+
+      .prd-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .prd-tools {
+        max-height: 190px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .prd-highlights {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main class="main">
+      <header class="topbar">
+        <h1>商户角色管理</h1>
+        <div class="top-actions">
+          <button class="btn ghost" id="openPrdBtn">查看 PRD</button>
+          <div class="user-menu">超级管理员 <span>⌄</span></div>
+        </div>
+      </header>
+
+      <section class="page">
+        <section class="panel filters" aria-label="查询条件">
+          <div class="field">
+            <label for="roleName">角色名称</label>
+            <input id="roleName" placeholder="请输入角色名称" />
+          </div>
+          <div class="field">
+            <label for="status">状态</label>
+            <select id="status">
+              <option value="">全部</option>
+              <option value="enabled">启用</option>
+              <option value="disabled">禁用</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>创建时间</label>
+            <div class="date-pair">
+              <input id="createStart" type="date" placeholder="开始时间" />
+              <span>-</span>
+              <input id="createEnd" type="date" placeholder="结束时间" />
+            </div>
+          </div>
+          <div></div>
+          <button class="btn primary" id="searchBtn">查询</button>
+          <button class="btn" id="resetBtn">重置</button>
+        </section>
+
+        <section class="panel">
+          <div class="toolbar">
+            <button class="btn primary" id="newRoleBtn">新增角色</button>
+          </div>
+
+          <table aria-label="角色列表">
+            <thead>
+              <tr>
+                <th style="width: 130px;">ID</th>
+                <th>角色名称</th>
+                <th style="width: 100px;">状态</th>
+                <th style="width: 190px;">最后编辑</th>
+                <th style="width: 210px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="roleRows"></tbody>
+          </table>
+
+          <div class="pagination">
+            <span id="totalText">共 4 条</span>
+            <select aria-label="每页条数">
+              <option>10条/页</option>
+              <option>20条/页</option>
+            </select>
+            <span>‹</span>
+            <strong style="color: var(--blue);">1</strong>
+            <span>›</span>
+            <span>前往</span>
+            <input style="width: 54px; height: 32px; border: 1px solid var(--line); border-radius: 4px; text-align: center;" value="1" />
+            <span>页</span>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-mask" id="drawerMask">
+    <section class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <div class="drawer-head">
+        <h2 id="drawerTitle">新增角色</h2>
+        <button class="close" id="closeDrawer" aria-label="关闭">×</button>
+      </div>
+
+      <div class="drawer-body">
+        <section class="form-section">
+          <h3>基础信息</h3>
+          <div class="form-grid">
+            <div class="field">
+              <label class="required" for="formRoleName">角色名称</label>
+              <input id="formRoleName" placeholder="请输入角色名称，例如：财务专员" />
+              <div class="hint">同一商户下角色名称不可重复。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3>是否支持所有项目</h3>
+          <div class="form-grid">
+            <div class="field" style="grid-column: 1 / -1;">
+              <label class="required">是否支持所有项目</label>
+              <div class="radio-row status-radio-row">
+                <label><input type="radio" name="supportAllProjects" value="yes" checked /> <span>是</span></label>
+                <label><input type="radio" name="supportAllProjects" value="no" /> <span>否</span></label>
+              </div>
+              <div class="hint">选择“是”表示该角色可访问当前商户全部项目，并自动包含未来新增项目；选择“否”表示该角色只能授予指定项目权限。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3>菜单与操作权限</h3>
+          <div class="alert">
+            当前可选菜单和操作权限由总后台统一维护。商户只能在总后台已开放给本商户的权限范围内配置角色。
+          </div>
+          <div class="permission-tools">
+            <div class="checkbox-row">
+              <label><input type="checkbox" id="checkAllPerms" /> 全选权限</label>
+            </div>
+          </div>
+          <table class="perm-table">
+            <thead>
+              <tr>
+                <th>菜单名称</th>
+                <th>操作权限</th>
+              </tr>
+            </thead>
+            <tbody id="permRows">
+              <tr data-key="域名管理 域名审核 域名购买 域名列表">
+                <td>
+                  <div class="menu-node"><input type="checkbox" class="menu-check" /> 域名管理</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" /> 域名审核</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" /> 域名购买</div>
+                </td>
+                <td>
+                  <div class="radio-row">
+                    <label><input type="radio" name="domainData" checked /> 全部功能</label>
+                    <label><input type="radio" name="domainData" /> 仅查询和下载数据</label>
+                  </div>
+                </td>
+              </tr>
+              <tr data-key="产品管理 产品列表 商品 上下架 改价">
+                <td>
+                  <div class="menu-node"><input type="checkbox" class="menu-check" checked /> 产品管理</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" checked /> 产品列表</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" /> 类目配置</div>
+                </td>
+                <td>
+                  <div class="radio-row">
+                    <label><input type="radio" name="productData" checked /> 全部功能</label>
+                    <label><input type="radio" name="productData" /> 仅查询和下载数据</label>
+                  </div>
+                </td>
+              </tr>
+              <tr data-key="订单管理 退款 改价 导出 关闭订单">
+                <td>
+                  <div class="menu-node"><input type="checkbox" class="menu-check" checked /> 订单管理</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" checked /> 订单列表</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" /> 售后管理</div>
+                </td>
+                <td>
+                  <div class="radio-row">
+                    <label><input type="radio" name="orderData" checked /> 全部功能</label>
+                    <label><input type="radio" name="orderData" /> 仅查询和下载数据</label>
+                  </div>
+                </td>
+              </tr>
+              <tr data-key="财务管理 对账 提现 发票 收款">
+                <td>
+                  <div class="menu-node"><input type="checkbox" class="menu-check" /> 财务管理</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" /> 对账单</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" /> 提现管理</div>
+                </td>
+                <td>
+                  <div class="radio-row">
+                    <label><input type="radio" name="financeData" /> 全部功能</label>
+                    <label><input type="radio" name="financeData" checked /> 仅查询和下载数据</label>
+                  </div>
+                </td>
+              </tr>
+              <tr data-key="系统设置 员工管理 角色管理 操作日志">
+                <td>
+                  <div class="menu-node"><input type="checkbox" class="menu-check" checked /> 系统设置</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" checked /> 员工管理</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" checked /> 角色管理</div>
+                  <div class="menu-node indent-1"><input type="checkbox" class="menu-check" /> 操作日志</div>
+                </td>
+                <td>
+                  <div class="radio-row">
+                    <label><input type="radio" name="systemData" checked /> 全部功能</label>
+                    <label><input type="radio" name="systemData" /> 仅查询和下载数据</label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="form-section">
+          <h3>状态</h3>
+          <div class="form-grid">
+            <div class="field">
+              <label class="required">角色状态</label>
+              <div class="radio-row status-radio-row">
+                <label><input type="radio" name="roleStatus" value="enabled" checked /> <span>启用</span></label>
+                <label><input type="radio" name="roleStatus" value="disabled" /> <span>禁用</span></label>
+              </div>
+              <div class="hint">禁用后，绑定该角色的用户将无法继续通过该角色访问菜单。</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="drawer-foot">
+        <span class="save-note" id="saveNote">保存后将写入操作日志。</span>
+        <div class="actions">
+          <button class="btn" id="cancelBtn">取消</button>
+          <button class="btn primary" id="saveBtn">确定</button>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <div class="prd-mask" id="prdMask">
+    <section class="prd-panel" role="dialog" aria-modal="true" aria-labelledby="prdTitle">
+      <div class="drawer-head">
+        <h2 id="prdTitle">PRD：商户后台角色管理</h2>
+        <button class="close" id="closePrd" aria-label="关闭">×</button>
+      </div>
+      <div class="prd-layout">
+        <aside class="prd-tools">
+          <div class="prd-tool-head">
+            <strong>文档目录</strong>
+            <div class="prd-tool-actions">
+              <button class="prd-mini-btn" id="expandPrd" type="button">全部展开</button>
+              <button class="prd-mini-btn" id="collapsePrd" type="button">全部收起</button>
+            </div>
+          </div>
+          <div class="prd-toc" id="prdToc"></div>
+        </aside>
+        <div class="prd-body">
+        <div class="prd-summary">
+          <strong>阅读摘要</strong>
+          总后台不能创建平台预设角色，只能为具体商户代建角色。商户可以修改总后台代建角色；系统需要记录创建来源、最近一次修改来源和操作日志。
+        </div>
+        <div class="prd-highlights">
+          <div class="prd-card">
+            <strong>单商户角色</strong>
+            <p>角色只属于单个商户，不存在跨商户复用。</p>
+          </div>
+          <div class="prd-card">
+            <strong>单用户单角色</strong>
+            <p>用户只能绑定一个角色，不做多角色权限叠加。</p>
+          </div>
+          <div class="prd-card">
+            <strong>所有项目</strong>
+            <p>支持所有项目时自动包含未来新增项目。</p>
+          </div>
+          <div class="prd-card">
+            <strong>操作可追溯</strong>
+            <p>新增、编辑、启用、禁用均写入操作日志。</p>
+          </div>
+        </div>
+
+        <h3>1. 背景</h3>
+        <p>系统分为总后台和商户管理后台。总后台可为指定商户代建商户后台角色，也可编辑该商户已有角色；商户后台可自行创建和维护本商户角色。</p>
+        <p>角色只属于单个商户，不存在跨商户复用的预设角色。商户角色也不能包含总后台菜单权限。商户后台可配置的菜单和操作权限清单由总后台统一维护和开放。</p>
+        <p>角色创建来源仅作为系统内部日志字段使用，不在商户后台角色列表展示。</p>
+
+        <h3>2. 产品目标</h3>
+        <ul>
+          <li>商户可管理本商户角色，包括新增、编辑、启用、禁用。</li>
+          <li>角色支持菜单权限、操作权限和是否支持所有项目配置。</li>
+          <li>总后台代建角色被商户修改后，系统可通过操作日志追溯修改人、修改来源和权限差异。</li>
+          <li>权限变更可追溯、可对比，降低误改风险。</li>
+        </ul>
+
+        <h3>3. 角色列表</h3>
+        <p>列表字段包括：ID、角色名称、状态、最后编辑、操作。</p>
+        <table>
+          <thead>
+            <tr><th>字段</th><th>说明</th><th>展示规则</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>ID</td><td>角色唯一标识，用于排查问题和对接日志。</td><td>系统生成，只读展示。</td></tr>
+            <tr><td>角色名称</td><td>商户后台使用的角色名称，例如超级管理员、门店运营、财务专员。</td><td>同一商户下不可重复。</td></tr>
+            <tr><td>状态</td><td>角色当前是否生效。</td><td>启用时该角色权限对用户生效；禁用后，该角色不再给用户提供菜单、操作和项目权限。</td></tr>
+            <tr><td>最后编辑</td><td>最近一次新增、编辑、启用或禁用该角色的来源、操作人昵称和时间。</td><td>展示为“操作来源 / 操作人昵称 / 时间”。商户后台编辑示例：商户后台 · 李娜 · 2026-06-15 18:20；总后台编辑示例：总后台 · 平台管理员 · 2026-06-15 18:20。若总后台再次编辑该角色，商户后台展示总后台本次编辑人和时间。</td></tr>
+            <tr><td>操作</td><td>当前用户可执行的角色管理动作。</td><td>包括编辑、启用或禁用。</td></tr>
+          </tbody>
+        </table>
+        <p>筛选条件包括：角色名称、状态、创建时间。</p>
+
+        <h3>4. 新增与编辑</h3>
+        <ul>
+          <li>总后台代建角色必须归属于某个具体商户。</li>
+          <li>同一商户下角色名称不可重复。</li>
+          <li>新增或编辑角色时，商户只能选择总后台已开放给本商户的菜单和操作权限。</li>
+          <li>商户编辑总后台代建角色时，需要提示本次修改会覆盖当前角色配置，并写入操作日志。</li>
+          <li>总后台后续再次编辑该角色时，以最新保存的角色配置为准，并同步刷新商户后台列表“最后编辑”。</li>
+        </ul>
+
+        <h3>5. 是否支持所有项目</h3>
+        <table>
+          <thead>
+            <tr><th>选项</th><th>规则</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>是</td><td>该角色可访问当前商户全部项目，并自动包含未来新增项目。</td></tr>
+            <tr><td>否</td><td>该角色只能授予指定项目权限，不自动包含当前商户全部项目和未来新增项目。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>6. 菜单权限与操作权限</h3>
+        <ul>
+          <li>菜单权限和操作权限目录由总后台维护，包括菜单层级、操作项、是否启用、适用商户范围。</li>
+          <li>商户后台只展示总后台已开放且当前启用的菜单权限；未开放或已停用的菜单权限不展示。</li>
+          <li>未选择菜单时，菜单下操作权限不可选。</li>
+          <li>选择子菜单时自动选择父菜单；取消父菜单时取消所有子菜单和操作权限。</li>
+          <li>每个菜单的操作权限为单选项，只能选择“全部功能”或“仅查询和下载数据”。</li>
+          <li>当前原型按菜单组配置操作权限，右侧操作权限作用于该组内已勾选的菜单；如需对子菜单设置不同操作权限，应拆成独立菜单行配置。</li>
+          <li>点击“全选权限”时，勾选当前列表全部菜单，并默认选择“全部功能”；取消“全选权限”时，清空当前列表全部菜单选择。</li>
+          <li>选择“全部功能”时，拥有该菜单下总后台开放给本商户的完整操作能力。</li>
+          <li>选择“仅查询和下载数据”时，仅允许查询、查看、下载、导出类操作，不允许新增、编辑、删除、审核、退款、提现、改价、禁用等动作。</li>
+        </ul>
+
+        <h3>7. 禁用</h3>
+        <ul>
+          <li>角色禁用后，不再给已绑定该角色的用户提供菜单、操作和项目权限。</li>
+          <li>禁用角色不会自动解绑用户，重新启用后，已绑定该角色的用户继续按该角色保存的权限配置生效。</li>
+          <li>角色启用或禁用成功后，列表“最后编辑”同步更新为本次操作来源、操作人昵称和操作时间。</li>
+        </ul>
+
+        <h3>8. 权限生效规则</h3>
+        <ul>
+          <li>一个用户只能绑定一个角色，不支持同时绑定多个角色。</li>
+          <li>用户最终菜单权限、操作权限和是否支持所有项目完全由当前绑定且启用的角色决定。</li>
+          <li>如果用户绑定的角色为禁用状态，则该角色不会给用户提供任何权限。</li>
+          <li>用户更换角色时，新角色保存成功后立即替换旧角色权限，不做多角色权限叠加。</li>
+        </ul>
+
+        <h3>9. 操作日志</h3>
+        <p>新增、编辑、启用、禁用都必须写入操作日志。记录操作时间、操作人昵称、操作来源、操作类型、系统内部创建来源、变更前、变更后，并同步更新角色列表的“最后编辑”。</p>
+
+        <h3>10. 验收标准</h3>
+        <ul>
+          <li>商户编辑总后台代建角色后，系统写入操作日志并记录操作来源。</li>
+          <li>新增角色成功后，角色出现在列表中，状态和“最后编辑”展示正确。</li>
+          <li>同一商户下角色名称重复时不能保存。</li>
+          <li>保存后重新打开，是否支持所有项目、菜单权限、操作权限正确回显。</li>
+          <li>选择“是否支持所有项目”为“是”后，当前项目和未来新增项目均在权限范围内。</li>
+          <li>选择“是否支持所有项目”为“否”后，该角色只能授予指定项目权限，不能自动获得全部项目权限。</li>
+          <li>点击“全选权限”后，当前列表全部菜单被选中且默认选择“全部功能”；取消全选后，当前列表全部菜单被清空。</li>
+          <li>启用或禁用角色后，角色状态变更，且列表“最后编辑”展示本次操作来源、操作人昵称和操作时间。</li>
+          <li>总后台编辑角色后，商户后台列表“最后编辑”展示总后台操作人昵称和操作时间。</li>
+          <li>用户只能绑定一个角色，更换角色后只按新角色计算权限，不叠加旧角色权限。</li>
+          <li>后端必须校验商户只能操作本商户角色、不能传入总后台菜单权限、不能传入未对本商户开放的菜单或操作权限、不能操作其他商户数据。</li>
+        </ul>
+      </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">已保存</div>
+
+  <script>
+    const roles = [
+      {
+        id: "69ec479f3d01",
+        name: "超级管理员",
+        source: "总后台代建",
+        sourceType: "admin",
+        versionState: "not-modified",
+        createdAt: "2026-04-25",
+        supportAllProjects: "是",
+        status: "启用",
+        updated: "总后台 · 平台管理员 · 2026-04-25 12:48"
+      },
+      {
+        id: "8a17c9de0214",
+        name: "门店运营",
+        source: "商户自定义",
+        sourceType: "merchant",
+        versionState: "merchant-owned",
+        createdAt: "2026-06-15",
+        supportAllProjects: "否",
+        status: "启用",
+        updated: "商户后台 · 李娜 · 2026-06-15 18:20"
+      },
+      {
+        id: "b920cd11a773",
+        name: "财务专员",
+        source: "总后台代建",
+        sourceType: "admin",
+        versionState: "merchant-modified",
+        createdAt: "2026-06-12",
+        supportAllProjects: "是",
+        status: "启用",
+        updated: "商户后台 · 李娜 · 2026-06-16 11:08"
+      },
+      {
+        id: "c21f771d2039",
+        name: "只读审计",
+        source: "商户自定义",
+        sourceType: "merchant",
+        versionState: "admin-updated",
+        createdAt: "2026-05-30",
+        supportAllProjects: "否",
+        status: "禁用",
+        updated: "总后台 · 平台管理员 · 2026-05-30 14:10"
+      }
+    ];
+
+    const roleRows = document.querySelector("#roleRows");
+    const drawerMask = document.querySelector("#drawerMask");
+    const prdMask = document.querySelector("#prdMask");
+    const drawerTitle = document.querySelector("#drawerTitle");
+    const formRoleName = document.querySelector("#formRoleName");
+    const toast = document.querySelector("#toast");
+    const prdBody = document.querySelector(".prd-body");
+    const prdHeadings = Array.from(document.querySelectorAll(".prd-body h3"));
+    let currentMode = "new";
+    let currentRole = null;
+
+    function getPrdSectionNodes(heading) {
+      const nodes = [];
+      let node = heading.nextElementSibling;
+      while (node && node.tagName !== "H3") {
+        nodes.push(node);
+        node = node.nextElementSibling;
+      }
+      return nodes;
+    }
+
+    function setPrdSectionCollapsed(heading, collapsed) {
+      heading.classList.toggle("collapsed", collapsed);
+      getPrdSectionNodes(heading).forEach(node => {
+        node.hidden = collapsed;
+      });
+    }
+
+    function initPrdTools() {
+      const toc = document.querySelector("#prdToc");
+      if (!toc) return;
+      toc.innerHTML = "";
+      prdHeadings.forEach((heading, index) => {
+        const id = `prd-section-${index + 1}`;
+        heading.id = id;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = heading.textContent.trim();
+        button.addEventListener("click", () => {
+          setPrdSectionCollapsed(heading, false);
+          toc.querySelectorAll("button").forEach(item => item.classList.remove("active"));
+          button.classList.add("active");
+          heading.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        toc.appendChild(button);
+        if (index === 0) button.classList.add("active");
+        heading.addEventListener("click", () => {
+          setPrdSectionCollapsed(heading, !heading.classList.contains("collapsed"));
+        });
+      });
+      prdBody.addEventListener("scroll", () => {
+        let activeIndex = 0;
+        prdHeadings.forEach((heading, index) => {
+          if (heading.offsetTop - prdBody.scrollTop < 80) activeIndex = index;
+        });
+        toc.querySelectorAll("button").forEach((button, index) => {
+          button.classList.toggle("active", index === activeIndex);
+        });
+      });
+      document.querySelector("#expandPrd").addEventListener("click", () => {
+        prdHeadings.forEach(heading => setPrdSectionCollapsed(heading, false));
+      });
+      document.querySelector("#collapsePrd").addEventListener("click", () => {
+        prdHeadings.forEach(heading => setPrdSectionCollapsed(heading, true));
+      });
+    }
+
+    function statusTag(status) {
+      return status === "启用"
+        ? `<span class="tag green">启用</span>`
+        : `<span class="tag red">禁用</span>`;
+    }
+
+    function currentEditorText() {
+      const now = new Date();
+      const pad = value => String(value).padStart(2, "0");
+      const time = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      return `商户后台 · 当前用户 · ${time}`;
+    }
+
+    function renderRows(data = roles) {
+      roleRows.innerHTML = data.map((role, index) => {
+        return `
+          <tr>
+            <td>${role.id}</td>
+            <td><strong>${role.name}</strong></td>
+            <td>${statusTag(role.status)}</td>
+            <td>${role.updated}</td>
+            <td>
+              <div class="row-actions">
+                <button class="action-btn edit" data-action="edit" data-id="${role.id}">编辑</button>
+                <button class="action-btn ${role.status === "启用" ? "disable" : "enable"}" data-action="toggle" data-id="${role.id}">${role.status === "启用" ? "禁用" : "启用"}</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+      document.querySelector("#totalText").textContent = `共 ${data.length} 条`;
+    }
+
+    function openDrawer(mode, role) {
+      drawerTitle.textContent = mode === "edit" ? "编辑角色" : "新增角色";
+      formRoleName.value = role ? role.name : "";
+      currentMode = mode;
+      currentRole = role || null;
+      drawerMask.classList.add("open");
+    }
+
+    function closeDrawer() {
+      drawerMask.classList.remove("open");
+    }
+
+    renderRows();
+    initPrdTools();
+
+    document.querySelector("#newRoleBtn").addEventListener("click", () => openDrawer("new"));
+    document.querySelector("#closeDrawer").addEventListener("click", closeDrawer);
+    document.querySelector("#cancelBtn").addEventListener("click", closeDrawer);
+    document.querySelector("#openPrdBtn").addEventListener("click", () => prdMask.classList.add("open"));
+    document.querySelector("#closePrd").addEventListener("click", () => prdMask.classList.remove("open"));
+
+    roleRows.addEventListener("click", event => {
+      const button = event.target.closest("button");
+      if (!button || button.disabled) return;
+      const roleIndex = roles.findIndex(item => item.id === button.dataset.id);
+      const role = roles[roleIndex];
+      if (!role) return;
+      const action = button.dataset.action;
+      if (action === "edit") openDrawer("edit", role);
+      if (action === "toggle") {
+        role.status = role.status === "启用" ? "禁用" : "启用";
+        role.updated = currentEditorText();
+        renderRows();
+        showToast(`已${role.status}`);
+      }
+    });
+
+    document.querySelector("#searchBtn").addEventListener("click", () => {
+      const keyword = document.querySelector("#roleName").value.trim();
+      const status = document.querySelector("#status").value;
+      const createStart = document.querySelector("#createStart").value;
+      const createEnd = document.querySelector("#createEnd").value;
+      const filtered = roles.filter(role => {
+        const matchKeyword = !keyword || role.name.includes(keyword);
+        const matchStatus = !status || (status === "enabled" ? role.status === "启用" : role.status === "禁用");
+        const matchStart = !createStart || role.createdAt >= createStart;
+        const matchEnd = !createEnd || role.createdAt <= createEnd;
+        return matchKeyword && matchStatus && matchStart && matchEnd;
+      });
+      renderRows(filtered);
+    });
+
+    document.querySelector("#resetBtn").addEventListener("click", () => {
+      document.querySelector("#roleName").value = "";
+      document.querySelector("#status").value = "";
+      document.querySelector("#createStart").value = "";
+      document.querySelector("#createEnd").value = "";
+      renderRows();
+    });
+
+
+    document.querySelector("#checkAllPerms").addEventListener("change", event => {
+      document.querySelectorAll("#permRows tr").forEach(row => {
+        if (row.style.display === "none") return;
+        row.querySelectorAll("input[type='checkbox']").forEach(item => {
+          item.checked = event.target.checked;
+        });
+        if (event.target.checked) {
+          const fullPermission = row.querySelector("input[type='radio']");
+          if (fullPermission) fullPermission.checked = true;
+        }
+      });
+    });
+
+    document.querySelector("#saveBtn").addEventListener("click", () => {
+      if (!formRoleName.value.trim()) {
+        showToast("请填写角色名称");
+        return;
+      }
+      closeDrawer();
+      if (currentMode === "edit" && currentRole && currentRole.sourceType === "admin") {
+        currentRole.versionState = "merchant-modified";
+        currentRole.updated = currentEditorText();
+        renderRows();
+      } else if (currentMode === "edit" && currentRole) {
+        currentRole.updated = currentEditorText();
+        renderRows();
+      } else if (currentMode === "new") {
+        roles.unshift({
+          id: Math.random().toString(16).slice(2, 14),
+          name: formRoleName.value.trim(),
+          source: "商户自定义",
+          sourceType: "merchant",
+          versionState: "merchant-owned",
+          createdAt: new Date().toISOString().slice(0, 10),
+          supportAllProjects: document.querySelector("[name='supportAllProjects']:checked").value === "yes" ? "是" : "否",
+          status: document.querySelector("[name='roleStatus']:checked").value === "enabled" ? "启用" : "禁用",
+          updated: currentEditorText()
+        });
+        renderRows();
+      }
+      showToast("角色已保存，已写入操作日志");
+    });
+
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+  </script>
+</body>
+</html>

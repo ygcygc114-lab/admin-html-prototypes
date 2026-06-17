@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>产品模板管理</title>
+  <style>
+    :root {
+      --blue: #409eff;
+      --blue-dark: #2f86e8;
+      --red: #f56c6c;
+      --green: #67c23a;
+      --green-soft: #edf8e8;
+      --text: #606266;
+      --title: #303133;
+      --muted: #909399;
+      --line: #dcdfe6;
+      --line-soft: #ebeef5;
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1440px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .page {
+      padding: 14px 18px 28px;
+    }
+
+    .page-head {
+      height: 38px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .page-title {
+      display: inline-flex;
+      align-items: flex-start;
+      color: var(--blue);
+      font-weight: 650;
+      border-bottom: 2px solid var(--blue);
+      height: 38px;
+    }
+
+    .head-actions {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line-soft);
+      border-radius: 2px;
+    }
+
+    .filters {
+      min-height: 122px;
+      padding: 24px 28px;
+      display: grid;
+      grid-template-columns: 320px 320px 360px 1fr auto auto;
+      align-items: start;
+      column-gap: 36px;
+      row-gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 86px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .field label {
+      color: var(--text);
+      text-align: right;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      padding: 0 12px;
+    }
+
+    .field input::placeholder {
+      color: #c0c4cc;
+    }
+
+    .select-wrap,
+    .date-range {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-right: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+      transform: translateY(-68%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    select {
+      appearance: none;
+      padding-right: 32px;
+    }
+
+    .date-range {
+      display: grid;
+      grid-template-columns: 1fr 30px 1fr;
+      align-items: center;
+    }
+
+    .date-range input {
+      border-radius: 3px 0 0 3px;
+      padding-left: 34px;
+    }
+
+    .date-range input + span + input {
+      border-left: 0;
+      border-radius: 0 3px 3px 0;
+      padding-left: 12px;
+    }
+
+    .date-range span {
+      height: 36px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      background: #fff;
+    }
+
+    .calendar {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      transform: translateY(-50%);
+      color: #a8abb2;
+      pointer-events: none;
+    }
+
+    .create-row {
+      grid-column: 1 / 3;
+      align-self: end;
+      margin-left: 0;
+    }
+
+    .filter-actions {
+      grid-column: 5 / 7;
+      justify-self: end;
+      align-self: end;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      height: 36px;
+      min-width: 68px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 0 15px;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: var(--blue);
+      border-color: var(--blue);
+      font-weight: 650;
+    }
+
+    .btn.primary:hover {
+      background: var(--blue-dark);
+      border-color: var(--blue-dark);
+    }
+
+    .btn.danger {
+      color: #fff;
+      background: var(--red);
+      border-color: var(--red);
+      font-weight: 650;
+    }
+
+    .btn.small {
+      min-width: 58px;
+      height: 30px;
+      padding: 0 12px;
+      font-size: 13px;
+    }
+
+    .table-panel {
+      padding: 22px 22px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--line-soft);
+      background: #fff;
+    }
+
+    th,
+    td {
+      height: 52px;
+      border-right: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft);
+      text-align: left;
+      padding: 0 14px;
+      color: var(--text);
+      vertical-align: middle;
+      word-break: break-all;
+    }
+
+    th {
+      height: 48px;
+      color: var(--muted);
+      font-weight: 650;
+      background: #fff;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: center;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 11px;
+      border-radius: 4px;
+      color: var(--green);
+      background: var(--green-soft);
+      font-size: 13px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .actions .btn {
+      border-radius: 2px;
+      font-weight: 650;
+    }
+
+    .pagination {
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      color: var(--text);
+    }
+
+    .page-size {
+      position: relative;
+      width: 116px;
+    }
+
+    .page-size select {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 30px 0 12px;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+    }
+
+    .pager-btn {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #c0c4cc;
+      cursor: pointer;
+    }
+
+    .pager-current {
+      color: var(--blue);
+      min-width: 22px;
+      text-align: center;
+    }
+
+    .page-jump {
+      width: 58px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      text-align: center;
+      outline: none;
+      color: var(--text);
+    }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      background: rgba(0, 0, 0, .48);
+      z-index: 20;
+      padding-top: 16px;
+    }
+
+    .modal-mask.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 700px;
+      min-height: 402px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+      overflow: hidden;
+    }
+
+    .modal-head {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .modal-title {
+      margin: 0;
+      color: var(--title);
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .close {
+      border: 0;
+      background: transparent;
+      color: #909399;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 0 20px 24px;
+    }
+
+    .modal-form {
+      width: 640px;
+      display: grid;
+      row-gap: 12px;
+    }
+
+    .modal-row {
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-row label {
+      color: var(--text);
+      text-align: right;
+      line-height: 1.55;
+    }
+
+    .modal-row input[type="text"] {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 12px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .modal-row input[type="text"]::placeholder {
+      color: #c0c4cc;
+    }
+
+    .upload-btn {
+      width: 126px;
+    }
+
+    .upload-icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      position: relative;
+    }
+
+    .upload-icon::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 2px;
+      height: 10px;
+      background: currentColor;
+    }
+
+    .upload-icon::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 2px;
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-top: 2px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .required-mark {
+      color: var(--red);
+      margin-right: 4px;
+    }
+
+    .radio-group {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .radio-group label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      line-height: 1;
+    }
+
+    .radio-group input {
+      margin: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--blue);
+    }
+
+    .bug-link {
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .modal-actions {
+      height: 58px;
+      padding: 0 20px 20px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      background: #303133;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 4px;
+      display: none;
+      z-index: 30;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .prd-mask {
+      position: fixed;
+      inset: 0;
+      display: none;
+      justify-content: flex-end;
+      background: rgba(0, 0, 0, .42);
+      z-index: 60;
+    }
+
+    .prd-mask.open {
+      display: flex;
+    }
+
+    .prd-panel {
+      width: min(980px, calc(100vw - 72px));
+      height: 100%;
+      background: #fff;
+      box-shadow: -10px 0 28px rgba(0, 0, 0, .14);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prd-head {
+      height: 58px;
+      border-bottom: 1px solid var(--line-soft);
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 auto;
+    }
+
+    .prd-head h2 {
+      margin: 0;
+      color: var(--title);
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .prd-body {
+      padding: 22px 28px 44px;
+      overflow: auto;
+      line-height: 1.72;
+    }
+
+    .prd-body h3 {
+      margin: 24px 0 10px;
+      color: var(--title);
+      font-size: 17px;
+      font-weight: 650;
+    }
+
+    .prd-body p,
+    .prd-body li {
+      color: #4b5563;
+    }
+
+    .prd-body ul {
+      margin: 8px 0 14px;
+      padding-left: 22px;
+    }
+
+    .prd-body table {
+      width: 100%;
+      margin: 10px 0 18px;
+      table-layout: auto;
+      border-collapse: collapse;
+      border: 1px solid var(--line-soft);
+    }
+
+    .prd-body th,
+    .prd-body td {
+      height: auto;
+      padding: 10px 12px;
+      border-right: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft);
+      text-align: left;
+      vertical-align: top;
+      word-break: break-word;
+    }
+
+    .prd-body th {
+      color: var(--muted);
+      background: #fbfcff;
+      font-weight: 650;
+    }
+
+    .prd-body code {
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 3px;
+      padding: 2px 5px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="page-head">
+      <div class="page-title">模板设置</div>
+      <div class="head-actions">
+        <button class="btn" id="openPrd" type="button">查看 PRD</button>
+      </div>
+    </header>
+
+    <section class="panel filters" aria-label="模板筛选">
+      <div class="field">
+        <label for="productType">产品类型</label>
+        <div class="select-wrap">
+          <select id="productType">
+            <option>全部</option>
+            <option>短视频</option>
+            <option>漫画</option>
+            <option>视频</option>
+            <option>帖子</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="templateName">模板名称</label>
+        <input id="templateName" type="text" placeholder="请输入" />
+      </div>
+
+      <div class="field">
+        <label for="contentType">内容类型</label>
+        <div class="select-wrap">
+          <select id="contentType">
+            <option>全部</option>
+            <option>视频</option>
+            <option>短视频</option>
+            <option>漫画</option>
+            <option>帖子</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>创建时间</label>
+        <div class="date-range">
+          <svg class="calendar" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor" d="M4 1h1.4v2H4V1Zm6.6 0H12v2h-1.4V1ZM2.4 2.6h11.2c.8 0 1.4.6 1.4 1.4v9.2c0 .8-.6 1.4-1.4 1.4H2.4c-.8 0-1.4-.6-1.4-1.4V4c0-.8.6-1.4 1.4-1.4Zm0 4v6.6h11.2V6.6H2.4Zm0-1.4h11.2V4H2.4v1.2Z" />
+          </svg>
+          <input type="text" placeholder="开始日期" />
+          <span>-</span>
+          <input type="text" placeholder="结束日期" />
+        </div>
+      </div>
+
+      <div class="create-row">
+        <button class="btn primary" type="button">创建模板</button>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn primary" type="button">查询</button>
+        <button class="btn" type="button">重置</button>
+      </div>
+    </section>
+
+    <section class="panel table-panel" aria-label="模板列表">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 52px;">序号</th>
+            <th style="width: 240px;">模板ID</th>
+            <th style="width: 210px;">模板名称</th>
+            <th style="width: 220px;">内容类型</th>
+            <th style="width: 100px;">状态</th>
+            <th style="width: 110px;">创建人</th>
+            <th style="width: 220px;">创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>69ddbb03e9104c6b3f93e3f2</td>
+            <td>WX-Y06</td>
+            <td>短视频、漫画、视频、帖子</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-14 11:56:51</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary small" type="button">下架</button>
+                <button class="btn primary small" type="button">详情</button>
+                <button class="btn primary small" type="button">配置菜单</button>
+                <button class="btn primary small" type="button">配置广告</button>
+                <button class="btn primary small" type="button">更新模板</button>
+                <button class="btn primary small js-pack" type="button">打包配置</button>
+                <button class="btn danger small" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>69d5b81f7514132a4ca1229c</td>
+            <td>WX- T01</td>
+            <td>视频</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-08 10:06:23</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary small" type="button">下架</button>
+                <button class="btn primary small" type="button">详情</button>
+                <button class="btn primary small" type="button">配置菜单</button>
+                <button class="btn primary small" type="button">配置广告</button>
+                <button class="btn primary small" type="button">更新模板</button>
+                <button class="btn primary small js-pack" type="button">打包配置</button>
+                <button class="btn danger small" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>69d495857514132a4ca120ef</td>
+            <td>WX- Y02</td>
+            <td>视频、短视频</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-07 13:26:29</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary small" type="button">下架</button>
+                <button class="btn primary small" type="button">详情</button>
+                <button class="btn primary small" type="button">配置菜单</button>
+                <button class="btn primary small" type="button">配置广告</button>
+                <button class="btn primary small" type="button">更新模板</button>
+                <button class="btn primary small js-pack" type="button">打包配置</button>
+                <button class="btn danger small" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        <span>共 3 条</span>
+        <div class="page-size select-wrap">
+          <select aria-label="每页条数">
+            <option>10条/页</option>
+            <option>20条/页</option>
+            <option>50条/页</option>
+          </select>
+        </div>
+        <button class="pager-btn" type="button" aria-label="上一页">‹</button>
+        <span class="pager-current">1</span>
+        <button class="pager-btn" type="button" aria-label="下一页">›</button>
+        <span>前往</span>
+        <input class="page-jump" type="text" value="1" aria-label="跳转页码" />
+        <span>页</span>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-mask" id="packModal" role="dialog" aria-modal="true" aria-labelledby="packTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 class="modal-title" id="packTitle">打包配置</h2>
+        <button class="close js-close" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div class="modal-body">
+        <form class="modal-form">
+          <div class="modal-row">
+            <label for="webImage">填写镜像地址（Web响应式）</label>
+            <input id="webImage" type="text" value="reg.hshuane.com/myriad/wx-y06-web:main-e46c5" />
+          </div>
+          <div class="modal-row">
+            <label for="h5Image">填写H5地址（APP移动端）</label>
+            <input id="h5Image" type="text" value="reg.hshuane.com/myriad/group1-video-h5:main-f" />
+          </div>
+          <div class="modal-row">
+            <label for="navImage">导航页镜像地址</label>
+            <input id="navImage" type="text" placeholder="请输入导航页镜像地址" />
+          </div>
+          <div class="modal-row">
+            <label>上传APP母包（APP移动端）</label>
+            <div>
+              <button class="btn primary upload-btn" type="button" id="uploadTrigger">
+                <span class="upload-icon" aria-hidden="true"></span>
+                点击上传
+              </button>
+              <input id="appPackage" type="file" hidden />
+            </div>
+          </div>
+          <div class="modal-row">
+            <label><span class="required-mark">*</span>修改原因</label>
+            <div class="radio-group">
+              <label>
+                <input type="radio" name="reason" checked />
+                <span class="bug-link">修复bug</span>
+              </label>
+              <label>
+                <input type="radio" name="reason" />
+                <span>更换地址</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn js-close" type="button">取消</button>
+        <button class="btn primary" id="confirmPack" type="button">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prd-mask" id="prdMask" aria-hidden="true">
+    <section class="prd-panel" role="dialog" aria-modal="true" aria-labelledby="prdTitle">
+      <div class="prd-head">
+        <h2 id="prdTitle">PRD：打包配置新增导航页镜像地址</h2>
+        <button class="close" id="closePrd" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div class="prd-body">
+        <h3>1. 背景</h3>
+        <p>当前产品模板管理支持对模板进行打包配置，弹窗内已有 Web 响应式镜像地址、H5 地址、APP 母包上传和修改原因等配置项。</p>
+        <p>随着导航页独立构建和发布，需要在打包配置中支持单独维护导航页镜像地址，便于后续打包或发布流程按需读取导航页镜像。</p>
+
+        <h3>2. 产品目标</h3>
+        <ul>
+          <li>支持运营或管理员在模板打包配置中填写导航页镜像地址。</li>
+          <li>字段为可选项，不影响未接入导航页镜像的历史模板。</li>
+          <li>保存后再次打开打包配置弹窗，可正确回显已填写的导航页镜像地址。</li>
+          <li>不改变现有 Web、H5、APP 母包和修改原因的使用规则。</li>
+        </ul>
+
+        <h3>3. 功能范围</h3>
+        <table>
+          <thead>
+            <tr><th>范围</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>包含</td><td>产品模板管理列表「打包配置」弹窗新增字段：导航页镜像地址。</td></tr>
+            <tr><td>包含</td><td>打包配置详情接口返回导航页镜像地址。</td></tr>
+            <tr><td>包含</td><td>打包配置保存接口支持提交导航页镜像地址。</td></tr>
+            <tr><td>包含</td><td>操作日志或配置变更记录中支持记录该字段变更。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>4. 页面入口</h3>
+        <p>入口位置：产品模板管理列表。</p>
+        <p>操作路径：产品模板管理列表 &gt; 操作列 &gt; 打包配置。</p>
+        <p>点击「打包配置」后打开弹窗，弹窗标题为「打包配置」。</p>
+
+        <h3>5. 弹窗字段</h3>
+        <table>
+          <thead>
+            <tr><th>字段</th><th>是否必填</th><th>控件</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>填写镜像地址（Web响应式）</td><td>按现有规则</td><td>文本输入框</td><td>保持现有逻辑不变。</td></tr>
+            <tr><td>填写H5地址（APP移动端）</td><td>按现有规则</td><td>文本输入框</td><td>保持现有逻辑不变。</td></tr>
+            <tr><td>导航页镜像地址</td><td>否</td><td>文本输入框</td><td>本次新增字段，用户可填写导航页镜像地址。</td></tr>
+            <tr><td>上传APP母包（APP移动端）</td><td>按现有规则</td><td>上传按钮</td><td>保持现有逻辑不变。</td></tr>
+            <tr><td>修改原因</td><td>是</td><td>单选项</td><td>保持现有逻辑不变，选项包括「修复bug」「更换地址」。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>6. 字段规则</h3>
+        <ul>
+          <li>字段名称：导航页镜像地址。</li>
+          <li>字段类型：字符串。</li>
+          <li>是否必填：否。</li>
+          <li>默认值：为空。</li>
+          <li>占位提示：请输入导航页镜像地址。</li>
+          <li>最大长度：建议 255 个字符。</li>
+          <li>前后空格：保存时应自动去除前后空格。</li>
+          <li>为空保存：允许保存，后端应按空值处理。</li>
+          <li>回显规则：若已保存导航页镜像地址，再次打开弹窗时输入框展示已保存内容；若未保存，则展示为空。</li>
+        </ul>
+
+        <h3>7. 格式校验</h3>
+        <ul>
+          <li>导航页镜像地址非必填。</li>
+          <li>当用户填写时，允许常见镜像地址格式，例如 <code>reg.hshuane.com/myriad/nav-page:main-xxxx</code>。</li>
+          <li>不允许只输入空格。</li>
+          <li>不要求前端或后端校验镜像仓库是否存在。</li>
+          <li>如当前系统对 Web 或 H5 镜像地址已有统一校验工具，导航页镜像地址应复用同一套校验规则；如现有字段无格式校验，本字段可先仅做长度和空格处理。</li>
+        </ul>
+
+        <h3>8. 交互说明</h3>
+        <ul>
+          <li>用户点击「打包配置」后打开弹窗。</li>
+          <li>「导航页镜像地址」展示在「填写H5地址（APP移动端）」下方、「上传APP母包（APP移动端）」上方。</li>
+          <li>该字段标签前不展示红色必填星号。</li>
+          <li>用户可输入、清空或修改该字段。</li>
+          <li>点击「取消」或关闭弹窗时，不保存本次修改。</li>
+          <li>点击「确定」时，随其他打包配置字段一起提交。</li>
+          <li>保存成功后关闭弹窗，并按现有成功提示规则提示用户。</li>
+          <li>保存失败时按现有弹窗错误提示规则展示失败原因，弹窗保持打开。</li>
+        </ul>
+
+        <h3>9. 数据与接口要求</h3>
+        <p>打包配置详情接口需要返回导航页镜像地址字段，建议字段名为 <code>navigationImageUrl</code>。</p>
+        <p>保存接口需要支持接收导航页镜像地址字段。用户未填写时，前端可提交空字符串或不提交该字段；后端需统一处理为空值。</p>
+        <table>
+          <thead>
+            <tr><th>接口场景</th><th>字段要求</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>详情查询</td><td>返回 <code>navigationImageUrl</code>；历史数据缺失时前端按空值展示。</td></tr>
+            <tr><td>保存配置</td><td>接收 <code>navigationImageUrl</code>，保存前去除前后空格，允许为空。</td></tr>
+            <tr><td>日志记录</td><td>若系统已有字段级变更记录，应记录导航页镜像地址的变更前、变更后内容。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>10. 异常场景</h3>
+        <table>
+          <thead>
+            <tr><th>场景</th><th>处理规则</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>用户只输入空格</td><td>保存时按空值处理，或提示用户输入有效地址。</td></tr>
+            <tr><td>输入内容超过最大长度</td><td>阻止保存，并提示「导航页镜像地址不能超过255个字符」。</td></tr>
+            <tr><td>保存接口失败</td><td>弹窗保持打开，展示失败提示。</td></tr>
+            <tr><td>详情接口未返回该字段</td><td>前端按空值展示。</td></tr>
+            <tr><td>用户点击取消或关闭弹窗</td><td>不保存本次编辑内容。</td></tr>
+          </tbody>
+        </table>
+
+        <h3>11. 验收标准</h3>
+        <ul>
+          <li>打开产品模板管理列表，点击任意模板的「打包配置」，弹窗正常打开。</li>
+          <li>弹窗中在 H5 地址下方展示「导航页镜像地址」输入框。</li>
+          <li>「导航页镜像地址」前不展示必填星号。</li>
+          <li>用户不填写导航页镜像地址时，仍可点击「确定」并保存成功。</li>
+          <li>用户填写导航页镜像地址后点击「确定」，保存接口携带该字段。</li>
+          <li>保存成功后再次打开弹窗，导航页镜像地址正确回显。</li>
+          <li>用户清空导航页镜像地址并保存后，再次打开弹窗展示为空。</li>
+          <li>取消或关闭弹窗后重新打开，不保留未保存的修改。</li>
+          <li>历史模板未配置导航页镜像地址时，原有打包配置流程不受影响。</li>
+        </ul>
+
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">打包配置已保存</div>
+
+  <script>
+    const modal = document.getElementById("packModal");
+    const prdMask = document.getElementById("prdMask");
+    const toast = document.getElementById("toast");
+    const uploadTrigger = document.getElementById("uploadTrigger");
+    const appPackage = document.getElementById("appPackage");
+
+    function openModal() {
+      modal.classList.add("open");
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+    }
+
+    function openPrd() {
+      prdMask.classList.add("open");
+      prdMask.setAttribute("aria-hidden", "false");
+    }
+
+    function closePrd() {
+      prdMask.classList.remove("open");
+      prdMask.setAttribute("aria-hidden", "true");
+    }
+
+    document.querySelectorAll(".js-pack").forEach((button) => {
+      button.addEventListener("click", openModal);
+    });
+
+    document.querySelectorAll(".js-close").forEach((button) => {
+      button.addEventListener("click", closeModal);
+    });
+
+    uploadTrigger.addEventListener("click", () => appPackage.click());
+
+    document.getElementById("openPrd").addEventListener("click", openPrd);
+    document.getElementById("closePrd").addEventListener("click", closePrd);
+
+    document.getElementById("confirmPack").addEventListener("click", () => {
+      closeModal();
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    });
+
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+
+    prdMask.addEventListener("click", (event) => {
+      if (event.target === prdMask) {
+        closePrd();
+      }
+    });
+  </script>
+</body>
+</html>

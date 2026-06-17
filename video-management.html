@@ -1,0 +1,2885 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:," />
+  <title>视频管理</title>
+  <style>
+    :root {
+      --blue: #409eff;
+      --blue-dark: #2f86e8;
+      --blue-soft: #8fc3ff;
+      --green: #52c41a;
+      --orange: #e6a23c;
+      --text: #606266;
+      --title: #303133;
+      --muted: #909399;
+      --light: #c0c4cc;
+      --line: #dcdfe6;
+      --line-soft: #ebeef5;
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1800px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      position: relative;
+      height: 62px;
+      background: #fff;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-trigger {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      width: 28px;
+      height: 28px;
+      transform: translateY(-50%);
+      border: 0;
+      background: #fff;
+      color: #536579;
+      font-size: 20px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .page-title {
+      color: #111827;
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .user-menu {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #4b5563;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      background: transparent;
+    }
+
+    .prd-action {
+      position: absolute;
+      right: 98px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 30px;
+      min-width: 64px;
+      border: 1px solid var(--blue);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .page {
+      padding: 0 36px 42px;
+    }
+
+    .tabs {
+      height: 50px;
+      display: flex;
+      align-items: flex-end;
+      gap: 34px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      padding-left: 18px;
+    }
+
+    .tab {
+      height: 50px;
+      padding: 0 0 15px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--title);
+      font-weight: 650;
+    }
+
+    .tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line-soft);
+      border-radius: 2px;
+    }
+
+    .filters {
+      min-height: 332px;
+      margin-top: 16px;
+      padding: 32px 30px 28px;
+      display: grid;
+      grid-template-columns: 92px 260px 1fr;
+      grid-template-rows: 32px 32px 32px 38px;
+      row-gap: 28px;
+      column-gap: 20px;
+      align-items: start;
+    }
+
+    .filter-label {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      color: var(--title);
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .quick-field {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .top-search {
+      grid-column: 1 / 4;
+      grid-row: 1;
+      padding-left: 18px;
+    }
+
+    .tag-label { grid-column: 1; grid-row: 2; }
+    .tag-buttons { grid-column: 2; grid-row: 2; }
+    .tag-hidden { grid-column: 3; grid-row: 2; }
+    .filter-main-label { grid-column: 1; grid-row: 3; }
+    .filter-buttons { grid-column: 2; grid-row: 3; }
+    .filter-hidden { grid-column: 3; grid-row: 3; }
+    .menu-label { grid-column: 1; grid-row: 4; }
+
+    .quick-field span {
+      color: var(--title);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .quick-field input {
+      width: 244px;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 0 12px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .quick-field input::placeholder {
+      color: var(--light);
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .btn {
+      height: 32px;
+      min-width: 82px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: #fff;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 14px;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+      font-weight: 650;
+    }
+
+    .btn.primary:hover {
+      background: var(--blue-dark);
+      border-color: var(--blue-dark);
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--text);
+    }
+
+    .btn.outline-blue {
+      border-color: var(--blue);
+      background: #fff;
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .btn.outline-red {
+      border-color: #f56c6c;
+      background: #fff;
+      color: #f56c6c;
+      font-weight: 650;
+    }
+
+    .btn:disabled,
+    .btn.disabled {
+      border-color: #d8dde6;
+      background: #eef2f7;
+      color: #a8abb2;
+      cursor: not-allowed;
+      font-weight: 650;
+      opacity: 1;
+    }
+
+    .btn.tiny {
+      height: 26px;
+      min-width: 46px;
+      padding: 0 9px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .btn.soft {
+      border-color: var(--blue-soft);
+      background: var(--blue-soft);
+      color: #fff;
+      font-weight: 650;
+    }
+
+    .btn.warn {
+      border-color: var(--orange);
+      background: var(--orange);
+      color: #fff;
+      font-weight: 650;
+    }
+
+    .btn.success {
+      border-color: var(--green);
+      background: var(--green);
+      color: #fff;
+      font-weight: 650;
+    }
+
+    .menu-selects {
+      grid-column: 2 / 4;
+      grid-row: 4;
+      display: grid;
+      grid-template-columns: 320px 320px 320px 320px 1fr auto auto;
+      gap: 36px;
+      align-items: center;
+      padding-top: 2px;
+    }
+
+    .select-field {
+      display: grid;
+      grid-template-columns: 42px 180px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .select-field label {
+      color: var(--text);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .select-field select {
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--light);
+      padding: 0 10px;
+      outline: none;
+    }
+
+    .filter-actions {
+      grid-column: 6 / 8;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      align-self: end;
+    }
+
+    .hidden-area {
+      display: flex;
+      min-height: 30px;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      visibility: hidden;
+    }
+
+    .hidden-area.open {
+      visibility: visible;
+    }
+
+    .chip {
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border: 1px solid #cfe3ff;
+      border-radius: 2px;
+      background: #f1f8ff;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .table-panel {
+      margin-top: 16px;
+      padding: 32px 32px 0;
+      overflow: hidden;
+    }
+
+    .bulk-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      padding-bottom: 0;
+    }
+
+    .video-table {
+      width: 100%;
+      min-width: 1700px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--line-soft);
+      background: #fff;
+    }
+
+    .video-table th,
+    .video-table td {
+      border-right: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft);
+      padding: 12px 12px;
+      text-align: left;
+      color: var(--text);
+      vertical-align: middle;
+      word-break: break-word;
+    }
+
+    .video-table th {
+      height: 42px;
+      color: var(--muted);
+      font-weight: 650;
+      background: #fff;
+    }
+
+    .video-table tbody tr {
+      height: 164px;
+    }
+
+    .video-table tbody tr:nth-child(even) {
+      background: #fcfcfd;
+    }
+
+    .check-cell {
+      width: 44px;
+      text-align: center;
+      padding: 0;
+    }
+
+    input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      accent-color: var(--blue);
+    }
+
+    .cover-cell {
+      width: 90px;
+    }
+
+    .cover {
+      width: 62px;
+      height: 82px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+      background-color: #d8dde5;
+    }
+
+    .cover.real {
+      background-image: url("./assets/video-management-reference.png");
+      background-size: 2212px 1197px;
+      background-position: -143px -690px;
+      background-repeat: no-repeat;
+    }
+
+    .cover.loading {
+      position: relative;
+      background: #d9dee7;
+    }
+
+    .cover.loading::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 7px;
+      background: #c8ced6;
+    }
+
+    .cover.loading::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border: 2px solid rgba(64, 158, 255, .22);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .basic-title {
+      color: var(--title);
+      font-weight: 700;
+      margin: 0 0 9px;
+      line-height: 1.55;
+    }
+
+    .meta {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 13px;
+    }
+
+    .summary {
+      line-height: 1.65;
+      color: var(--text);
+      max-width: 292px;
+    }
+
+    .dash {
+      color: var(--muted);
+    }
+
+    .menu-lines,
+    .stat-lines {
+      line-height: 1.85;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .pagination {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--text);
+      padding: 18px 0 20px;
+      white-space: nowrap;
+    }
+
+    .page-size {
+      width: 128px;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--text);
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .pager-btn,
+    .page-number {
+      min-width: 32px;
+      height: 32px;
+      border: 1px solid #eef2f7;
+      border-radius: 2px;
+      background: #f4f6f9;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+    }
+
+    .page-number.active {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .jump-input {
+      width: 56px;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--text);
+      text-align: center;
+      outline: none;
+    }
+
+    .action-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      min-width: 246px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 28px;
+      bottom: 28px;
+      min-width: 220px;
+      min-height: 40px;
+      border-radius: 4px;
+      background: rgba(48, 49, 51, .92);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      z-index: 20;
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .24);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+    }
+
+    .modal-mask.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 420px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, .18);
+      padding: 20px 22px 18px;
+    }
+
+    .menu-modal {
+      width: 880px;
+      min-height: 456px;
+      padding: 0;
+      border-radius: 3px;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, .22);
+    }
+
+    .bulk-bind-modal {
+      width: 800px;
+      max-height: 86vh;
+      padding: 0;
+      border-radius: 3px;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, .22);
+      overflow: hidden;
+    }
+
+    .modal h2 {
+      margin: 0 0 14px;
+      color: var(--title);
+      font-size: 16px;
+    }
+
+    .modal p {
+      margin: 0 0 18px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .menu-modal-head {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+    }
+
+    .menu-modal-title {
+      color: var(--title);
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .modal-help {
+      width: 22px;
+      height: 22px;
+      border: 0;
+      border-radius: 50%;
+      background: #909399;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .modal-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #909399;
+      font-size: 24px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .menu-modal-body {
+      padding: 8px 36px 16px;
+    }
+
+    .bulk-bind-body {
+      max-height: calc(86vh - 58px);
+      overflow: auto;
+      padding: 0 36px 24px;
+    }
+
+    .bulk-form-row {
+      display: grid;
+      grid-template-columns: 80px 240px 1fr;
+      column-gap: 0;
+      align-items: center;
+      min-height: 50px;
+    }
+
+    .bulk-form-row.target-menu-row {
+      align-items: start;
+      margin-top: 8px;
+    }
+
+    .bulk-form-label {
+      color: var(--text);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .bulk-form-label.required::before {
+      content: "*";
+      color: #f56c6c;
+      margin-right: 4px;
+    }
+
+    .bulk-number-input {
+      width: 240px;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      color: var(--text);
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .bulk-number-input::placeholder {
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .bulk-project-name {
+      color: var(--title);
+      font-weight: 500;
+    }
+
+    .bulk-menu-wrap {
+      width: 560px;
+    }
+
+    .bulk-menu-wrap .menu-table .operation {
+      width: 240px;
+    }
+
+    .bulk-menu-wrap .menu-action-buttons {
+      justify-content: center;
+    }
+
+    .bulk-menu-wrap .menu-tree-node.level-2 {
+      padding-left: 24px;
+    }
+
+    .bulk-menu-wrap .menu-tree-node.level-3 {
+      padding-left: 48px;
+    }
+
+    .bulk-menu-wrap .menu-tree-node.level-4 {
+      padding-left: 72px;
+    }
+
+    .project-row {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .project-row label {
+      width: 66px;
+      text-align: right;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .project-row select {
+      width: 200px;
+      height: 32px;
+      border: 1px solid var(--blue);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      padding: 0 10px;
+    }
+
+    .menu-modal-divider {
+      height: 1px;
+      background: var(--line-soft);
+      margin-bottom: 16px;
+    }
+
+    .menu-scope-note {
+      color: var(--muted);
+      font-size: 13px;
+      margin: -8px 0 12px 78px;
+    }
+
+    .menu-table {
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--line-soft);
+      border-color: var(--line-soft);
+    }
+
+    .menu-table th,
+    .menu-table td {
+      height: 41px;
+      padding: 0 12px;
+      border: 1px solid var(--line-soft);
+      vertical-align: middle;
+    }
+
+    .menu-table th {
+      background: #fff;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .menu-table tbody tr {
+      height: 41px;
+    }
+
+    .menu-table tbody tr:nth-child(even) {
+      background: #fafafa;
+    }
+
+    .menu-table tbody tr.menu-tree-parent {
+      background: #f7f9fc;
+    }
+
+    .menu-name-cell {
+      padding-left: 18px;
+    }
+
+    .menu-tree-node {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      gap: 6px;
+      color: var(--text);
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .menu-tree-node.level-2 {
+      padding-left: 26px;
+    }
+
+    .menu-tree-node.level-3 {
+      padding-left: 52px;
+    }
+
+    .menu-tree-node.level-4 {
+      padding-left: 78px;
+    }
+
+    .tree-toggle {
+      width: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      display: inline-flex;
+      justify-content: center;
+    }
+
+    .tree-placeholder {
+      width: 14px;
+      display: inline-block;
+    }
+
+    .menu-level {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .menu-table .operation {
+      width: 240px;
+      text-align: center;
+    }
+
+    .menu-action-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .menu-status {
+      min-width: 82px;
+      height: 26px;
+      border: 1px solid #d8dde6;
+      border-radius: 2px;
+      background: #f4f6f9;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 9px;
+      font-size: 13px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .menu-status.published {
+      border-color: #c6e7b8;
+      background: #f0f9eb;
+      color: var(--green);
+    }
+
+    .menu-status.unpublished {
+      border-color: #e5e7eb;
+      background: #f4f6f9;
+      color: var(--muted);
+    }
+
+    .menu-assoc-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      line-height: 1.45;
+    }
+
+    .menu-assoc-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .menu-assoc-text {
+      min-width: 0;
+    }
+
+    .menu-path {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      margin-bottom: 2px;
+    }
+
+    .menu-leaf {
+      color: var(--title);
+      font-weight: 650;
+      margin-right: 6px;
+    }
+
+    .state-pill {
+      height: 20px;
+      border-radius: 2px;
+      padding: 0 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .state-pill.published {
+      background: #f0f9eb;
+      color: var(--green);
+      border: 1px solid #c6e7b8;
+    }
+
+    .state-pill.unpublished {
+      background: #f4f6f9;
+      color: var(--muted);
+      border: 1px solid #e5e7eb;
+    }
+
+    .filter-hit {
+      height: 20px;
+      border-radius: 2px;
+      padding: 0 6px;
+      margin-left: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #91caff;
+      background: #e6f4ff;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .menu-more {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-weight: 650;
+      font-size: 13px;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .associated-modal {
+      width: 760px;
+      padding: 0;
+      border-radius: 3px;
+    }
+
+    .prd-modal {
+      width: 1180px;
+      max-height: 88vh;
+      padding: 0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .prd-modal-head {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .prd-modal-title {
+      color: var(--title);
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .prd-modal-body {
+      height: calc(88vh - 58px);
+      overflow: hidden;
+      padding: 0;
+      color: var(--text);
+      line-height: 1.72;
+    }
+
+    .prd-layout {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 236px 1fr;
+      min-width: 0;
+    }
+
+    .prd-nav {
+      border-right: 1px solid var(--line-soft);
+      background: #f7f9fc;
+      padding: 18px 14px;
+      overflow: auto;
+    }
+
+    .prd-nav-title {
+      color: var(--title);
+      font-weight: 650;
+      margin: 0 0 12px;
+    }
+
+    .prd-nav a {
+      display: block;
+      min-height: 32px;
+      padding: 7px 10px;
+      border-radius: 3px;
+      color: var(--text);
+      text-decoration: none;
+      line-height: 1.4;
+    }
+
+    .prd-nav a:hover {
+      background: #ecf5ff;
+      color: var(--blue);
+    }
+
+    .prd-nav a.active {
+      background: #e6f4ff;
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .prd-content {
+      min-width: 0;
+      overflow: auto;
+      padding: 22px 34px 34px;
+      scroll-behavior: smooth;
+    }
+
+    .prd-summary {
+      border: 1px solid #d9ecff;
+      background: #f4f9ff;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .prd-summary-title {
+      margin: 0 0 8px;
+      color: var(--title);
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .prd-summary p {
+      margin: 0;
+    }
+
+    .prd-key-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 18px;
+    }
+
+    .prd-key-card {
+      border: 1px solid var(--line-soft);
+      background: #fff;
+      padding: 12px 14px;
+      min-height: 94px;
+    }
+
+    .prd-key-card strong {
+      display: block;
+      color: var(--title);
+      margin-bottom: 6px;
+    }
+
+    .prd-key-card span {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .prd-doc h3 {
+      margin: 24px 0 10px;
+      padding-top: 4px;
+      color: var(--title);
+      font-size: 18px;
+    }
+
+    .prd-doc h4 {
+      margin: 18px 0 8px;
+      color: var(--title);
+      font-size: 15px;
+    }
+
+    .prd-doc p,
+    .prd-doc ul,
+    .prd-doc ol {
+      margin: 0 0 10px;
+    }
+
+    .prd-doc ul,
+    .prd-doc ol {
+      padding-left: 22px;
+    }
+
+    .prd-doc table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 16px;
+      table-layout: fixed;
+    }
+
+    .prd-doc th,
+    .prd-doc td {
+      border: 1px solid var(--line-soft);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .prd-doc th {
+      color: var(--title);
+      background: #f7f9fc;
+      font-weight: 650;
+    }
+
+    .prd-doc code {
+      background: #f5f7fa;
+      border: 1px solid var(--line-soft);
+      border-radius: 3px;
+      padding: 1px 5px;
+      color: var(--title);
+    }
+
+    .prd-doc .prd-note {
+      padding: 10px 12px;
+      border-left: 3px solid var(--blue);
+      background: #f4f9ff;
+      color: var(--text);
+    }
+
+    .associated-modal-head {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+    }
+
+    .associated-modal-title {
+      color: var(--title);
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .associated-modal-body {
+      padding: 6px 36px 24px;
+    }
+
+    .associated-meta {
+      color: var(--muted);
+      margin: 0 0 14px;
+      line-height: 1.6;
+    }
+
+    .associated-table {
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--line-soft);
+      border-color: var(--line-soft);
+    }
+
+    .associated-table th,
+    .associated-table td {
+      height: 46px;
+      padding: 0 12px;
+      border: 1px solid var(--line-soft);
+    }
+
+    .associated-table tbody tr {
+      height: 46px;
+    }
+
+    .associated-path {
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .menu-modal-foot {
+      height: 64px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      padding: 0 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <button class="menu-trigger" type="button" aria-label="展开菜单">☷</button>
+      <div class="page-title">视频管理</div>
+      <button class="prd-action" type="button" data-open-prd>PRD</button>
+      <button class="user-menu" type="button">admin <span>⌄</span></button>
+    </header>
+
+    <main class="page">
+      <nav class="tabs" aria-label="视频管理标签">
+        <button class="tab active" type="button" data-tab="video">视频</button>
+        <button class="tab" type="button" data-tab="series">视频剧集</button>
+      </nav>
+
+      <section class="panel filters" aria-label="筛选条件">
+        <div class="quick-field top-search">
+          <span>标签:</span>
+          <input id="tagKeyword" type="search" placeholder="请输入标签，自动搜索" />
+        </div>
+
+        <div class="filter-label tag-label">标签</div>
+        <div class="button-row tag-buttons">
+          <button class="btn primary" type="button" data-toggle="tagArea">展开标签</button>
+          <button class="btn secondary" type="button" data-reset-tags>重置标签</button>
+        </div>
+        <div class="hidden-area tag-hidden" id="tagArea">
+          <span class="chip">小悠YOO</span>
+          <span class="chip">日本动漫</span>
+          <span class="chip">漫改电影</span>
+          <span class="chip">百万诱惑</span>
+        </div>
+
+        <div class="filter-label filter-main-label">筛选</div>
+        <div class="button-row filter-buttons">
+          <button class="btn primary" type="button" data-toggle="filterArea">展开筛选</button>
+          <button class="btn secondary" type="button" data-reset-filters>重置筛选</button>
+        </div>
+        <div class="hidden-area filter-hidden" id="filterArea">
+          <span class="chip">付费类型: 免费</span>
+          <span class="chip">长/短视频: 长视频</span>
+          <span class="chip">状态: 正常</span>
+        </div>
+
+        <div class="filter-label menu-label">菜单</div>
+        <div class="menu-selects">
+          <div class="select-field">
+            <label for="menuOne">一级</label>
+            <select id="menuOne">
+              <option>未选择</option>
+              <option value="一级菜单A">一级菜单A</option>
+            </select>
+          </div>
+          <div class="select-field">
+            <label for="menuTwo">二级</label>
+            <select id="menuTwo">
+              <option>未选择</option>
+              <option value="二级菜单A">二级菜单A</option>
+              <option value="二级菜单B">二级菜单B</option>
+            </select>
+          </div>
+          <div class="select-field">
+            <label for="menuThree">三级</label>
+            <select id="menuThree">
+              <option>未选择</option>
+              <option value="三级菜单A">三级菜单A</option>
+              <option value="三级菜单B">三级菜单B</option>
+              <option value="三级菜单C">三级菜单C</option>
+            </select>
+          </div>
+          <div class="select-field">
+            <label for="menuFour">四级</label>
+            <select id="menuFour">
+              <option>未选择</option>
+              <option value="四级菜单A">四级菜单A</option>
+              <option value="四级菜单B">四级菜单B</option>
+              <option value="四级菜单D">四级菜单D</option>
+            </select>
+          </div>
+          <div></div>
+          <div class="filter-actions">
+            <button class="btn primary" type="button" data-action="查询">查询</button>
+            <button class="btn secondary" type="button" data-action="重置">重置</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel table-panel" aria-label="视频列表">
+        <div class="bulk-actions">
+          <button class="btn soft" type="button" data-action="批量解绑菜单">批量解绑菜单</button>
+          <button class="btn soft" type="button" data-action="批量下架">批量下架</button>
+          <button class="btn soft" type="button" data-action="批量上架">批量上架</button>
+          <button class="btn primary" type="button" data-action="批量设置上架时间">批量设置上架时间</button>
+          <button class="btn soft" type="button" data-action="批量设置标签">批量设置标签</button>
+          <button class="btn soft" type="button" data-action="批量设置付费类型">批量设置付费类型</button>
+          <button class="btn soft" type="button" data-action="批量增加点赞数">批量增加点赞数</button>
+          <button class="btn primary" type="button" data-action="批量设置点赞数">批量设置点赞数</button>
+          <button class="btn soft" type="button" data-action="批量增加观看量">批量增加观看量</button>
+          <button class="btn primary" type="button" data-action="批量设置观看数">批量设置观看数</button>
+          <button class="btn disabled" id="setMenuButton" type="button" data-action="设置菜单" disabled>设置菜单</button>
+          <button class="btn primary" type="button" data-action="批量绑定菜单">批量绑定菜单</button>
+          <button class="btn soft" type="button" data-action="批量添加评论">批量添加评论</button>
+          <button class="btn soft" type="button" data-action="批量评分">批量评分</button>
+          <button class="btn soft" type="button" data-action="批量设置排序">批量设置排序</button>
+          <button class="btn soft" type="button" data-action="设置推荐">设置推荐</button>
+          <button class="btn primary" type="button" data-action="批量设置推荐">批量设置推荐</button>
+          <button class="btn soft" type="button" data-action="绑定用户">绑定用户</button>
+          <button class="btn soft" type="button" data-action="设置长/短视频">设置长/短视频</button>
+          <button class="btn soft" type="button" data-action="设置话题">设置话题</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="video-table">
+            <colgroup>
+              <col style="width: 44px" />
+              <col style="width: 86px" />
+              <col style="width: 310px" />
+              <col style="width: 266px" />
+              <col style="width: 178px" />
+              <col style="width: 178px" />
+              <col style="width: 222px" />
+              <col style="width: 178px" />
+              <col style="width: 150px" />
+              <col style="width: 248px" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="check-cell"><input id="selectAll" type="checkbox" aria-label="全选" /></th>
+                <th>视频封面</th>
+                <th>内容基本信息</th>
+                <th>简介</th>
+                <th>视频标签</th>
+                <th>关联菜单</th>
+                <th>基础统计</th>
+                <th>分类</th>
+                <th>付费信息</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 1" /></td>
+                <td class="cover-cell"><div class="cover real" aria-label="视频封面"></div></td>
+                <td>
+                  <p class="basic-title">有这样的闺蜜，再糟糕的日子也是甜的！漫改电影《娜娜》</p>
+                  <div class="meta">
+                    资源库ID: f3954b7bc4e4d50e<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td><span class="dash">-</span></td>
+                <td>小悠YOO</td>
+                <td>
+                  <div class="menu-lines">
+                    <div class="menu-assoc-item">
+                      <div class="menu-assoc-text">
+                        <div class="menu-path">一级菜单A / 二级菜单B / 三级菜单C</div>
+                        <div><span class="menu-leaf">四级菜单D</span><span class="state-pill published">已上架</span></div>
+                      </div>
+                    </div>
+                    <div class="menu-assoc-item">
+                      <div class="menu-assoc-text">
+                        <div class="menu-path">一级菜单A / 二级菜单B</div>
+                        <div><span class="menu-leaf">三级菜单C</span><span class="state-pill unpublished">未上架</span></div>
+                      </div>
+                    </div>
+                    <button class="menu-more" type="button" data-menu-detail="nana">+2 查看全部</button>
+                  </div>
+                </td>
+                <td>
+                  <div class="stat-lines">
+                    真实观看: 0<br />
+                    真实点赞: 0<br />
+                    总观看量: 0<br />
+                    总点赞量: 0<br />
+                    热度: 0<br />
+                    评分:
+                  </div>
+                </td>
+                <td>电影解说、正常新增分类 再编辑试试</td>
+                <td>付费类型: 免费</td>
+                <td>
+                  <div class="action-group">
+                    <button class="btn tiny primary" type="button" data-action="正片">正片</button>
+                    <button class="btn tiny primary" type="button" data-action="预览">预览</button>
+                    <button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button>
+                    <button class="btn tiny warn" type="button" data-status>下架</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 2" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">百万诱惑2</p>
+                  <div class="meta">
+                    资源库ID: 4c51b5b3b42611a2<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td>
+                  <div class="summary">本片讲述了一个发生在乡村，因逼婚和一个摄影锣子而引发的一系列阴差阳错、环环相扣的悬疑闹剧。揭示了人性的复杂与命运的无常。</div>
+                </td>
+                <td>日本动漫</td>
+                <td>
+                  <div class="menu-lines">
+                    <div class="menu-assoc-item">
+                      <div class="menu-assoc-text">
+                        <div class="menu-path">一级菜单A / 二级菜单B</div>
+                        <div><span class="menu-leaf">三级菜单C</span><span class="state-pill published">已上架</span></div>
+                      </div>
+                    </div>
+                    <div class="menu-assoc-item">
+                      <div class="menu-assoc-text">
+                        <div class="menu-path">一级菜单A</div>
+                        <div><span class="menu-leaf">二级菜单B</span><span class="state-pill published">已上架</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="stat-lines">
+                    真实观看: 0<br />
+                    真实点赞: 0<br />
+                    总观看量: 0<br />
+                    总点赞量: 0<br />
+                    热度: 0<br />
+                    评分:
+                  </div>
+                </td>
+                <td>电影、二级</td>
+                <td>付费类型: 会员</td>
+                <td>
+                  <div class="action-group">
+                    <button class="btn tiny primary" type="button" data-action="正片">正片</button>
+                    <button class="btn tiny primary" type="button" data-action="预览">预览</button>
+                    <button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button>
+                    <button class="btn tiny warn" type="button" data-status>下架</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 3" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">大可test22</p>
+                  <div class="meta">
+                    资源库ID: ba22aa632d3cbcb4<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td>
+                  <div class="summary">小慧与乱马忙着应付拌舞婷的未婚妻、变成豪家的对手，以及好色的猿木大师，天道道场的混乱场面持续上演。</div>
+                </td>
+                <td>小悠YOO</td>
+                <td>
+                  <div class="menu-lines">
+                    <div class="menu-assoc-item">
+                      <div class="menu-assoc-text">
+                        <div class="menu-path">一级菜单A / 二级菜单B</div>
+                        <div><span class="menu-leaf">三级菜单C</span><span class="state-pill unpublished">未上架</span></div>
+                      </div>
+                    </div>
+                    <button class="menu-more" type="button" data-menu-detail="test22">+1 查看全部</button>
+                  </div>
+                </td>
+                <td>
+                  <div class="stat-lines">
+                    真实观看: 0<br />
+                    真实点赞: 0<br />
+                    总观看量: 1<br />
+                    总点赞量: 1<br />
+                    热度: 2<br />
+                    评分:
+                  </div>
+                </td>
+                <td>动漫、正常新增分类 再编辑试试</td>
+                <td>付费类型: 免费</td>
+                <td>
+                  <div class="action-group">
+                    <button class="btn tiny primary" type="button" data-action="正片">正片</button>
+                    <button class="btn tiny primary" type="button" data-action="预览">预览</button>
+                    <button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button>
+                    <button class="btn tiny success" type="button" data-status>上架</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 4" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">春日奇遇记</p>
+                  <div class="meta">
+                    资源库ID: a72c93d41b8e09f1<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td><div class="summary">年轻导演回到故乡寻找创作灵感，却在旧剧院里发现一段被遗忘的青春往事。</div></td>
+                <td>日本动漫</td>
+                <td><div class="menu-lines"><div class="menu-assoc-item"><div class="menu-assoc-text"><div class="menu-path">一级菜单A / 二级菜单B</div><div><span class="menu-leaf">三级菜单C</span><span class="state-pill published">已上架</span></div></div></div></div></td>
+                <td><div class="stat-lines">真实观看: 0<br />真实点赞: 0<br />总观看量: 3<br />总点赞量: 1<br />热度: 4<br />评分:</div></td>
+                <td>电影、正常新增分类</td>
+                <td>付费类型: 免费</td>
+                <td><div class="action-group"><button class="btn tiny primary" type="button" data-action="正片">正片</button><button class="btn tiny primary" type="button" data-action="预览">预览</button><button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button><button class="btn tiny warn" type="button" data-status>下架</button></div></td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 5" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">午夜来电</p>
+                  <div class="meta">
+                    资源库ID: 83fd29b76a1140ac<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td><div class="summary">一通无人接听的电话，把城市白领卷入一场关于记忆、选择与真相的追踪。</div></td>
+                <td>小悠YOO</td>
+                <td><div class="menu-lines"><div class="menu-assoc-item"><div class="menu-assoc-text"><div class="menu-path">一级菜单A</div><div><span class="menu-leaf">二级菜单B</span><span class="state-pill unpublished">未上架</span></div></div></div><div class="menu-assoc-item"><div class="menu-assoc-text"><div class="menu-path">一级菜单A</div><div><span class="menu-leaf">二级菜单B</span><span class="state-pill published">已上架</span></div></div></div></div></td>
+                <td><div class="stat-lines">真实观看: 0<br />真实点赞: 0<br />总观看量: 5<br />总点赞量: 2<br />热度: 7<br />评分:</div></td>
+                <td>电影解说、悬疑</td>
+                <td>付费类型: 会员</td>
+                <td><div class="action-group"><button class="btn tiny primary" type="button" data-action="正片">正片</button><button class="btn tiny primary" type="button" data-action="预览">预览</button><button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button><button class="btn tiny warn" type="button" data-status>下架</button></div></td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 6" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">雨巷里的猫</p>
+                  <div class="meta">
+                    资源库ID: d9a1e720f33b49c7<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td><div class="summary">旧城区改造前夕，一只猫串联起几户人家的秘密，也让邻里关系重新靠近。</div></td>
+                <td>日本动漫</td>
+                <td><div class="menu-lines"><div class="menu-assoc-item"><div class="menu-assoc-text"><div class="menu-path">一级菜单A</div><div><span class="menu-leaf">二级菜单B</span><span class="state-pill published">已上架</span></div></div></div></div></td>
+                <td><div class="stat-lines">真实观看: 0<br />真实点赞: 0<br />总观看量: 8<br />总点赞量: 1<br />热度: 9<br />评分:</div></td>
+                <td>动漫、治愈</td>
+                <td>付费类型: 免费</td>
+                <td><div class="action-group"><button class="btn tiny primary" type="button" data-action="正片">正片</button><button class="btn tiny primary" type="button" data-action="预览">预览</button><button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button><button class="btn tiny success" type="button" data-status>上架</button></div></td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 7" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">影迷实验室</p>
+                  <div class="meta">
+                    资源库ID: 571f20a6d44c88b9<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td><div class="summary">用轻松的方式拆解热门一级中的镜头设计、人物关系与叙事节奏。</div></td>
+                <td>小悠YOO</td>
+                <td><div class="menu-lines"><div class="menu-assoc-item"><div class="menu-assoc-text"><div class="menu-path">一级菜单A</div><div><span class="menu-leaf">二级菜单B</span><span class="state-pill published">已上架</span></div></div></div><button class="menu-more" type="button" data-menu-detail="lab">+2 查看全部</button></div></td>
+                <td><div class="stat-lines">真实观看: 0<br />真实点赞: 0<br />总观看量: 12<br />总点赞量: 4<br />热度: 16<br />评分:</div></td>
+                <td>电影解说、推荐</td>
+                <td>付费类型: 免费</td>
+                <td><div class="action-group"><button class="btn tiny primary" type="button" data-action="正片">正片</button><button class="btn tiny primary" type="button" data-action="预览">预览</button><button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button><button class="btn tiny warn" type="button" data-status>下架</button></div></td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 8" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">城市边缘人</p>
+                  <div class="meta">
+                    资源库ID: e44b7f9038ac21de<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td><div class="summary">几个陌生人在深夜便利店相遇，各自的困境慢慢交织成一段温柔的城市故事。</div></td>
+                <td>日本动漫</td>
+                <td><div class="menu-lines"><span class="dash">未关联</span></div></td>
+                <td><div class="stat-lines">真实观看: 0<br />真实点赞: 0<br />总观看量: 16<br />总点赞量: 5<br />热度: 21<br />评分:</div></td>
+                <td>电影、剧情</td>
+                <td>付费类型: 会员</td>
+                <td><div class="action-group"><button class="btn tiny primary" type="button" data-action="正片">正片</button><button class="btn tiny primary" type="button" data-action="预览">预览</button><button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button><button class="btn tiny warn" type="button" data-status>下架</button></div></td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 9" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">旧案审讯</p>
+                  <div class="meta">
+                    资源库ID: c12a7d6b90ef5510<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td><div class="summary">一条现实线与一条回忆线同时推进，最终在一场旧案审讯中汇合。</div></td>
+                <td>小悠YOO</td>
+                <td><div class="menu-lines"><div class="menu-assoc-item"><div class="menu-assoc-text"><div class="menu-path">一级菜单A / 二级菜单B / 正常新增分类</div><div><span class="menu-leaf">四级菜单D</span><span class="state-pill published">已上架</span></div></div></div></div></td>
+                <td><div class="stat-lines">真实观看: 0<br />真实点赞: 0<br />总观看量: 21<br />总点赞量: 6<br />热度: 27<br />评分:</div></td>
+                <td>电影解说、悬疑</td>
+                <td>付费类型: 免费</td>
+                <td><div class="action-group"><button class="btn tiny primary" type="button" data-action="正片">正片</button><button class="btn tiny primary" type="button" data-action="预览">预览</button><button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button><button class="btn tiny success" type="button" data-status>上架</button></div></td>
+              </tr>
+
+              <tr>
+                <td class="check-cell"><input class="row-check" type="checkbox" aria-label="选择视频 10" /></td>
+                <td class="cover-cell"><div class="cover loading" aria-label="封面加载中"></div></td>
+                <td>
+                  <p class="basic-title">最后的排练</p>
+                  <div class="meta">
+                    资源库ID: f02d9ba314765c8e<br />
+                    视频时长: 00:00:00<br />
+                    长/短视频: 长视频<br />
+                    用户ID: -
+                  </div>
+                </td>
+                <td><div class="summary">剧团演出前夜，演员们在最后一次排练中面对彼此，也面对自己的遗憾。</div></td>
+                <td>日本动漫</td>
+                <td><div class="menu-lines"><div class="menu-assoc-item"><div class="menu-assoc-text"><div class="menu-path">一级菜单A</div><div><span class="menu-leaf">二级菜单B</span><span class="state-pill unpublished">未上架</span></div></div></div></div></td>
+                <td><div class="stat-lines">真实观看: 0<br />真实点赞: 0<br />总观看量: 24<br />总点赞量: 8<br />热度: 32<br />评分:</div></td>
+                <td>电影、正常新增分类</td>
+                <td>付费类型: 会员</td>
+                <td><div class="action-group"><button class="btn tiny primary" type="button" data-action="正片">正片</button><button class="btn tiny primary" type="button" data-action="预览">预览</button><button class="btn tiny primary" type="button" data-action="详情编辑">详情编辑</button><button class="btn tiny warn" type="button" data-status>下架</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination" aria-label="分页器">
+          <span>共 18 条</span>
+          <select class="page-size" aria-label="每页条数">
+            <option>10条/页</option>
+            <option>20条/页</option>
+            <option>50条/页</option>
+          </select>
+          <button class="pager-btn" type="button" aria-label="上一页">‹</button>
+          <button class="page-number active" type="button">1</button>
+          <button class="page-number" type="button">2</button>
+          <button class="pager-btn" type="button" aria-label="下一页">›</button>
+          <span>前往</span>
+          <input class="jump-input" type="number" value="1" min="1" max="2" aria-label="跳转页码" />
+          <span>页</span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="modal-mask" id="modalMask" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h2 id="modalTitle">操作确认</h2>
+      <p id="modalText">确认执行当前操作？</p>
+      <div class="modal-actions">
+        <button class="btn secondary" type="button" data-close-modal>取消</button>
+        <button class="btn primary" type="button" data-confirm-modal>确定</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="menuModalMask" role="dialog" aria-modal="true" aria-labelledby="menuModalTitle">
+    <div class="modal menu-modal">
+      <div class="menu-modal-head">
+        <div class="menu-modal-title" id="menuModalTitle">设置菜单</div>
+        <button class="modal-close" type="button" data-close-menu-modal aria-label="关闭">×</button>
+      </div>
+
+      <div class="menu-modal-body">
+        <div class="project-row">
+          <label for="projectSelect">项目名称</label>
+          <select id="projectSelect">
+            <option>WX1-01</option>
+            <option>WX1-02</option>
+            <option>WX2-01</option>
+          </select>
+        </div>
+        <div class="menu-scope-note">以下操作只影响当前内容在对应菜单下的关联与上下架状态。</div>
+
+        <div class="menu-modal-divider"></div>
+
+        <table class="menu-table" aria-label="可关联菜单">
+          <colgroup>
+            <col />
+            <col style="width: 240px" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>菜单名称</th>
+              <th class="operation">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="menu-tree-parent">
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-1"><span class="tree-toggle">⌄</span>一级菜单A <span class="menu-level">[一级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons">
+                  <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                </div>
+              </td>
+            </tr>
+            <tr class="menu-tree-parent">
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-2"><span class="tree-toggle">⌄</span>二级菜单A <span class="menu-level">[二级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons">
+                  <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                </div>
+              </td>
+            </tr>
+            <tr class="menu-tree-parent">
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-3"><span class="tree-toggle">⌄</span>三级菜单A <span class="menu-level">[三级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons">
+                  <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-4"><span class="tree-placeholder"></span>四级菜单A <span class="menu-level">[四级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons" data-menu-path="一级菜单A / 二级菜单A / 三级菜单A / 四级菜单A">
+                  <button class="btn tiny outline-blue" type="button" data-link-menu="only">仅关联</button>
+                  <button class="btn tiny primary" type="button" data-link-menu="publish">关联并上架</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-4"><span class="tree-placeholder"></span>四级菜单B <span class="menu-level">[四级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons" data-menu-path="一级菜单A / 二级菜单A / 三级菜单A / 四级菜单B">
+                  <button class="btn tiny outline-blue" type="button" data-link-menu="only">仅关联</button>
+                  <button class="btn tiny primary" type="button" data-link-menu="publish">关联并上架</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-3"><span class="tree-placeholder"></span>三级菜单B <span class="menu-level">[三级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons" data-menu-path="一级菜单A / 二级菜单A / 三级菜单B">
+                  <button class="btn tiny outline-blue" type="button" data-link-menu="only">仅关联</button>
+                  <button class="btn tiny primary" type="button" data-link-menu="publish">关联并上架</button>
+                </div>
+              </td>
+            </tr>
+            <tr class="menu-tree-parent">
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-2"><span class="tree-toggle">⌄</span>二级菜单B <span class="menu-level">[二级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons">
+                  <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                </div>
+              </td>
+            </tr>
+            <tr class="menu-tree-parent">
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-3"><span class="tree-toggle">⌄</span>三级菜单C <span class="menu-level">[三级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons">
+                  <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="menu-name-cell">
+                <span class="menu-tree-node level-4"><span class="tree-placeholder"></span>四级菜单D <span class="menu-level">[四级菜单]</span></span>
+              </td>
+              <td class="operation">
+                <div class="menu-action-buttons" data-menu-path="一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D">
+                  <button class="btn tiny outline-blue" type="button" data-link-menu="only">仅关联</button>
+                  <button class="btn tiny primary" type="button" data-link-menu="publish">关联并上架</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="menu-modal-foot">
+        <button class="btn secondary" type="button" data-close-menu-modal>取消</button>
+        <button class="btn primary" type="button" data-confirm-menu-modal>确定</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="bulkBindModalMask" role="dialog" aria-modal="true" aria-labelledby="bulkBindModalTitle">
+    <div class="modal bulk-bind-modal">
+      <div class="menu-modal-head">
+        <div class="menu-modal-title" id="bulkBindModalTitle">批量绑定菜单</div>
+        <div class="modal-head-actions">
+          <button class="modal-help" type="button" aria-label="帮助">?</button>
+          <button class="modal-close" type="button" data-close-bulk-bind-modal aria-label="关闭">×</button>
+        </div>
+      </div>
+
+      <div class="bulk-bind-body">
+        <div class="bulk-form-row">
+          <label class="bulk-form-label required" for="bulkContentCount">内容数量</label>
+          <input class="bulk-number-input" id="bulkContentCount" type="number" min="1" max="50000" placeholder="最大值50000" />
+        </div>
+
+        <div class="bulk-form-row">
+          <div class="bulk-form-label">当前项目</div>
+          <div class="bulk-project-name">WX-Y06</div>
+        </div>
+
+        <div class="bulk-form-row target-menu-row">
+          <div class="bulk-form-label required">目标菜单</div>
+          <div class="bulk-menu-wrap">
+            <table class="menu-table bulk-menu-table" aria-label="批量绑定目标菜单">
+              <colgroup>
+                <col />
+                <col style="width: 240px" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>菜单名称</th>
+                  <th class="operation">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="menu-tree-parent">
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-1"><span class="tree-toggle">⌄</span>一级菜单A <span class="menu-level">[一级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons">
+                      <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="menu-tree-parent">
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-2"><span class="tree-toggle">⌄</span>二级菜单A <span class="menu-level">[二级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons">
+                      <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="menu-tree-parent">
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-3"><span class="tree-toggle">⌄</span>三级菜单A <span class="menu-level">[三级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons">
+                      <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-4"><span class="tree-placeholder"></span>四级菜单A <span class="menu-level">[四级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons" data-bulk-menu-path="一级菜单A / 二级菜单A / 三级菜单A / 四级菜单A">
+                      <button class="btn tiny outline-blue" type="button" data-bulk-link-menu="only">仅关联</button>
+                      <button class="btn tiny primary" type="button" data-bulk-link-menu="publish">关联并上架</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-4"><span class="tree-placeholder"></span>四级菜单B <span class="menu-level">[四级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons" data-bulk-menu-path="一级菜单A / 二级菜单A / 三级菜单A / 四级菜单B">
+                      <button class="btn tiny outline-blue" type="button" data-bulk-link-menu="only">仅关联</button>
+                      <button class="btn tiny primary" type="button" data-bulk-link-menu="publish">关联并上架</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-3"><span class="tree-placeholder"></span>三级菜单B <span class="menu-level">[三级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons" data-bulk-menu-path="一级菜单A / 二级菜单A / 三级菜单B">
+                      <button class="btn tiny outline-blue" type="button" data-bulk-link-menu="only">仅关联</button>
+                      <button class="btn tiny primary" type="button" data-bulk-link-menu="publish">关联并上架</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="menu-tree-parent">
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-2"><span class="tree-toggle">⌄</span>二级菜单B <span class="menu-level">[二级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons">
+                      <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="menu-tree-parent">
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-3"><span class="tree-toggle">⌄</span>三级菜单C <span class="menu-level">[三级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons">
+                      <button class="btn tiny disabled" type="button" disabled>无法关联</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="menu-name-cell">
+                    <span class="menu-tree-node level-4"><span class="tree-placeholder"></span>四级菜单D <span class="menu-level">[四级菜单]</span></span>
+                  </td>
+                  <td class="operation">
+                    <div class="menu-action-buttons" data-bulk-menu-path="一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D">
+                      <button class="btn tiny outline-blue" type="button" data-bulk-link-menu="only">仅关联</button>
+                      <button class="btn tiny primary" type="button" data-bulk-link-menu="publish">关联并上架</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="associatedModalMask" role="dialog" aria-modal="true" aria-labelledby="associatedModalTitle">
+    <div class="modal associated-modal">
+      <div class="associated-modal-head">
+        <div class="associated-modal-title" id="associatedModalTitle">已关联菜单</div>
+        <button class="modal-close" type="button" data-close-associated-modal aria-label="关闭">×</button>
+      </div>
+      <div class="associated-modal-body">
+        <p class="associated-meta" id="associatedMeta">展示该内容已绑定的全部菜单路径和菜单维度状态。</p>
+        <table class="associated-table">
+          <colgroup>
+            <col />
+            <col style="width: 120px" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>菜单路径</th>
+              <th>状态</th>
+            </tr>
+          </thead>
+          <tbody id="associatedMenuBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="prdModalMask" role="dialog" aria-modal="true" aria-labelledby="prdModalTitle">
+    <div class="modal prd-modal">
+      <div class="prd-modal-head">
+        <div class="prd-modal-title" id="prdModalTitle">PRD：内容多菜单关联与菜单维度上下架</div>
+        <button class="modal-close" type="button" data-close-prd aria-label="关闭">×</button>
+      </div>
+      <div class="prd-modal-body">
+        <div class="prd-layout">
+          <aside class="prd-nav" aria-label="PRD目录">
+            <p class="prd-nav-title">文档目录</p>
+            <a href="#prd-info">1. 文档信息</a>
+            <a href="#prd-changes">2. 本次新增/变更内容</a>
+            <a href="#prd-background">3. 背景</a>
+            <a href="#prd-goals">4. 目标</a>
+            <a href="#prd-concepts">5. 核心概念</a>
+            <a href="#prd-rules">6. 业务规则</a>
+            <a href="#prd-page">7. 页面需求</a>
+            <a href="#prd-linkage">8. 联动规则</a>
+            <a href="#prd-filter">9. 筛选逻辑</a>
+            <a href="#prd-data">10. 数据结构</a>
+            <a href="#prd-acceptance">11. 验收标准</a>
+            <a href="#prd-risk">12. 风险与方案</a>
+          </aside>
+
+          <div class="prd-content">
+            <section class="prd-summary">
+              <div class="prd-summary-title">阅读摘要</div>
+              <p>本需求解决“同一内容可分发到多个菜单，并在不同菜单下独立上下架”的问题。核心规则是：列表展示内容的全部关联菜单，当前筛选命中的菜单打标；父级菜单不允许关联，只有无子菜单的末级菜单可以关联。</p>
+            </section>
+
+            <div class="prd-key-grid" aria-label="关键结论">
+              <div class="prd-key-card"><strong>多菜单关联</strong><span>一条内容可以绑定多个菜单，每条绑定关系都有独立状态。</span></div>
+              <div class="prd-key-card"><strong>菜单维度状态</strong><span>同一内容在菜单A可已上架，在菜单B可未上架。</span></div>
+              <div class="prd-key-card"><strong>父级不可关联</strong><span>有子菜单的节点只做层级展示，操作列显示无法关联。</span></div>
+              <div class="prd-key-card"><strong>筛选命中标记</strong><span>筛选后仍展示全部关联菜单，并标记当前命中的菜单。</span></div>
+            </div>
+
+            <article class="prd-doc">
+          <h3 id="prd-info">1. 文档信息</h3>
+          <table>
+            <tbody>
+              <tr><th>文档名称</th><td>视频管理：内容多菜单关联与菜单维度上下架</td></tr>
+              <tr><th>版本</th><td>V1.0</td></tr>
+              <tr><th>日期</th><td>2026-06-18</td></tr>
+              <tr><th>适用页面</th><td>商户后台 - 视频管理</td></tr>
+              <tr><th>相关原型</th><td><code>video-management.html</code></td></tr>
+            </tbody>
+          </table>
+
+          <h3 id="prd-changes">2. 本次新增/变更内容</h3>
+          <p>本次主要是在原“视频管理”页面上新增内容与菜单的多关联能力，并补齐对应的列表展示、弹窗操作和筛选联动规则。</p>
+          <table>
+            <thead>
+              <tr><th>新增/变更项</th><th>用户能看到什么</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>内容支持关联多个菜单</td><td>同一条内容的“关联菜单”字段可展示多个菜单路径。</td><td>原逻辑偏向一条内容只绑定一个菜单，本次改为一条内容可绑定多个菜单。</td></tr>
+              <tr><td>关联菜单字段改造</td><td>列表默认展示前 2 条关联菜单，超过 2 条显示 <code>+N 查看全部</code>。</td><td>点击“查看全部”后，可查看该内容已关联的全部菜单和状态。</td></tr>
+              <tr><td>菜单维度状态</td><td>每个关联菜单单独展示已上架/未上架。</td><td>同一内容在菜单A可以已上架，在菜单B可以未上架。</td></tr>
+              <tr><td>设置菜单弹窗</td><td>弹窗按菜单树展示，末级菜单可操作。</td><td>父级菜单只做层级展示，显示“无法关联”；末级菜单支持“仅关联”“关联并上架”“取消关联”。</td></tr>
+              <tr><td>批量绑定菜单弹窗</td><td>显示内容数量、当前项目、目标菜单树。</td><td>菜单树和操作状态与“设置菜单”弹窗保持一致。</td></tr>
+              <tr><td>筛选命中标记</td><td>按菜单筛选后，命中的关联菜单展示“当前筛选命中”。</td><td>列表仍展示该内容全部关联菜单，避免用户误以为内容只绑定了当前筛选菜单。</td></tr>
+              <tr><td>PRD入口</td><td>原型右上角新增 <code>PRD</code> 按钮。</td><td>方便评审、开发、测试直接在原型内查看需求说明。</td></tr>
+            </tbody>
+          </table>
+
+          <h3 id="prd-background">3. 背景</h3>
+          <p>当前视频管理需要支持一条内容出现在多个菜单位置。原来偏向“一条内容只关联一个菜单”的逻辑，无法满足同一内容同时投放到多个菜单、且不同菜单下上架状态不同的运营需求。</p>
+
+          <h3 id="prd-goals">4. 目标</h3>
+          <ul>
+            <li>支持一条内容关联多个菜单。</li>
+            <li>支持菜单维度的上架状态，而不是只按内容整体状态判断。</li>
+            <li>列表中的“关联菜单”字段清楚展示该内容已关联的菜单集合。</li>
+            <li>设置菜单弹窗与列表字段联动，便于演示完整操作闭环。</li>
+          </ul>
+
+          <h3 id="prd-concepts">5. 核心概念</h3>
+          <table>
+            <thead>
+              <tr><th>概念</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>内容</td><td>视频列表中的单条视频内容。</td></tr>
+              <tr><td>菜单</td><td>前台展示内容的导航或分类位置，支持多级结构。</td></tr>
+              <tr><td>关联菜单</td><td>某条内容已经绑定的一个菜单节点。</td></tr>
+              <tr><td>菜单路径</td><td>从一级菜单到目标菜单的完整路径，例如：<code>一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D</code>。</td></tr>
+              <tr><td>菜单维度状态</td><td>同一条内容在某一个菜单下的状态，例如已上架、未上架。</td></tr>
+              <tr><td>仅关联</td><td>内容绑定到菜单，但不立即在该菜单下上架。</td></tr>
+              <tr><td>关联并上架</td><td>内容绑定到菜单，并在该菜单下立即上架。</td></tr>
+              <tr><td>取消关联</td><td>解除内容和某个菜单的绑定关系。</td></tr>
+            </tbody>
+          </table>
+
+          <h3 id="prd-rules">6. 业务规则</h3>
+          <h4>6.1 内容与菜单关系</h4>
+          <ol>
+            <li>一条内容可以关联多个菜单。</li>
+            <li>同一条内容不可重复关联同一个菜单路径。</li>
+            <li>内容关联菜单后，需要记录该菜单维度下的状态。</li>
+            <li>内容在不同菜单下的状态互相独立。</li>
+          </ol>
+
+          <table>
+            <thead>
+              <tr><th>内容</th><th>菜单路径</th><th>状态</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>内容A</td><td>一级菜单A / 二级菜单A / 三级菜单B</td><td>未上架</td></tr>
+              <tr><td>内容A</td><td>一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D</td><td>已上架</td></tr>
+            </tbody>
+          </table>
+
+          <h4>6.2 菜单可关联规则</h4>
+          <ol>
+            <li>父级菜单不允许关联内容，只用于层级展示。</li>
+            <li>判断标准不是菜单级数，而是该菜单是否有子菜单。</li>
+            <li>有子菜单的节点统一视为父级菜单，操作列显示“无法关联”。</li>
+            <li>没有子菜单的末级菜单才允许关联内容。</li>
+          </ol>
+
+          <h4>6.3 状态流转规则</h4>
+          <table>
+            <thead>
+              <tr><th>操作</th><th>结果</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>仅关联</td><td>新增菜单关联，状态为未上架。</td></tr>
+              <tr><td>关联并上架</td><td>新增菜单关联，状态为已上架。</td></tr>
+              <tr><td>已关联菜单再次选择仅关联</td><td>保留关联，将状态更新为未上架。</td></tr>
+              <tr><td>已关联菜单再次选择关联并上架</td><td>保留关联，将状态更新为已上架。</td></tr>
+              <tr><td>取消关联</td><td>删除该菜单路径下的关联关系。</td></tr>
+            </tbody>
+          </table>
+
+          <h3 id="prd-page">7. 页面需求</h3>
+          <h4>7.1 视频列表 - 关联菜单字段</h4>
+          <p>列表中的“关联菜单”字段展示该内容当前已关联的菜单集合。每条关联展示菜单路径、目标菜单名称和菜单维度状态。</p>
+          <ul>
+            <li>默认最多展示 2 条菜单关联。</li>
+            <li>如果关联菜单数量大于 2 条，展示 <code>+N 查看全部</code>。</li>
+            <li>如果关联菜单数量小于或等于 2 条，不展示“查看全部”。</li>
+            <li>未关联任何菜单时，显示 <code>未关联</code>。</li>
+          </ul>
+
+          <h4>7.2 查看全部弹窗</h4>
+          <p>点击 <code>+N 查看全部</code> 后，展示该内容全部已关联菜单。弹窗字段包括菜单路径和状态，不展示“列表展示”等内部说明文案。</p>
+
+          <h4>7.3 设置菜单入口</h4>
+          <ul>
+            <li>入口位于视频列表批量操作区域中的 <code>设置菜单</code> 按钮。</li>
+            <li>未勾选内容时，按钮置灰不可点击。</li>
+            <li>勾选至少 1 条内容后，按钮高亮可点击。</li>
+            <li>支持单选和多选内容后批量设置菜单。</li>
+          </ul>
+
+          <h4>7.4 设置菜单弹窗</h4>
+          <p class="prd-note">设置菜单弹窗按菜单树展示。父级菜单显示“无法关联”，末级菜单显示“仅关联 / 关联并上架”。</p>
+          <table>
+            <thead>
+              <tr><th>菜单状态</th><th>操作展示</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>不可关联父级菜单</td><td>无法关联</td></tr>
+              <tr><td>未关联末级菜单</td><td>仅关联 / 关联并上架</td></tr>
+              <tr><td>已关联未上架</td><td>已关联未上架 / 取消关联</td></tr>
+              <tr><td>已关联已上架</td><td>已关联已上架 / 取消关联</td></tr>
+            </tbody>
+          </table>
+
+          <h3 id="prd-linkage">8. 联动规则</h3>
+          <ol>
+            <li>打开设置菜单弹窗时，弹窗根据当前选中内容的已关联菜单展示对应状态。</li>
+            <li>点击 <code>仅关联</code> 后，列表中该内容的“关联菜单”字段立即新增该菜单，状态为未上架。</li>
+            <li>点击 <code>关联并上架</code> 后，列表中该内容的“关联菜单”字段立即新增该菜单，状态为已上架。</li>
+            <li>点击 <code>取消关联</code> 后，列表中该内容的“关联菜单”字段立即移除该菜单。</li>
+            <li>若当前选中了多条内容，操作应用到所有已选内容。</li>
+          </ol>
+
+          <h3 id="prd-filter">9. 筛选逻辑</h3>
+          <ol>
+            <li>内容只要关联了筛选条件对应的菜单路径，即命中筛选。</li>
+            <li>如果内容关联了多个菜单，筛选不同菜单时，同一条内容可能在多个结果中出现。</li>
+            <li>筛选后，列表中的“关联菜单”字段仍展示该内容全部已关联菜单，而不是只展示当前筛选命中的菜单。</li>
+            <li>为降低“内容重复”的误解，当前筛选命中的菜单需要展示“当前筛选命中”标记。</li>
+          </ol>
+
+          <h3 id="prd-data">10. 数据结构建议</h3>
+          <table>
+            <thead>
+              <tr><th>字段</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>id</td><td>关联记录ID</td></tr>
+              <tr><td>content_id</td><td>内容ID</td></tr>
+              <tr><td>menu_id</td><td>菜单ID</td></tr>
+              <tr><td>menu_path</td><td>菜单完整路径，用于列表展示</td></tr>
+              <tr><td>status</td><td><code>published</code> / <code>unpublished</code></td></tr>
+              <tr><td>created_at</td><td>创建时间</td></tr>
+              <tr><td>updated_at</td><td>更新时间</td></tr>
+            </tbody>
+          </table>
+
+          <h3 id="prd-acceptance">11. 验收标准</h3>
+          <h4>11.1 列表展示</h4>
+          <ul>
+            <li>内容无关联菜单时，显示“未关联”。</li>
+            <li>内容关联 1 条菜单时，展示 1 条菜单路径和状态。</li>
+            <li>内容关联 2 条菜单时，展示 2 条菜单路径和状态，不展示“查看全部”。</li>
+            <li>内容关联超过 2 条菜单时，展示前 2 条，并显示 <code>+N 查看全部</code>。</li>
+            <li>点击“查看全部”后，弹窗展示全部菜单路径和状态。</li>
+            <li>按菜单筛选后，命中的关联菜单展示“当前筛选命中”标记。</li>
+          </ul>
+
+          <h4>11.2 设置菜单弹窗</h4>
+          <ul>
+            <li>未勾选内容时，设置菜单按钮不可点击。</li>
+            <li>勾选内容后，设置菜单按钮高亮可点击。</li>
+            <li>弹窗菜单按层级树展示。</li>
+            <li>父级菜单显示“无法关联”。</li>
+            <li>末级菜单显示“仅关联”和“关联并上架”。</li>
+            <li>已关联菜单展示当前状态和“取消关联”。</li>
+          </ul>
+
+          <h4>11.3 联动效果</h4>
+          <ul>
+            <li>点击“仅关联”后，列表字段新增对应菜单，状态为未上架。</li>
+            <li>点击“关联并上架”后，列表字段新增对应菜单，状态为已上架。</li>
+            <li>点击“取消关联”后，列表字段移除对应菜单。</li>
+            <li>多选内容时，操作对所有已选内容生效。</li>
+          </ul>
+
+          <h3 id="prd-risk">12. 风险与注意事项</h3>
+          <ul>
+            <li>多菜单关联后，同一内容可能出现在多个菜单页面。解决方案：列表始终展示该内容的全部关联菜单，并对当前筛选命中的菜单展示“当前筛选命中”标记，辅助运营判断这是同一内容的多菜单分发，不是重复内容。</li>
+            <li>内容整体上架状态和菜单维度上架状态需要在产品文案中区分清楚。</li>
+            <li>父级菜单不允许关联内容。判断标准为“是否存在子菜单”：有子菜单则不可关联，无子菜单则可关联。</li>
+            <li>批量操作时，如果多条内容状态不一致，后续可增加“部分已关联”状态；当前原型按当前选中内容回显。</li>
+          </ul>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tabs = Array.from(document.querySelectorAll(".tab"));
+    const toast = document.getElementById("toast");
+    const modalMask = document.getElementById("modalMask");
+    const modalText = document.getElementById("modalText");
+    const menuModalMask = document.getElementById("menuModalMask");
+    const bulkBindModalMask = document.getElementById("bulkBindModalMask");
+    const bulkContentCount = document.getElementById("bulkContentCount");
+    const associatedModalMask = document.getElementById("associatedModalMask");
+    const prdModalMask = document.getElementById("prdModalMask");
+    const associatedMeta = document.getElementById("associatedMeta");
+    const associatedMenuBody = document.getElementById("associatedMenuBody");
+    const setMenuButton = document.getElementById("setMenuButton");
+    const selectAll = document.getElementById("selectAll");
+    const rowChecks = Array.from(document.querySelectorAll(".row-check"));
+    const videoRows = Array.from(document.querySelectorAll(".video-table tbody tr"));
+    let toastTimer = null;
+    const initialContentMenus = [
+      {
+        key: "nana",
+        menus: [
+          { path: "一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D", status: "published" },
+          { path: "一级菜单A / 二级菜单A / 三级菜单B", status: "unpublished" },
+          { path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单A", status: "published" },
+          { path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单B", status: "unpublished" }
+        ]
+      },
+      {
+        key: "video-2",
+        menus: [
+          { path: "一级菜单A / 二级菜单A / 三级菜单B", status: "published" },
+          { path: "一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D", status: "published" }
+        ]
+      },
+      {
+        key: "test22",
+        menus: [
+          { path: "一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D", status: "unpublished" },
+          { path: "一级菜单A / 二级菜单A / 三级菜单B", status: "published" }
+        ]
+      },
+      { key: "video-4", menus: [{ path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单A", status: "published" }] },
+      {
+        key: "video-5",
+        menus: [
+          { path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单B", status: "unpublished" },
+          { path: "一级菜单A / 二级菜单A / 三级菜单B", status: "published" }
+        ]
+      },
+      { key: "video-6", menus: [{ path: "一级菜单A / 二级菜单A / 三级菜单B", status: "published" }] },
+      {
+        key: "lab",
+        menus: [
+          { path: "一级菜单A / 二级菜单A / 三级菜单B", status: "published" },
+          { path: "一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D", status: "published" },
+          { path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单B", status: "unpublished" }
+        ]
+      },
+      { key: "video-8", menus: [] },
+      { key: "video-9", menus: [{ path: "一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D", status: "published" }] },
+      { key: "video-10", menus: [{ path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单A", status: "unpublished" }] }
+    ];
+    const contentMenuStore = {};
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function selectedRows() {
+      return rowChecks
+        .filter((item) => item.checked)
+        .map((item) => item.closest("tr"));
+    }
+
+    function getRowTitle(row) {
+      return row.querySelector(".basic-title")?.textContent.trim() || "当前内容";
+    }
+
+    function ensureRowStore(row) {
+      if (!row.dataset.videoKey) {
+        row.dataset.videoKey = "video-" + (videoRows.indexOf(row) + 1);
+      }
+      if (!contentMenuStore[row.dataset.videoKey]) {
+        contentMenuStore[row.dataset.videoKey] = {
+          title: getRowTitle(row),
+          menus: []
+        };
+      }
+      return contentMenuStore[row.dataset.videoKey];
+    }
+
+    function splitMenuPath(path) {
+      const parts = path.split(" / ");
+      const leaf = parts.pop() || "";
+      return {
+        parent: parts.join(" / "),
+        leaf
+      };
+    }
+
+    function menuStatusMeta(status) {
+      const isPublished = status === "published";
+      return {
+        label: isPublished ? "已上架" : "未上架",
+        className: isPublished ? "published" : "unpublished"
+      };
+    }
+
+    function activeMenuFilterPath() {
+      const selected = ["menuOne", "menuTwo", "menuThree", "menuFour"]
+        .map((id) => document.getElementById(id))
+        .filter((select) => select && select.selectedIndex > 0)
+        .map((select) => select.value);
+      return selected.join(" / ");
+    }
+
+    function menuMatchesFilter(item, activePath) {
+      return !activePath || item.path.startsWith(activePath);
+    }
+
+    function menuLineHtml(item, activePath) {
+      const pathInfo = splitMenuPath(item.path);
+      const status = menuStatusMeta(item.status);
+      const hit = activePath && menuMatchesFilter(item, activePath)
+        ? '<span class="filter-hit">当前筛选命中</span>'
+        : "";
+      return `
+        <div class="menu-assoc-item">
+          <div class="menu-assoc-text">
+            <div class="menu-path">${escapeHtml(pathInfo.parent)}</div>
+            <div><span class="menu-leaf">${escapeHtml(pathInfo.leaf)}</span><span class="state-pill ${status.className}">${status.label}</span>${hit}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRowAssociatedMenus(row) {
+      const detail = ensureRowStore(row);
+      const cell = row.children[5];
+      const menus = detail.menus;
+      const activePath = activeMenuFilterPath();
+      let html = '<div class="menu-lines">';
+
+      if (menus.length === 0) {
+        html += '<span class="dash">未关联</span>';
+      } else {
+        html += menus.slice(0, 2).map((item) => menuLineHtml(item, activePath)).join("");
+        if (menus.length > 2) {
+          html += `<button class="menu-more" type="button" data-menu-detail="${escapeHtml(row.dataset.videoKey)}">+${menus.length - 2} 查看全部</button>`;
+        }
+      }
+
+      html += "</div>";
+      cell.innerHTML = html;
+    }
+
+    function applyMenuFilter(showMessage = false) {
+      const activePath = activeMenuFilterPath();
+      let visibleCount = 0;
+
+      videoRows.forEach((row) => {
+        const detail = ensureRowStore(row);
+        const visible = !activePath || detail.menus.some((item) => menuMatchesFilter(item, activePath));
+        row.style.display = visible ? "" : "none";
+        if (visible) visibleCount += 1;
+        renderRowAssociatedMenus(row);
+      });
+
+      if (showMessage) {
+        showToast(activePath ? "已按菜单筛选，命中 " + visibleCount + " 条内容" : "已清空菜单筛选");
+      }
+    }
+
+    function resetMenuFilters() {
+      ["menuOne", "menuTwo", "menuThree", "menuFour"].forEach((id) => {
+        const select = document.getElementById(id);
+        if (!select) return;
+        select.selectedIndex = 0;
+        select.style.color = "var(--light)";
+      });
+      applyMenuFilter();
+    }
+
+    function setupContentMenuStore() {
+      videoRows.forEach((row, index) => {
+        const preset = initialContentMenus[index] || { key: "video-" + (index + 1), menus: [] };
+        row.dataset.videoKey = preset.key;
+        contentMenuStore[preset.key] = {
+          title: getRowTitle(row),
+          menus: preset.menus.map((item) => ({ ...item }))
+        };
+        renderRowAssociatedMenus(row);
+      });
+    }
+
+    function syncMenuModalState() {
+      const firstSelectedRow = selectedRows()[0];
+      const selectedDetail = firstSelectedRow ? ensureRowStore(firstSelectedRow) : null;
+
+      document.querySelectorAll(".menu-action-buttons[data-menu-path]").forEach((container) => {
+        const current = selectedDetail?.menus.find((item) => item.path === container.dataset.menuPath);
+        if (current) {
+          renderLinkedMenuState(container, current.status === "published" ? "publish" : "only");
+          return;
+        }
+        renderUnlinkedMenuState(container);
+      });
+    }
+
+    function updateSelectedContentMenus(path, mode) {
+      const status = mode === "publish" ? "published" : "unpublished";
+      selectedRows().forEach((row) => {
+        const detail = ensureRowStore(row);
+        const existing = detail.menus.find((item) => item.path === path);
+        if (existing) {
+          existing.status = status;
+        } else {
+          detail.menus.unshift({ path, status });
+        }
+        renderRowAssociatedMenus(row);
+      });
+    }
+
+    function removeSelectedContentMenu(path) {
+      selectedRows().forEach((row) => {
+        const detail = ensureRowStore(row);
+        detail.menus = detail.menus.filter((item) => item.path !== path);
+        renderRowAssociatedMenus(row);
+      });
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.classList.add("show");
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function selectedCount() {
+      return selectedRows().length;
+    }
+
+    function updateSelectionActions() {
+      const hasSelection = selectedCount() > 0;
+      setMenuButton.disabled = !hasSelection;
+      setMenuButton.classList.toggle("primary", hasSelection);
+      setMenuButton.classList.toggle("disabled", !hasSelection);
+      setMenuButton.classList.toggle("soft", false);
+      setMenuButton.setAttribute("aria-disabled", String(!hasSelection));
+    }
+
+    function openMenuModal() {
+      syncMenuModalState();
+      menuModalMask.classList.add("open");
+    }
+
+    function closeMenuModal() {
+      menuModalMask.classList.remove("open");
+    }
+
+    function resetBulkBindMenuState() {
+      document.querySelectorAll(".menu-action-buttons[data-bulk-menu-path]").forEach((container) => {
+        renderBulkUnlinkedMenuState(container);
+      });
+    }
+
+    function openBulkBindModal() {
+      bulkContentCount.value = "";
+      resetBulkBindMenuState();
+      bulkBindModalMask.classList.add("open");
+    }
+
+    function closeBulkBindModal() {
+      bulkBindModalMask.classList.remove("open");
+    }
+
+    function openAssociatedModal(key) {
+      const detail = contentMenuStore[key];
+      if (!detail) return;
+      const activePath = activeMenuFilterPath();
+      associatedMeta.textContent = detail.title + "，共关联 " + detail.menus.length + " 个菜单。";
+      associatedMenuBody.innerHTML = detail.menus.map((item) => {
+        const statusLabel = item.status === "published" ? "已上架" : "未上架";
+        const statusClass = item.status === "published" ? "published" : "unpublished";
+        const hit = activePath && menuMatchesFilter(item, activePath)
+          ? '<span class="filter-hit">当前筛选命中</span>'
+          : "";
+        return `
+          <tr>
+            <td><div class="associated-path">${item.path}${hit}</div></td>
+            <td><span class="state-pill ${statusClass}">${statusLabel}</span></td>
+          </tr>
+        `;
+      }).join("");
+      associatedModalMask.classList.add("open");
+    }
+
+    function closeAssociatedModal() {
+      associatedModalMask.classList.remove("open");
+    }
+
+    function openPrdModal() {
+      prdModalMask.classList.add("open");
+      const content = document.querySelector(".prd-content");
+      if (content) content.scrollTop = 0;
+      document.querySelectorAll(".prd-nav a").forEach((item, index) => {
+        item.classList.toggle("active", index === 0);
+      });
+    }
+
+    function closePrdModal() {
+      prdModalMask.classList.remove("open");
+    }
+
+    function renderUnlinkedMenuState(container) {
+      container.dataset.menuState = "unlinked";
+      container.innerHTML = `
+        <button class="btn tiny outline-blue" type="button" data-link-menu="only">仅关联</button>
+        <button class="btn tiny primary" type="button" data-link-menu="publish">关联并上架</button>
+      `;
+    }
+
+    function renderLinkedMenuState(container, mode) {
+      container.dataset.menuState = mode;
+      const isPublished = mode === "publish";
+      const label = isPublished ? "已关联已上架" : "已关联未上架";
+      container.innerHTML = `
+        <span class="menu-status ${isPublished ? "published" : "unpublished"}">${label}</span>
+        <button class="btn tiny outline-red" type="button" data-unlink-menu>取消关联</button>
+      `;
+    }
+
+    function renderBulkUnlinkedMenuState(container) {
+      container.dataset.menuState = "unlinked";
+      container.innerHTML = `
+        <button class="btn tiny outline-blue" type="button" data-bulk-link-menu="only">仅关联</button>
+        <button class="btn tiny primary" type="button" data-bulk-link-menu="publish">关联并上架</button>
+      `;
+    }
+
+    function renderBulkLinkedMenuState(container, mode) {
+      container.dataset.menuState = mode;
+      const isPublished = mode === "publish";
+      const label = isPublished ? "已关联已上架" : "已关联未上架";
+      container.innerHTML = `
+        <span class="menu-status ${isPublished ? "published" : "unpublished"}">${label}</span>
+        <button class="btn tiny outline-red" type="button" data-bulk-unlink-menu>取消关联</button>
+      `;
+    }
+
+    setupContentMenuStore();
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((item) => item.classList.toggle("active", item === tab));
+        showToast(tab.textContent.trim() + "菜单已切换");
+      });
+    });
+
+    document.querySelectorAll("[data-toggle]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = document.getElementById(button.dataset.toggle);
+        const isOpen = target.classList.toggle("open");
+        button.textContent = isOpen ? button.textContent.replace("展开", "收起") : button.textContent.replace("收起", "展开");
+      });
+    });
+
+    document.querySelector(".video-table").addEventListener("click", (event) => {
+      const detailButton = event.target.closest("[data-menu-detail]");
+      if (detailButton) {
+        openAssociatedModal(detailButton.dataset.menuDetail);
+      }
+    });
+
+    document.querySelector("[data-reset-tags]").addEventListener("click", () => {
+      document.getElementById("tagKeyword").value = "";
+      document.getElementById("tagArea").classList.remove("open");
+      showToast("标签已重置");
+    });
+
+    document.querySelector("[data-reset-filters]").addEventListener("click", () => {
+      document.getElementById("filterArea").classList.remove("open");
+      showToast("筛选项已重置");
+    });
+
+    document.querySelectorAll("select").forEach((select) => {
+      select.addEventListener("change", () => {
+        select.style.color = select.selectedIndex === 0 ? "var(--light)" : "var(--text)";
+        if (["menuOne", "menuTwo", "menuThree", "menuFour"].includes(select.id)) {
+          applyMenuFilter(true);
+        }
+      });
+    });
+
+    selectAll.addEventListener("change", () => {
+      rowChecks.forEach((checkbox) => {
+        checkbox.checked = selectAll.checked;
+      });
+      updateSelectionActions();
+      showToast(selectAll.checked ? "已选择全部视频" : "已取消选择");
+    });
+
+    rowChecks.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        selectAll.checked = rowChecks.every((item) => item.checked);
+        updateSelectionActions();
+      });
+    });
+
+    document.querySelectorAll("[data-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const action = button.dataset.action;
+        if (action === "重置") {
+          resetMenuFilters();
+          showToast("筛选条件已重置");
+          return;
+        }
+        if (action === "查询" || action === "正片" || action === "预览" || action === "详情编辑") {
+          showToast(action + "已触发");
+          return;
+        }
+        if (action === "设置菜单") {
+          if (selectedCount() === 0) {
+            showToast("请先勾选需要设置的视频");
+            return;
+          }
+          openMenuModal();
+          return;
+        }
+        if (action === "批量绑定菜单") {
+          openBulkBindModal();
+          return;
+        }
+        modalText.textContent = selectedCount() > 0
+          ? "确认对已选择的 " + selectedCount() + " 条视频执行“" + action + "”？"
+          : "请先选择需要操作的视频，再执行“" + action + "”。";
+        modalMask.classList.add("open");
+      });
+    });
+
+    document.querySelectorAll("[data-status]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const next = button.textContent.trim() === "下架" ? "上架" : "下架";
+        button.textContent = next;
+        button.classList.toggle("warn", next === "下架");
+        button.classList.toggle("success", next === "上架");
+        showToast("视频状态已切换为" + next);
+      });
+    });
+
+    document.querySelector("[data-close-modal]").addEventListener("click", () => {
+      modalMask.classList.remove("open");
+    });
+
+    document.querySelector("[data-confirm-modal]").addEventListener("click", () => {
+      modalMask.classList.remove("open");
+      showToast("操作已确认");
+    });
+
+    document.querySelectorAll("[data-close-menu-modal]").forEach((button) => {
+      button.addEventListener("click", closeMenuModal);
+    });
+
+    document.querySelectorAll("[data-close-bulk-bind-modal]").forEach((button) => {
+      button.addEventListener("click", closeBulkBindModal);
+    });
+
+    document.querySelectorAll("[data-close-associated-modal]").forEach((button) => {
+      button.addEventListener("click", closeAssociatedModal);
+    });
+
+    document.querySelector("[data-confirm-menu-modal]").addEventListener("click", () => {
+      closeMenuModal();
+      showToast("菜单设置已保存");
+    });
+
+    document.querySelector("[data-open-prd]").addEventListener("click", openPrdModal);
+
+    document.querySelectorAll(".prd-nav a").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        const target = document.querySelector(link.getAttribute("href"));
+        const content = document.querySelector(".prd-content");
+        if (!target || !content) return;
+        document.querySelectorAll(".prd-nav a").forEach((item) => item.classList.toggle("active", item === link));
+        const top = target.getBoundingClientRect().top - content.getBoundingClientRect().top + content.scrollTop - 8;
+        content.scrollTo({ top, behavior: "smooth" });
+      });
+    });
+
+    document.querySelectorAll("[data-close-prd]").forEach((button) => {
+      button.addEventListener("click", closePrdModal);
+    });
+
+    document.querySelector(".menu-table").addEventListener("click", (event) => {
+      const linkButton = event.target.closest("[data-link-menu]");
+      const unlinkButton = event.target.closest("[data-unlink-menu]");
+
+      if (linkButton) {
+        const mode = linkButton.dataset.linkMenu;
+        const container = linkButton.closest(".menu-action-buttons");
+        updateSelectedContentMenus(container.dataset.menuPath, mode);
+        renderLinkedMenuState(container, mode);
+        showToast(mode === "publish" ? "已关联菜单并上架，列表已更新" : "已关联菜单，列表已更新为未上架");
+      }
+
+      if (unlinkButton) {
+        const container = unlinkButton.closest(".menu-action-buttons");
+        removeSelectedContentMenu(container.dataset.menuPath);
+        renderUnlinkedMenuState(container);
+        showToast("已取消菜单关联，列表已更新");
+      }
+    });
+
+    document.querySelector(".bulk-menu-table").addEventListener("click", (event) => {
+      const linkButton = event.target.closest("[data-bulk-link-menu]");
+      const unlinkButton = event.target.closest("[data-bulk-unlink-menu]");
+      if (!linkButton && !unlinkButton) return;
+
+      const count = Number(bulkContentCount.value);
+      if (count > 50000) {
+        showToast("内容数量最大值为50000");
+        bulkContentCount.focus();
+        return;
+      }
+
+      const container = (linkButton || unlinkButton).closest(".menu-action-buttons");
+      if (linkButton) {
+        const mode = linkButton.dataset.bulkLinkMenu;
+        renderBulkLinkedMenuState(container, mode);
+        const scopeText = count > 0 ? "已为 " + count + " 条内容" : "已";
+        showToast(mode === "publish"
+          ? scopeText + "批量关联菜单并上架"
+          : scopeText + "批量关联菜单，当前菜单未上架");
+      }
+
+      if (unlinkButton) {
+        renderBulkUnlinkedMenuState(container);
+        showToast(count > 0 ? "已为 " + count + " 条内容批量取消菜单关联" : "已取消菜单关联");
+      }
+    });
+
+    modalMask.addEventListener("click", (event) => {
+      if (event.target === modalMask) {
+        modalMask.classList.remove("open");
+      }
+    });
+
+    menuModalMask.addEventListener("click", (event) => {
+      if (event.target === menuModalMask) {
+        closeMenuModal();
+      }
+    });
+
+    bulkBindModalMask.addEventListener("click", (event) => {
+      if (event.target === bulkBindModalMask) {
+        closeBulkBindModal();
+      }
+    });
+
+    associatedModalMask.addEventListener("click", (event) => {
+      if (event.target === associatedModalMask) {
+        closeAssociatedModal();
+      }
+    });
+
+    prdModalMask.addEventListener("click", (event) => {
+      if (event.target === prdModalMask) {
+        closePrdModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        modalMask.classList.remove("open");
+        closeMenuModal();
+        closeBulkBindModal();
+        closeAssociatedModal();
+        closePrdModal();
+      }
+    });
+
+    updateSelectionActions();
+  </script>
+</body>
+</html>
