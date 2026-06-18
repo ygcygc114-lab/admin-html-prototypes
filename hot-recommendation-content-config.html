@@ -286,20 +286,20 @@
       row-gap: 0;
     }
 
-    .menu-form .config-card:nth-child(5) {
+    .menu-form #normalLayoutCard {
       grid-column: 1 / -1;
     }
 
     .menu-form .config-card:first-child .section-title,
-    .menu-form .config-card:nth-child(5) .section-title,
-    .menu-form .config-card:nth-child(5) .slot-source-row,
-    .menu-form .config-card:nth-child(5) .normal-slot-manual,
-    .menu-form .config-card:nth-child(5) .style-option-row,
-    .menu-form .config-card:nth-child(5) .web-style-title {
+    .menu-form #normalLayoutCard .section-title,
+    .menu-form #normalLayoutCard .slot-source-row,
+    .menu-form #normalLayoutCard .normal-slot-manual,
+    .menu-form #normalLayoutCard .style-option-row,
+    .menu-form #normalLayoutCard .web-style-title {
       grid-column: 1 / -1;
     }
 
-    .menu-form .config-card:nth-child(5) {
+    .menu-form #normalLayoutCard {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 150px 150px;
       column-gap: 16px;
@@ -551,6 +551,21 @@
     .style-option-row.hidden,
     .slot-source-row.hidden {
       display: none;
+    }
+
+    .config-card.hidden {
+      display: none;
+    }
+
+    .menu-form .config-card.hidden {
+      display: none;
+    }
+
+    .menu-form #normalContentCard[hidden],
+    .menu-form #normalLayoutCard[hidden],
+    .menu-form #normalContentCard.hidden,
+    .menu-form #normalLayoutCard.hidden {
+      display: none !important;
     }
 
     .radio-line.disabled {
@@ -1234,6 +1249,12 @@
       font-size: 16px;
     }
 
+    .prd-section h4 {
+      margin: 14px 0 8px;
+      color: #3f4858;
+      font-size: 14px;
+    }
+
     .prd-section p {
       margin: 0 0 8px;
       color: #5f6878;
@@ -1572,14 +1593,16 @@
             <div class="form-row">
               <div class="label">菜单类型</div>
               <select class="select" id="normalMenuType">
-                <option>媒体内容</option>
-                <option>外部链接</option>
-                <option>活动页面</option>
+                <option>Ai工具</option>
+                <option>应用中心</option>
+                <option>全部分类</option>
+                <option selected>展示媒体内容</option>
+                <option>展示子菜单</option>
               </select>
             </div>
           </div>
 
-          <div class="config-card">
+          <div class="config-card" id="normalContentCard">
             <div class="section-title">内容选择</div>
 
             <div class="form-row">
@@ -1602,7 +1625,7 @@
             </div>
           </div>
 
-          <div class="config-card">
+          <div class="config-card" id="normalLayoutCard">
             <div class="section-title">排版和样式</div>
 
             <div class="form-row slot-source-row">
@@ -1638,7 +1661,7 @@
                   <label><input type="radio" name="coverStyle" value="horizontal" /> 横图 16:9</label>
                   <label><input type="radio" name="coverStyle" value="vertical" /> 竖图 3:4</label>
                 </div>
-                <div class="field-hint" id="coverStyleHint">自动适配：长视频 16:9；短视频、漫画、小说 3:4；帖子根据模板决定。手动选择横图或竖图时，前端按用户选择展示。</div>
+                <div class="field-hint" id="coverStyleHint">自动适配：长视频 16:9；短视频、漫画、小说 3:4；帖子由前端模板决定。手动选择横图或竖图时，前端按用户选择展示。</div>
               </div>
             </div>
 
@@ -2122,7 +2145,7 @@
           </div>
           <div class="prd-summary-item">
             <strong>显示条件</strong>
-            <span>仅当菜单类型为「媒体内容」时展示；切换为非媒体内容时隐藏并暂存配置，不参与前台生效。</span>
+            <span>仅当菜单类型为「展示媒体内容」时展示「内容选择」和「排版和样式」；切换为其他菜单类型时整块隐藏，只在当前编辑页暂存，不参与保存和前台生效。</span>
           </div>
           <div class="prd-summary-item">
             <strong>样式优先级</strong>
@@ -2141,8 +2164,10 @@
           <ol>
             <li>普通菜单支持配置「展示位内容设置」，可选择自动选择或运营指定。</li>
             <li>普通菜单支持配置「内容列表样式」，可选择自动适配、横图 16:9、竖图 3:4。</li>
-            <li>配置仅在菜单类型为「媒体内容」时展示并生效；非媒体内容菜单不展示相关配置。</li>
+            <li>「内容选择」和「排版和样式」仅在菜单类型为「展示媒体内容」时展示并生效；其他菜单类型不展示这两块配置。</li>
+            <li>本规则仅作用于普通菜单，不影响首页固定功能模块中的热门推荐配置。</li>
             <li>运营指定内容支持排序，排序值在当前菜单内唯一，数值越大越靠前。</li>
+            <li>前端「换一批」需按当前菜单内容数据继续分页，运营指定内容作为优先队列参与前几批展示。</li>
             <li>手动选择横图或竖图时，前端必须按用户选择展示，不再因内容类型强制改写。</li>
           </ol>
         </section>
@@ -2151,9 +2176,10 @@
           <h3>三、适用范围</h3>
           <ol>
             <li>适用于除首页固定功能模块外的普通菜单编辑页。</li>
-            <li>适用于菜单类型为「媒体内容」的菜单。</li>
+            <li>适用于菜单类型为「展示媒体内容」的菜单。</li>
             <li>媒体内容包括：长视频、短视频、漫画、帖子、小说。</li>
-            <li>菜单类型为外部链接、活动页面或其他非媒体内容时，不展示「展示位内容设置」和「内容列表样式」。</li>
+            <li>菜单类型为「Ai工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
+            <li>不适用于首页固定功能模块；首页热门推荐仍按「首页热门推荐配置」规则执行，包括 10 条运营指定上限。</li>
           </ol>
         </section>
 
@@ -2177,11 +2203,15 @@
               </tr>
               <tr>
                 <td>当前菜单实际内容范围</td>
-                <td>由菜单类型、内容类型、选择内容方式和当前菜单关联范围共同决定；不允许选择范围外内容。</td>
+                <td>由菜单类型、内容类型、当前菜单配置和内容接口返回结果共同决定；不允许选择范围外内容。</td>
+              </tr>
+              <tr>
+                <td>当前菜单默认内容</td>
+                <td>指不配置运营指定时，该普通菜单前端原本会展示的内容数据，由当前菜单配置和内容接口返回结果决定，同时受内容类型、上架状态、可见权限和系统原排序规则限制。</td>
               </tr>
               <tr>
                 <td>补足规则</td>
-                <td>运营指定内容不足前台展示位数量时，剩余展示位由当前菜单内容列表默认排序补足。</td>
+                <td>运营指定内容不足当前批次展示数量时，剩余位置由当前菜单默认内容补足；默认内容需排除当前批次及历史批次已展示的运营指定内容，避免重复。</td>
               </tr>
             </tbody>
           </table>
@@ -2209,22 +2239,45 @@
             <li>当展示位内容设置为「运营指定」且已存在运营指定内容时，切换内容类型如会导致部分已选内容不在新范围内，系统需提示用户确认。</li>
             <li>用户确认切换后，系统切换到新内容类型，并移除不符合新范围的运营指定内容；仍符合新范围的内容继续保留。</li>
             <li>用户取消切换后，内容类型、展示位内容设置和已选运营指定内容保持原值。</li>
-            <li>帖子为特例，展示样式和内容范围可根据帖子模板决定；切换到帖子时仍需遵循当前菜单实际内容范围和运营指定内容校验。</li>
+            <li>帖子为特例：自动适配时展示样式由前端模板决定；用户手动选择横图 16:9 或竖图 3:4 时，仍按用户选择展示。切换到帖子时仍需遵循当前菜单实际内容范围和运营指定内容校验。</li>
           </ol>
         </section>
 
         <section class="prd-section">
-          <h3>七、菜单类型切换规则</h3>
+          <h3>七、默认内容与换一批规则</h3>
           <ol>
-            <li>菜单类型为「媒体内容」时，展示「展示位内容设置」和「内容列表样式」。</li>
-            <li>菜单类型切换为非媒体内容时，隐藏上述配置，配置值暂存但不参与保存生效和前台展示。</li>
-            <li>从非媒体内容切回「媒体内容」时，恢复此前暂存的展示位内容设置、运营指定内容和内容列表样式。</li>
-            <li>保存非媒体内容菜单时，不校验隐藏的运营指定内容和内容列表样式。</li>
+            <li>普通菜单的默认内容是当前菜单自身关联或配置出来的内容数据，不是额外新增的内容池。</li>
+            <li>默认内容由当前菜单配置和内容接口返回结果决定，PRD 不按具体关联方式拆分规则。</li>
+            <li>默认内容必须同时满足当前菜单、内容类型、上架状态、可见权限等前端展示条件。</li>
+            <li>默认内容排序使用该菜单原本的内容列表排序规则，例如后台配置排序、发布时间、热度、推荐权重或接口默认返回顺序，具体以现有菜单内容接口规则为准。</li>
+            <li>每批展示数量由前端模板或内容接口分页参数决定，后台不单独配置批次数量。</li>
+            <li>前端首次进入菜单或首次加载展示位时，如为「自动选择」，直接展示当前菜单默认内容的第一页。</li>
+            <li>前端首次进入菜单或首次加载展示位时，如为「运营指定」，先按运营指定排序值展示，排序值越大越靠前。</li>
+            <li>如果运营指定内容数量超过一批展示数量，第一页只展示排序靠前的 N 条，剩余运营指定内容进入后续「换一批」。</li>
+            <li>点击「换一批」时，系统优先继续展示未展示过的运营指定内容；运营指定内容消耗完后，再展示当前菜单默认内容的后续分页数据。</li>
+            <li>当某一批运营指定内容不足当前批次展示数量时，剩余位置由当前菜单默认内容按原排序补足。</li>
+            <li>所有批次都需要去重；当前菜单默认内容不得重复展示已经作为运营指定展示过的内容，也不得重复展示历史批次已展示过的内容。</li>
+            <li>运营指定内容后续变为未上架、不可见或不再属于当前菜单实际内容范围时，前端不展示该内容，并由当前菜单默认内容补足。</li>
+          </ol>
+          <div class="prd-code">示例：一批展示 6 条，运营指定 14 条
+第 1 批：运营指定排序第 1-6 条
+第 2 批：运营指定排序第 7-12 条
+第 3 批：运营指定排序第 13-14 条 + 当前菜单默认内容补足 4 条
+第 4 批及以后：当前菜单默认内容继续分页，并排除前面已展示内容</div>
+        </section>
+
+        <section class="prd-section">
+          <h3>八、菜单类型切换规则</h3>
+          <ol>
+            <li>菜单类型为「展示媒体内容」时，展示「内容选择」和「排版和样式」。</li>
+            <li>菜单类型切换为「Ai工具」「应用中心」「全部分类」「展示子菜单」时，整块隐藏「内容选择」和「排版和样式」。隐藏字段仅在当前编辑页面内暂存，用于用户未保存前切回「展示媒体内容」时恢复。</li>
+            <li>从其他菜单类型切回「展示媒体内容」时，恢复此前暂存的内容类型、展示位内容设置、运营指定内容和内容列表样式。</li>
+            <li>保存非「展示媒体内容」菜单时，隐藏字段不提交、不生效，不校验隐藏的内容选择、运营指定内容和内容列表样式。</li>
           </ol>
         </section>
 
         <section class="prd-section">
-          <h3>八、内容列表样式规则</h3>
+          <h3>九、内容列表样式规则</h3>
           <table class="prd-table">
             <thead>
               <tr>
@@ -2235,7 +2288,7 @@
             <tbody>
               <tr>
                 <td>自动适配</td>
-                <td>系统按内容类型默认适配：长视频 16:9；短视频、漫画、小说 3:4；帖子根据模板决定。</td>
+                <td>系统按内容类型默认适配：长视频 16:9；短视频、漫画、小说 3:4；帖子在自动适配时由前端模板决定。</td>
               </tr>
               <tr>
                 <td>横图 16:9</td>
@@ -2247,38 +2300,80 @@
               </tr>
             </tbody>
           </table>
-          <div class="prd-note">封面图展示不得拉伸变形；当图片原始比例与目标比例不一致时，前端使用等比填充并居中裁剪。</div>
+          <div class="prd-note">手动选择横图 16:9 或竖图 3:4 时优先级高于自动适配，前端必须按用户选择展示，包括帖子内容。封面图展示不得拉伸变形；当图片原始比例与目标比例不一致时，前端使用等比填充并居中裁剪。</div>
         </section>
 
         <section class="prd-section">
-          <h3>九、保存校验</h3>
+          <h3>十、保存校验</h3>
           <ol>
-            <li>菜单类型为「媒体内容」时，保存展示位内容设置、运营指定内容、排序值和内容列表样式。</li>
+            <li>菜单类型为「展示媒体内容」时，保存展示位内容设置、运营指定内容、排序值和内容列表样式。</li>
             <li>展示位内容设置为「运营指定」时，校验运营指定内容数量不超过 50 条。</li>
             <li>展示位内容设置为「运营指定」时，校验排序值在当前菜单内唯一。</li>
             <li>展示位内容设置为「运营指定」时，校验已选内容仍属于当前菜单实际内容范围。</li>
-            <li>展示位内容设置为「自动选择」时，运营指定内容可暂存但不生效，隐藏排序错误不阻止保存。</li>
-            <li>菜单类型为非媒体内容时，不保存、不校验展示位内容设置和内容列表样式的生效值。</li>
+            <li>菜单类型仍为「展示媒体内容」且展示位内容设置为「自动选择」时，运营指定内容可在当前编辑页暂存但不生效，隐藏排序错误不阻止保存。</li>
+            <li>菜单类型为非「展示媒体内容」时，不提交、不保存、不校验内容选择、展示位内容设置和内容列表样式的生效值。</li>
           </ol>
         </section>
 
         <section class="prd-section">
-          <h3>十、验收标准</h3>
+          <h3>十一、验收标准</h3>
+          <h4>11.1 菜单类型显隐与保存</h4>
           <ol>
-            <li>普通菜单类型为「媒体内容」时，展示「展示位内容设置」。</li>
-            <li>普通菜单类型为非媒体内容时，不展示「展示位内容设置」和「内容列表样式」。</li>
-            <li>从媒体内容切换为非媒体内容后，相关配置隐藏且暂存，不参与前台生效。</li>
-            <li>从非媒体内容切回媒体内容后，已暂存配置可以恢复显示。</li>
+            <li>普通菜单类型为「展示媒体内容」时，展示「内容选择」和「排版和样式」。</li>
+            <li>普通菜单类型为「Ai工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
+            <li>从「展示媒体内容」切换为其他菜单类型后，「内容选择」和「排版和样式」整块隐藏，隐藏字段仅在当前编辑页暂存，不参与前台生效。</li>
+            <li>未保存前，从其他菜单类型切回「展示媒体内容」后，已暂存的内容类型、展示位内容设置、运营指定内容和内容列表样式可以恢复显示。</li>
+            <li>保存非「展示媒体内容」菜单时，隐藏的内容选择、展示位内容设置和内容列表样式不提交、不保存、不校验。</li>
+            <li>保存非「展示媒体内容」菜单后再次进入编辑页，不应将此前隐藏暂存字段作为生效配置回显。</li>
+          </ol>
+
+          <h4>11.2 展示位内容设置</h4>
+          <ol>
+            <li>菜单类型为「展示媒体内容」时，展示位内容设置支持「自动选择」和「运营指定」。</li>
+            <li>选择「自动选择」时，不展示运营指定内容配置区；前台按当前菜单默认内容展示。</li>
             <li>选择「运营指定」时，展示运营指定内容配置区和添加内容入口。</li>
+            <li>运营指定内容只能选择当前菜单实际内容范围内已上架、可见的内容。</li>
             <li>运营指定内容最多支持 50 条。</li>
+            <li>达到 50 条后，不允许继续新增运营指定内容；移除已选内容后可继续新增。</li>
             <li>运营指定内容排序值在当前菜单内唯一，数值越大越靠前。</li>
             <li>排序值不限制为 0-10。</li>
+            <li>保存时，如运营指定内容不在当前菜单实际内容范围内，系统应提示用户处理并禁止保存。</li>
+          </ol>
+
+          <h4>11.3 默认内容与换一批</h4>
+          <ol>
+            <li>普通菜单默认内容来自当前菜单自身关联或配置的内容数据。</li>
+            <li>默认内容由当前菜单配置和内容接口返回结果决定，不按关联方式拆分展示规则。</li>
+            <li>每批展示数量由前端模板或内容接口分页参数决定，后台不单独配置批次数量。</li>
+            <li>首次加载展示位时，运营指定内容按排序值优先展示。</li>
+            <li>运营指定内容超过一批展示数量时，剩余运营指定内容在后续「换一批」中继续优先展示。</li>
+            <li>运营指定内容消耗完后，「换一批」展示当前菜单默认内容的后续分页数据。</li>
+            <li>所有批次展示内容需要去重，不重复展示已出现过的运营指定内容和默认内容。</li>
+            <li>运营指定内容后续变为未上架、不可见或不再属于当前菜单实际内容范围时，前台不展示该内容，并由当前菜单默认内容补足。</li>
+          </ol>
+
+          <h4>11.4 内容类型切换</h4>
+          <ol>
+            <li>展示位内容设置为「自动选择」时，切换内容类型不触发确认。</li>
             <li>切换内容类型导致已选运营指定内容超出新范围时，系统提示确认。</li>
             <li>用户确认后，移除不符合新范围的内容；用户取消后，保留原内容类型和已选内容。</li>
+            <li>帖子内容切换时仍需遵循当前菜单实际内容范围和运营指定内容校验。</li>
+          </ol>
+
+          <h4>11.5 内容列表样式</h4>
+          <ol>
             <li>内容列表样式支持自动适配、横图 16:9、竖图 3:4。</li>
-            <li>自动适配时，长视频默认 16:9；短视频、漫画、小说默认 3:4；帖子根据模板决定。</li>
+            <li>自动适配时，长视频默认 16:9；短视频、漫画、小说默认 3:4；帖子由前端模板决定。</li>
             <li>用户手动选择横图 16:9 或竖图 3:4 时，前台必须按用户选择展示，不得被内容类型强制覆盖。</li>
+            <li>用户手动选择横图 16:9 或竖图 3:4 时，帖子内容也必须按用户选择展示。</li>
             <li>前台封面图按目标比例等比填充并居中裁剪，不允许拉伸变形。</li>
+          </ol>
+
+          <h4>11.6 范围隔离</h4>
+          <ol>
+            <li>普通菜单展示配置不影响首页热门推荐配置；首页热门推荐仍按 10 条运营指定上限执行。</li>
+            <li>普通菜单运营指定内容上限为 50 条，不影响首页热门推荐的 10 条上限。</li>
+            <li>普通菜单的内容列表样式配置不影响首页热门推荐模块，首页热门推荐仍由首页模板决定展示位置和样式。</li>
           </ol>
         </section>
         </div>
@@ -2346,6 +2441,8 @@
     const normalMenuKey = document.getElementById('normalMenuKey');
     const normalMenuSort = document.getElementById('normalMenuSort');
     const normalMenuType = document.getElementById('normalMenuType');
+    const normalContentCard = document.getElementById('normalContentCard');
+    const normalLayoutCard = document.getElementById('normalLayoutCard');
     const normalContentType = document.getElementById('normalContentType');
     const slotSourceRow = document.querySelector('.slot-source-row');
     const normalSlotSourceInputs = [...document.querySelectorAll('input[name="normalSlotSource"]')];
@@ -2477,8 +2574,12 @@
     }
 
     function syncCoverStyleOptions() {
-      const isMediaContent = normalMenuType.value === '媒体内容';
+      const isMediaContent = normalMenuType.value === '展示媒体内容';
       const isManualSlot = normalSlotSourceInputs.some((input) => input.checked && input.value === 'manual');
+      normalContentCard.classList.toggle('hidden', !isMediaContent);
+      normalLayoutCard.classList.toggle('hidden', !isMediaContent);
+      normalContentCard.hidden = !isMediaContent;
+      normalLayoutCard.hidden = !isMediaContent;
       slotSourceRow.classList.toggle('hidden', !isMediaContent);
       normalSlotManualCard.classList.toggle('hidden', !isMediaContent || !isManualSlot);
       coverStyleRow.classList.toggle('hidden', !isMediaContent);
@@ -2492,7 +2593,7 @@
         input.disabled = false;
       });
 
-      coverStyleHint.textContent = '自动适配：长视频 16:9；短视频、漫画、小说 3:4；帖子根据模板决定。手动选择横图或竖图时，前端按用户选择展示。';
+      coverStyleHint.textContent = '自动适配：长视频 16:9；短视频、漫画、小说 3:4；帖子由前端模板决定。手动选择横图或竖图时，前端按用户选择展示。';
     }
 
     function getNormalSelectedTotal() {
