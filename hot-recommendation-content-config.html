@@ -138,6 +138,7 @@
 
     .mini-btn,
     .danger-btn {
+      display: none;
       height: 28px;
       padding: 0 10px;
       margin-left: 8px;
@@ -159,6 +160,14 @@
     .node.active {
       color: var(--blue);
       background: #f5f9ff;
+    }
+
+    .node:hover .mini-btn,
+    .node:hover .danger-btn,
+    .node.active .mini-btn,
+    .node.active .danger-btn {
+      display: inline-flex;
+      align-items: center;
     }
 
     .node.indent-1 { padding-left: 16px; }
@@ -682,6 +691,21 @@
       color: #9aa3b2;
       font-size: 12px;
       line-height: 1.5;
+    }
+
+    .type-hint {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border: 1px solid #d8e7ff;
+      border-radius: 4px;
+      color: #5f6878;
+      background: #f5f9ff;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .type-hint.hidden {
+      display: none;
     }
 
     .field-control {
@@ -1467,6 +1491,7 @@
             <div id="manualCard" class="source-card hidden">
               <div class="source-title">运营指定内容</div>
               <div class="hint">仅可选择当前内容类型和分类范围内设为推荐且已上架的内容；可选择多条。该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。排序数值越大越靠前。</div>
+              <div class="field-hint">运营指定内容会优先参与首屏和「换一批」展示，未填满当前批次时由首页默认推荐内容补足，并按内容 ID 去重。</div>
 
               <div class="selected-header">
                 <div class="selected-title">
@@ -1592,13 +1617,16 @@
 
             <div class="form-row">
               <div class="label">菜单类型</div>
-              <select class="select" id="normalMenuType">
-                <option>Ai工具</option>
-                <option>应用中心</option>
-                <option>全部分类</option>
-                <option selected>展示媒体内容</option>
-                <option>展示子菜单</option>
-              </select>
+              <div>
+                <select class="select" id="normalMenuType">
+                  <option>AI工具</option>
+                  <option>应用中心</option>
+                  <option>全部分类</option>
+                  <option selected>展示媒体内容</option>
+                  <option>展示子菜单</option>
+                </select>
+                <div class="type-hint hidden" id="normalTypeHint">当前菜单类型无需配置内容选择和排版样式；切回「展示媒体内容」前，页面内会暂存已填写的媒体内容配置。</div>
+              </div>
             </div>
           </div>
 
@@ -1642,14 +1670,29 @@
             <div class="normal-slot-manual hidden" id="normalSlotManualCard">
               <div class="source-title">运营指定内容</div>
               <div class="hint">仅可选择当前菜单实际内容范围内已上架的内容，最多 50 条；运营指定内容优先用于展示位，剩余展示位按内容列表默认排序补足。</div>
+              <div class="field-hint">运营指定内容会优先参与首屏和「换一批」展示，消耗完后继续展示当前菜单默认内容，并按内容 ID 去重。</div>
               <div class="selected-header">
                 <div class="selected-title">
                   <span>已选内容</span>
                   <span class="selected-count" id="normalSelectedCount">0/50</span>
                 </div>
-                <button class="add-btn" type="button">添加内容</button>
+                <button class="add-btn" type="button" id="normalAddContent">添加内容</button>
               </div>
-              <div class="empty-selected show">暂无已选内容</div>
+              <table class="content-table">
+                <thead>
+                  <tr>
+                    <th style="width: 38%;">内容名称</th>
+                    <th style="width: 16%;">类型</th>
+                    <th style="width: 18%;">分类</th>
+                    <th style="width: 16%;">排序</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="normalContentRows"></tbody>
+              </table>
+              <div class="empty-selected show" id="normalEmptySelected">暂无已选内容</div>
+              <div class="sort-error" id="normalSortError">排序值需为 1-50 的整数，且不可重复。</div>
+              <button class="manage-all" type="button" id="normalManageAll">查看全部</button>
               <div class="field-hint">支持设置排序值；排序值在当前菜单内唯一，数值越大越靠前，不限制 0-10。切换内容类型时，系统将提示确认并移除不符合新范围的已选内容。</div>
             </div>
 
@@ -2184,7 +2227,7 @@
             <li>适用于除首页固定功能模块外的普通菜单编辑页。</li>
             <li>适用于菜单类型为「展示媒体内容」的菜单。</li>
             <li>媒体内容包括：长视频、短视频、漫画、帖子、小说。</li>
-            <li>菜单类型为「Ai工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
+            <li>菜单类型为「AI工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
             <li>不适用于首页固定功能模块；首页热门推荐仍按「首页热门推荐配置」规则执行，包括 50 条运营指定上限。</li>
           </ol>
         </section>
@@ -2227,8 +2270,10 @@
           <h3>五、运营指定内容规则</h3>
           <ol>
             <li>选择「运营指定」后，展示「运营指定内容」配置区。</li>
+            <li>普通菜单「运营指定」需与首页运营指定保持一致交互，包括已选内容表格、添加内容弹窗、查看全部管理弹窗、排序编辑和移除能力。</li>
             <li>点击「添加内容」打开内容选择弹窗。</li>
             <li>弹窗仅展示当前菜单实际内容范围内已上架的内容。</li>
+            <li>普通菜单内容选择弹窗不展示「全部分类」筛选，避免运营误以为可跨当前菜单范围切换分类；内容范围以当前菜单实际内容范围为准。</li>
             <li>运营指定内容最多 50 条，数量上限按当前菜单合计计算。</li>
             <li>达到 50 条后，不允许继续新增，但允许移除已选内容后继续添加。</li>
             <li>运营指定内容支持排序，排序值在当前菜单内唯一。</li>
@@ -2276,7 +2321,7 @@
           <h3>八、菜单类型切换规则</h3>
           <ol>
             <li>菜单类型为「展示媒体内容」时，展示「内容选择」和「排版和样式」。</li>
-            <li>菜单类型切换为「Ai工具」「应用中心」「全部分类」「展示子菜单」时，整块隐藏「内容选择」和「排版和样式」。隐藏字段仅在当前编辑页面内暂存，用于用户未保存前切回「展示媒体内容」时恢复。</li>
+            <li>菜单类型切换为「AI工具」「应用中心」「全部分类」「展示子菜单」时，整块隐藏「内容选择」和「排版和样式」。隐藏字段仅在当前编辑页面内暂存，用于用户未保存前切回「展示媒体内容」时恢复。</li>
             <li>从其他菜单类型切回「展示媒体内容」时，恢复此前暂存的内容类型、展示位内容设置、运营指定内容和内容列表样式。</li>
             <li>保存非「展示媒体内容」菜单时，隐藏字段不提交、不生效，不校验隐藏的内容选择、运营指定内容和内容列表样式。</li>
           </ol>
@@ -2326,7 +2371,7 @@
           <h4>11.1 菜单类型显隐与保存</h4>
           <ol>
             <li>普通菜单类型为「展示媒体内容」时，展示「内容选择」和「排版和样式」。</li>
-            <li>普通菜单类型为「Ai工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
+            <li>普通菜单类型为「AI工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
             <li>从「展示媒体内容」切换为其他菜单类型后，「内容选择」和「排版和样式」整块隐藏，隐藏字段仅在当前编辑页暂存，不参与前台生效。</li>
             <li>未保存前，从其他菜单类型切回「展示媒体内容」后，已暂存的内容类型、展示位内容设置、运营指定内容和内容列表样式可以恢复显示。</li>
             <li>保存非「展示媒体内容」菜单时，隐藏的内容选择、展示位内容设置和内容列表样式不提交、不保存、不校验。</li>
@@ -2447,13 +2492,19 @@
     const normalMenuKey = document.getElementById('normalMenuKey');
     const normalMenuSort = document.getElementById('normalMenuSort');
     const normalMenuType = document.getElementById('normalMenuType');
+    const normalTypeHint = document.getElementById('normalTypeHint');
     const normalContentCard = document.getElementById('normalContentCard');
     const normalLayoutCard = document.getElementById('normalLayoutCard');
     const normalContentType = document.getElementById('normalContentType');
     const slotSourceRow = document.querySelector('.slot-source-row');
     const normalSlotSourceInputs = [...document.querySelectorAll('input[name="normalSlotSource"]')];
     const normalSlotManualCard = document.getElementById('normalSlotManualCard');
+    const normalAddContent = document.getElementById('normalAddContent');
     const normalSelectedCount = document.getElementById('normalSelectedCount');
+    const normalContentRows = document.getElementById('normalContentRows');
+    const normalEmptySelected = document.getElementById('normalEmptySelected');
+    const normalSortError = document.getElementById('normalSortError');
+    const normalManageAll = document.getElementById('normalManageAll');
     const coverStyleRow = document.getElementById('coverStyleRow');
     const coverStyleOptions = document.getElementById('coverStyleOptions');
     const coverStyleHint = document.getElementById('coverStyleHint');
@@ -2487,6 +2538,7 @@
     const limitTip = document.getElementById('limitTip');
     const modalTip = document.getElementById('contentModalTip');
     let previousNormalContentType = normalContentType.value;
+    let activeManualContext = 'home';
     const MAX_SELECTED = 50;
     const SUMMARY_LIMIT = 3;
     const currentMenuKey = 'home';
@@ -2579,11 +2631,47 @@
       });
     }
 
+    function getManualContext(context = 'home') {
+      if (context === 'normal') {
+        return {
+          rows: normalContentRows,
+          count: normalSelectedCount,
+          addButton: normalAddContent,
+          empty: normalEmptySelected,
+          manageAll: normalManageAll,
+          sortError: normalSortError
+        };
+      }
+      return {
+        rows: contentRows,
+        count: selectedCount,
+        addButton: addContent,
+        empty: emptySelected,
+        manageAll,
+        sortError
+      };
+    }
+
+    function getNormalContentTypeForModal() {
+      const type = normalContentType.value;
+      if (type === '漫画' || type === '帖子' || type === '小说') return type;
+      return '视频';
+    }
+
+    function getModalContentTypes() {
+      return activeManualContext === 'normal' ? [getNormalContentTypeForModal()] : getSelectedContentTypes();
+    }
+
+    function getModalCategories() {
+      return activeManualContext === 'normal' ? ['全部'] : getSelectedCategories();
+    }
+
     function syncCoverStyleOptions() {
       const isMediaContent = normalMenuType.value === '展示媒体内容';
       const isManualSlot = normalSlotSourceInputs.some((input) => input.checked && input.value === 'manual');
       normalContentCard.classList.toggle('hidden', !isMediaContent);
       normalLayoutCard.classList.toggle('hidden', !isMediaContent);
+      normalTypeHint.classList.toggle('hidden', isMediaContent);
       normalContentCard.hidden = !isMediaContent;
       normalLayoutCard.hidden = !isMediaContent;
       slotSourceRow.classList.toggle('hidden', !isMediaContent);
@@ -2603,9 +2691,7 @@
     }
 
     function getNormalSelectedTotal() {
-      const countText = normalSelectedCount ? normalSelectedCount.textContent : '0/50';
-      const [total] = countText.split('/');
-      return Number(total) || 0;
+      return normalContentRows.querySelectorAll('tr').length;
     }
 
     function handleNormalContentTypeChange() {
@@ -2619,7 +2705,22 @@
         }
       }
       previousNormalContentType = normalContentType.value;
+      pruneNormalSelectedContentByType();
       syncCoverStyleOptions();
+    }
+
+    function pruneNormalSelectedContentByType() {
+      const selectedTypes = [getNormalContentTypeForModal()];
+      [...normalContentRows.querySelectorAll('tr')].forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        const type = cells[1].textContent.trim();
+        const category = cells[2].textContent.trim();
+        if (!isCategoryInScope(type, category, ['全部'], selectedTypes)) {
+          row.remove();
+        }
+      });
+      updateSelectedSummary('normal');
+      validateSortValues('normal');
     }
 
     function showHomeConfig(node) {
@@ -2763,10 +2864,11 @@
       return { type, category: categoryParts.join('::') };
     }
 
-    function getCategoryLabel(key) {
+    function getCategoryLabel(key, selectedTypesOverride) {
       if (key === '全部') return '全部';
       const { type, category } = parseCategoryKey(key);
-      return getSelectedContentTypes().length > 1 ? `${type}-${category}` : category;
+      const selectedTypes = Array.isArray(selectedTypesOverride) ? selectedTypesOverride : getSelectedContentTypes();
+      return selectedTypes.length > 1 ? `${type}-${category}` : category;
     }
 
     function renderHotCategoryOptions(selectedCategories = getSelectedCategories()) {
@@ -3024,14 +3126,23 @@
     });
 
     addContent.addEventListener('click', () => {
-      openSelectModal();
+      openSelectModal('home');
     });
 
     manageAll.addEventListener('click', () => {
-      openManageModal();
+      openManageModal('home');
     });
 
-    function openSelectModal() {
+    normalAddContent.addEventListener('click', () => {
+      openSelectModal('normal');
+    });
+
+    normalManageAll.addEventListener('click', () => {
+      openManageModal('normal');
+    });
+
+    function openSelectModal(context = 'home') {
+      activeManualContext = context;
       modalMode = 'select';
       modalTitle.textContent = '选择推荐内容';
       contentModalPanel.classList.remove('wide');
@@ -3040,8 +3151,10 @@
       videoPickerWrap.style.display = 'block';
       manageWrap.style.display = 'none';
       confirmVideos.style.display = 'inline-block';
-      modalTip.textContent = '仅展示设为推荐且已上架的内容；确认后加入运营指定内容。';
-      modalSelectedNames = new Set(getSelectedNames());
+      modalTip.textContent = context === 'normal'
+        ? '仅展示当前菜单实际内容范围内已上架的内容；确认后加入运营指定内容。'
+        : '仅展示设为推荐且已上架的内容；确认后加入运营指定内容。';
+      modalSelectedNames = new Set(getSelectedNames(context));
       scopeDetailExpanded = false;
       videoCategoryFilter.value = '__all__';
       syncVideoCategoryFilter();
@@ -3052,7 +3165,8 @@
       contentModal.setAttribute('aria-hidden', 'false');
     }
 
-    function openManageModal() {
+    function openManageModal(context = 'home') {
+      activeManualContext = context;
       modalMode = 'manage';
       modalTitle.textContent = '管理运营指定内容';
       contentModalPanel.classList.add('wide');
@@ -3063,7 +3177,7 @@
       confirmVideos.style.display = 'none';
       limitTip.classList.remove('show');
       modalTip.textContent = '最多支持 50 条；可在此查看全部已选内容、调整排序或移除内容。排序数值越大越靠前。';
-      renderManageRows();
+      renderManageRows(context);
       contentModal.classList.add('open');
       contentModal.setAttribute('aria-hidden', 'false');
     }
@@ -3071,26 +3185,43 @@
     contentRows.addEventListener('click', (event) => {
       if (event.target.classList.contains('danger')) {
         event.target.closest('tr').remove();
-        updateSelectedSummary();
-        validateSortValues();
+        updateSelectedSummary('home');
+        validateSortValues('home');
       }
     });
 
     contentRows.addEventListener('input', (event) => {
       if (event.target.classList.contains('order-input')) {
-        validateSortValues();
+        validateSortValues('home');
         if (modalMode === 'manage' && contentModal.classList.contains('open')) {
-          renderManageRows();
+          renderManageRows(activeManualContext);
         }
       }
     });
 
-    function getSelectedNames() {
-      return [...contentRows.querySelectorAll('tr td:first-child')].map((cell) => cell.textContent.trim());
+    normalContentRows.addEventListener('click', (event) => {
+      if (event.target.classList.contains('danger')) {
+        event.target.closest('tr').remove();
+        updateSelectedSummary('normal');
+        validateSortValues('normal');
+      }
+    });
+
+    normalContentRows.addEventListener('input', (event) => {
+      if (event.target.classList.contains('order-input')) {
+        validateSortValues('normal');
+        if (modalMode === 'manage' && contentModal.classList.contains('open')) {
+          renderManageRows(activeManualContext);
+        }
+      }
+    });
+
+    function getSelectedNames(context = 'home') {
+      return [...getManualContext(context).rows.querySelectorAll('tr td:first-child')].map((cell) => cell.textContent.trim());
     }
 
-    function getSelectedRowData() {
-      return [...contentRows.querySelectorAll('tr')].map((row) => {
+    function getSelectedRowData(context = 'home') {
+      return [...getManualContext(context).rows.querySelectorAll('tr')].map((row) => {
         const cells = row.querySelectorAll('td');
         return {
           name: cells[0].textContent.trim(),
@@ -3101,43 +3232,45 @@
       });
     }
 
-    function getSelectedCount() {
-      return contentRows.querySelectorAll('tr').length;
+    function getSelectedCount(context = 'home') {
+      return getManualContext(context).rows.querySelectorAll('tr').length;
     }
 
-    function updateSelectedSummary() {
-      const rows = [...contentRows.querySelectorAll('tr')];
-      selectedCount.textContent = `${rows.length}/${MAX_SELECTED}`;
-      addContent.textContent = rows.length >= MAX_SELECTED ? '调整内容' : '添加内容';
-      emptySelected.classList.toggle('show', rows.length === 0);
+    function updateSelectedSummary(context = 'home') {
+      const contextElements = getManualContext(context);
+      const rows = [...contextElements.rows.querySelectorAll('tr')];
+      contextElements.count.textContent = `${rows.length}/${MAX_SELECTED}`;
+      contextElements.addButton.textContent = rows.length >= MAX_SELECTED ? '调整内容' : '添加内容';
+      contextElements.empty.classList.toggle('show', rows.length === 0);
       rows.forEach((row, index) => {
         row.classList.toggle('summary-hidden', index >= SUMMARY_LIMIT);
       });
-      manageAll.textContent = `查看全部 ${rows.length} 条`;
-      manageAll.classList.toggle('show', rows.length > SUMMARY_LIMIT);
-      validateSortValues();
+      contextElements.manageAll.textContent = `查看全部 ${rows.length} 条`;
+      contextElements.manageAll.classList.toggle('show', rows.length > SUMMARY_LIMIT);
+      validateSortValues(context);
     }
 
-    function getOrderInputs() {
-      return [...contentRows.querySelectorAll('.order-input')];
+    function getOrderInputs(context = 'home') {
+      return [...getManualContext(context).rows.querySelectorAll('.order-input')];
     }
 
-    function getUsedSortValues() {
-      return getOrderInputs()
+    function getUsedSortValues(context = 'home') {
+      return getOrderInputs(context)
         .map((input) => Number(input.value))
         .filter((value) => Number.isInteger(value) && value >= 1 && value <= MAX_SELECTED);
     }
 
-    function getNextSortValue() {
-      const used = new Set(getUsedSortValues());
+    function getNextSortValue(context = 'home') {
+      const used = new Set(getUsedSortValues(context));
       for (let value = MAX_SELECTED; value >= 1; value -= 1) {
         if (!used.has(value)) return value;
       }
       return 1;
     }
 
-    function validateSortValues() {
-      const inputs = getOrderInputs();
+    function validateSortValues(context = 'home') {
+      const contextElements = getManualContext(context);
+      const inputs = getOrderInputs(context);
       const counts = new Map();
       let message = '';
 
@@ -3162,18 +3295,26 @@
         }
       });
 
-      manageRows.querySelectorAll('.manage-order').forEach((input) => {
-        input.classList.remove('error');
-        const sourceInput = inputs[Number(input.dataset.index)];
-        if (sourceInput?.classList.contains('error')) {
-          input.classList.add('error');
-        }
-      });
+      if (modalMode === 'manage' && activeManualContext === context) {
+        manageRows.querySelectorAll('.manage-order').forEach((input) => {
+          input.classList.remove('error');
+          const sourceInput = inputs[Number(input.dataset.index)];
+          if (sourceInput?.classList.contains('error')) {
+            input.classList.add('error');
+          }
+        });
+      }
 
-      sortError.textContent = message || `排序值范围为 1-${MAX_SELECTED}，且不可重复；数值越大越靠前。`;
-      const shouldBlock = !homeConfigPanel.classList.contains('hidden') && isManualSourceActive() && Boolean(message);
-      sortError.classList.toggle('show', shouldBlock);
-      saveSettings.disabled = shouldBlock;
+      contextElements.sortError.textContent = message || `排序值范围为 1-${MAX_SELECTED}，且不可重复；数值越大越靠前。`;
+      const shouldBlockHome = context === 'home' && !homeConfigPanel.classList.contains('hidden') && isManualSourceActive() && Boolean(message);
+      const shouldBlockNormal = context === 'normal' && !menuConfigPanel.classList.contains('hidden') && normalSlotSourceInputs.some((input) => input.checked && input.value === 'manual') && Boolean(message);
+      const shouldBlock = shouldBlockHome || shouldBlockNormal;
+      contextElements.sortError.classList.toggle('show', shouldBlock);
+      const hasHomeError = getOrderInputs('home').some((input) => input.classList.contains('error'));
+      const hasNormalError = getOrderInputs('normal').some((input) => input.classList.contains('error'));
+      const blockHomeSave = !homeConfigPanel.classList.contains('hidden') && isManualSourceActive() && hasHomeError;
+      const blockNormalSave = !menuConfigPanel.classList.contains('hidden') && normalSlotSourceInputs.some((input) => input.checked && input.value === 'manual') && hasNormalError;
+      saveSettings.disabled = blockHomeSave || blockNormalSave;
       return !message;
     }
 
@@ -3204,7 +3345,7 @@
     });
 
     function syncVideoCategoryFilter() {
-      const scopeCategories = getSelectedCategories();
+      const scopeCategories = getModalCategories();
       const shouldShowDetail = !isAllCategoryScope(scopeCategories) && scopeCategories.length > 2;
       videoScopeLabel.textContent = `当前范围：${getShortCategoryScopeText(scopeCategories)}`;
       videoScopeLabel.title = shouldShowDetail ? getCategoryScopeText(scopeCategories) : '';
@@ -3213,7 +3354,7 @@
       toggleScopeDetail.textContent = scopeDetailExpanded ? '收起' : '展开';
       scopeTags.classList.toggle('show', shouldShowDetail && scopeDetailExpanded);
       scopeTags.innerHTML = shouldShowDetail
-        ? scopeCategories.map((category) => `<span class="scope-tag">${getCategoryLabel(category)}</span>`).join('')
+        ? scopeCategories.map((category) => `<span class="scope-tag">${getCategoryLabel(category, getModalContentTypes())}</span>`).join('')
         : '';
     }
 
@@ -3223,22 +3364,22 @@
     });
 
     function getEffectiveVideoCategories() {
-      return getSelectedCategories();
+      return getModalCategories();
     }
 
     function getFilterableVideoCategories() {
-      const scopeCategories = getSelectedCategories();
+      const scopeCategories = getModalCategories();
       if (isAllCategoryScope(scopeCategories)) {
-        const selectedTypes = getSelectedContentTypes();
+        const selectedTypes = getModalContentTypes();
         return selectedTypes.flatMap((type) => (contentTypeCategories[type] || []).map((category) => getCategoryKey(type, category)));
       }
       return scopeCategories;
     }
 
     function renderVideoCategoryFilter() {
-      const scopeCategories = getSelectedCategories();
+      const scopeCategories = getModalCategories();
       const filterableCategories = getFilterableVideoCategories();
-      const shouldShowFilter = isAllCategoryScope(scopeCategories) || scopeCategories.length > 1;
+      const shouldShowFilter = activeManualContext !== 'normal' && (isAllCategoryScope(scopeCategories) || scopeCategories.length > 1);
       videoFilters.classList.toggle('no-category-filter', !shouldShowFilter);
 
       if (!shouldShowFilter) {
@@ -3250,7 +3391,7 @@
       const allLabel = isAllCategoryScope(scopeCategories) ? '全部分类' : '全部已选分类';
       videoCategoryFilter.innerHTML = [
         `<option value="__all__">${allLabel}</option>`,
-        ...filterableCategories.map((category) => `<option value="${category}">${getCategoryLabel(category)}</option>`)
+        ...filterableCategories.map((category) => `<option value="${category}">${getCategoryLabel(category, getModalContentTypes())}</option>`)
       ].join('');
 
       if (![...videoCategoryFilter.options].some((option) => option.value === videoCategoryFilter.value)) {
@@ -3259,12 +3400,12 @@
     }
 
     function shouldShowCategoryColumn() {
-      const categories = getSelectedCategories();
+      const categories = getModalCategories();
       return isAllCategoryScope(categories) || categories.length > 1;
     }
 
     function shouldShowTypeColumn() {
-      return getSelectedContentTypes().length > 1;
+      return getModalContentTypes().length > 1;
     }
 
     function renderVideoTableHead() {
@@ -3284,10 +3425,11 @@
       const keyword = videoKeyword.value.trim();
       const categories = getEffectiveVideoCategories();
       const selectedFilterCategory = videoCategoryFilter.value;
+      const selectedTypes = getModalContentTypes();
       const reachedLimit = modalSelectedNames.size >= MAX_SELECTED;
       const filtered = videoList.filter((video) => {
         const matchKeyword = !keyword || video.name.includes(keyword);
-        const matchCategory = isCategoryInScope(video.type, video.category, categories);
+        const matchCategory = isCategoryInScope(video.type, video.category, categories, selectedTypes);
         const matchFilterCategory = selectedFilterCategory === '__all__' || getCategoryKey(video.type, video.category) === selectedFilterCategory;
         return matchKeyword && matchCategory && matchFilterCategory;
       });
@@ -3330,8 +3472,8 @@
       });
     }
 
-    function renderManageRows() {
-      const rows = [...contentRows.querySelectorAll('tr')];
+    function renderManageRows(context = activeManualContext) {
+      const rows = [...getManualContext(context).rows.querySelectorAll('tr')];
       manageRows.innerHTML = rows.map((row, index) => {
         const cells = row.querySelectorAll('td');
         const name = cells[0].textContent.trim();
@@ -3379,50 +3521,54 @@
     });
 
     confirmVideos.addEventListener('click', () => {
-      const existingRows = getSelectedRowData();
+      const context = activeManualContext;
+      const contextElements = getManualContext(context);
+      const existingRows = getSelectedRowData(context);
       const existingMap = new Map(existingRows.map((item) => [item.name, item]));
       const nextNames = [
         ...existingRows.map((item) => item.name).filter((name) => modalSelectedNames.has(name)),
         ...videoList.map((video) => video.name).filter((name) => modalSelectedNames.has(name) && !existingMap.has(name))
       ];
 
-      contentRows.innerHTML = '';
+      contextElements.rows.innerHTML = '';
       nextNames.forEach((name) => {
         const existing = existingMap.get(name);
         const video = videoList.find((item) => item.name === name);
         if (!video) return;
-        const sortValue = existing?.order || getNextSortValue();
+        const sortValue = existing?.order || getNextSortValue(context);
         const row = document.createElement('tr');
-      row.innerHTML = `
+        row.innerHTML = `
           <td>${video.name}</td>
           <td>${video.type}</td>
           <td>${video.category}</td>
           <td><input class="order-input" value="${sortValue}" /></td>
           <td><button class="link-btn danger" type="button">移除</button></td>
         `;
-        contentRows.appendChild(row);
+        contextElements.rows.appendChild(row);
       });
-      updateSelectedSummary();
-      validateSortValues();
+      updateSelectedSummary(context);
+      validateSortValues(context);
       closeContentModal();
     });
 
     manageRows.addEventListener('input', (event) => {
       if (event.target.classList.contains('manage-order')) {
         const index = Number(event.target.dataset.index);
-        const sourceRow = contentRows.querySelectorAll('tr')[index];
+        const context = activeManualContext;
+        const sourceRow = getManualContext(context).rows.querySelectorAll('tr')[index];
         sourceRow.querySelector('.order-input').value = event.target.value;
-        validateSortValues();
+        validateSortValues(context);
       }
     });
 
     manageRows.addEventListener('click', (event) => {
       if (event.target.classList.contains('manage-remove')) {
         const index = Number(event.target.dataset.index);
-        contentRows.querySelectorAll('tr')[index].remove();
-        updateSelectedSummary();
-        validateSortValues();
-        renderManageRows();
+        const context = activeManualContext;
+        getManualContext(context).rows.querySelectorAll('tr')[index].remove();
+        updateSelectedSummary(context);
+        validateSortValues(context);
+        renderManageRows(context);
       }
     });
 
@@ -3430,7 +3576,8 @@
     syncCoverStyleOptions();
     renderHotCategoryOptions(['全部']);
     updateContentTypeTrigger();
-    updateSelectedSummary();
+    updateSelectedSummary('home');
+    updateSelectedSummary('normal');
   </script>
 </body>
 </html>
