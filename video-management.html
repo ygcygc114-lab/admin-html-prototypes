@@ -155,7 +155,7 @@
       padding: 32px 30px 28px;
       display: grid;
       grid-template-columns: 92px 260px 1fr;
-      grid-template-rows: 32px 32px 32px 38px;
+      grid-template-rows: 32px 32px 32px auto auto;
       row-gap: 28px;
       column-gap: 20px;
       align-items: start;
@@ -187,8 +187,8 @@
     .tag-hidden { grid-column: 3; grid-row: 2; }
     .filter-main-label { grid-column: 1; grid-row: 3; }
     .filter-buttons { grid-column: 2; grid-row: 3; }
-    .filter-hidden { grid-column: 3; grid-row: 3; }
-    .menu-label { grid-column: 1; grid-row: 4; }
+    .filter-hidden { grid-column: 1 / 4; grid-row: 4; }
+    .menu-label { grid-column: 1; grid-row: 5; }
 
     .quick-field span {
       color: var(--title);
@@ -303,10 +303,11 @@
 
     .menu-selects {
       grid-column: 2 / 4;
-      grid-row: 4;
+      grid-row: 5;
       display: grid;
       grid-template-columns: 320px 320px 320px 320px 1fr auto auto;
-      gap: 36px;
+      column-gap: 36px;
+      row-gap: 8px;
       align-items: center;
       padding-top: 2px;
     }
@@ -334,6 +335,12 @@
       outline: none;
     }
 
+    .select-field select:disabled {
+      background: #f5f7fa;
+      color: var(--light);
+      cursor: not-allowed;
+    }
+
     .filter-actions {
       grid-column: 6 / 8;
       display: flex;
@@ -354,6 +361,114 @@
 
     .hidden-area.open {
       visibility: visible;
+    }
+
+    .filter-form {
+      display: none;
+      width: 100%;
+      padding: 2px 0 4px 12px;
+      grid-template-columns: repeat(6, minmax(230px, 1fr));
+      column-gap: 44px;
+      row-gap: 26px;
+      align-items: center;
+    }
+
+    .filter-form.open {
+      display: grid;
+      visibility: visible;
+    }
+
+    .filter-item {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .filter-item label {
+      color: var(--text);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .filter-control,
+    .filter-time-range {
+      width: 100%;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    .filter-control {
+      padding: 0 12px;
+    }
+
+    .filter-control::placeholder,
+    .filter-time-range input::placeholder {
+      color: var(--light);
+    }
+
+    select.filter-control {
+      color: var(--light);
+    }
+
+    .filter-control:disabled {
+      background: #f5f7fa;
+      color: var(--light);
+      cursor: not-allowed;
+    }
+
+    .filter-time-range {
+      display: grid;
+      grid-template-columns: 16px 1fr 14px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 0 10px;
+      color: var(--muted);
+    }
+
+    .filter-time-range input {
+      min-width: 0;
+      height: 28px;
+      border: 0;
+      outline: 0;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .filter-time-icon,
+    .filter-time-separator {
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .filter-time-icon {
+      position: relative;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #bfc5d2;
+      border-radius: 2px;
+    }
+
+    .filter-time-icon::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      top: 3px;
+      border-top: 1px solid #bfc5d2;
+    }
+
+    .menu-filter-note {
+      grid-column: 1 / 6;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      padding-left: 58px;
     }
 
     .chip {
@@ -814,9 +929,29 @@
     }
 
     .menu-scope-note {
-      color: var(--muted);
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
       font-size: 13px;
+      line-height: 1.7;
       margin: -8px 0 12px 78px;
+      padding: 8px 10px;
+      border-radius: 3px;
+      max-width: 760px;
+    }
+
+    .menu-scope-note strong {
+      color: #1e40af;
+      font-weight: 700;
+    }
+
+    .bulk-rule-note {
+      grid-column: 2 / 4;
+      margin: 0;
+      max-width: 100%;
+      width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
 
     .menu-table {
@@ -1207,6 +1342,127 @@
       color: var(--text);
     }
 
+    .prd-flow-diagrams {
+      display: grid;
+      gap: 16px;
+      margin: 12px 0 18px;
+    }
+
+    .flowchart-panel {
+      border: 1px solid var(--line-soft);
+      background: #fff;
+      border-radius: 4px;
+      padding: 14px;
+    }
+
+    .flowchart-title {
+      display: block;
+      color: var(--title);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .flowchart-board {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-row,
+    .flow-lane {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+
+    .flow-row.wrap {
+      align-items: stretch;
+    }
+
+    .flow-split {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .flow-lane {
+      padding: 8px;
+      border: 1px dashed #d7e6fb;
+      border-radius: 4px;
+      background: #f8fbff;
+    }
+
+    .flow-node {
+      min-width: 102px;
+      max-width: 168px;
+      min-height: 38px;
+      padding: 8px 10px;
+      border: 1px solid #d8dde6;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.45;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: normal;
+    }
+
+    .flow-node.start {
+      border-color: #91caff;
+      background: #e6f4ff;
+      color: #1d4ed8;
+    }
+
+    .flow-node.decision {
+      border-color: #f3d19e;
+      background: #fff7e6;
+      color: #9a5b00;
+      border-radius: 18px;
+    }
+
+    .flow-node.action {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .flow-node.end {
+      border-color: #c6e7b8;
+      background: #f0f9eb;
+      color: #237804;
+    }
+
+    .flow-label {
+      min-width: 34px;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 12px;
+      background: #eef2f7;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .prd-flow-arrow {
+      color: var(--blue);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .prd-flow-arrow::after {
+      content: "→";
+    }
+
     .associated-modal-head {
       height: 58px;
       display: flex;
@@ -1305,10 +1561,120 @@
           <button class="btn primary" type="button" data-toggle="filterArea">展开筛选</button>
           <button class="btn secondary" type="button" data-reset-filters>重置筛选</button>
         </div>
-        <div class="hidden-area filter-hidden" id="filterArea">
-          <span class="chip">付费类型: 免费</span>
-          <span class="chip">长/短视频: 长视频</span>
-          <span class="chip">状态: 正常</span>
+        <div class="filter-form filter-hidden" id="filterArea" aria-label="展开筛选项">
+          <div class="filter-item">
+            <label for="projectName">项目名称</label>
+            <select class="filter-control" id="projectName">
+              <option value="WX-10">WX-10</option>
+              <option value="WX-Y06">WX-Y06</option>
+              <option value="WX1-01">WX1-01</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="categoryFilter">分类</label>
+            <select class="filter-control" id="categoryFilter">
+              <option>全部</option>
+              <option>电影</option>
+              <option>动漫</option>
+              <option>正常新增分类</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="coverFilter">封面</label>
+            <select class="filter-control" id="coverFilter">
+              <option>全部</option>
+              <option>有封面</option>
+              <option>无封面</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="seriesFilter">多剧集</label>
+            <select class="filter-control" id="seriesFilter">
+              <option>全部</option>
+              <option>是</option>
+              <option>否</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="resourceId">资源库ID</label>
+            <input class="filter-control" id="resourceId" type="text" placeholder="请输入资源池ID" />
+          </div>
+          <div class="filter-item">
+            <label for="videoName">视频名称</label>
+            <input class="filter-control" id="videoName" type="text" placeholder="请输入视频名称关键字" />
+          </div>
+
+          <div class="filter-item">
+            <label for="statusFilter">内容状态</label>
+            <select class="filter-control" id="statusFilter">
+              <option>全部</option>
+              <option>已上架</option>
+              <option>未上架</option>
+              <option>已下架</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>上架时间</label>
+            <div class="filter-time-range" role="group" aria-label="上架时间范围">
+              <span class="filter-time-icon" aria-hidden="true"></span>
+              <input type="text" placeholder="开始时间" aria-label="开始时间" />
+              <span class="filter-time-separator">-</span>
+              <input type="text" placeholder="结束时间" aria-label="结束时间" />
+            </div>
+          </div>
+          <div class="filter-item">
+            <label for="publishTime">发行时间</label>
+            <select class="filter-control" id="publishTime">
+              <option>全部</option>
+              <option>近7天</option>
+              <option>近30天</option>
+              <option>今年</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="payType">付费类型</label>
+            <select class="filter-control" id="payType">
+              <option>请选择付费类型</option>
+              <option>免费</option>
+              <option>会员</option>
+              <option>付费</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="listSort">列表排序</label>
+            <select class="filter-control" id="listSort">
+              <option>更新时间降序</option>
+              <option>更新时间升序</option>
+              <option>播放量降序</option>
+              <option>点赞数降序</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="videoLength">长/短视频</label>
+            <select class="filter-control" id="videoLength">
+              <option>全部</option>
+              <option>长视频</option>
+              <option>短视频</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label for="recommendFilter">是否推荐</label>
+            <select class="filter-control" id="recommendFilter">
+              <option>全部</option>
+              <option>已推荐</option>
+              <option>未推荐</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="updateStatus">更新状态</label>
+            <select class="filter-control" id="updateStatus">
+              <option>全部</option>
+              <option>已完结</option>
+              <option>更新中</option>
+              <option>未更新</option>
+            </select>
+          </div>
         </div>
 
         <div class="filter-label menu-label">菜单</div>
@@ -1351,6 +1717,7 @@
             <button class="btn primary" type="button" data-action="查询">查询</button>
             <button class="btn secondary" type="button" data-action="重置">重置</button>
           </div>
+          <div class="menu-filter-note">按菜单筛选后，列表仍展示内容已关联的全部菜单，命中的菜单会标记“当前筛选命中”。内容是否展示由“内容状态”统一控制。</div>
         </div>
       </section>
 
@@ -1761,7 +2128,7 @@
             <option>WX2-01</option>
           </select>
         </div>
-        <div class="menu-scope-note">以下操作只影响当前内容在对应菜单下的关联与上下架状态。</div>
+        <div class="menu-scope-note"><strong>规则说明：</strong>菜单只表示内容展示位置；内容是否展示由内容状态统一控制。点击“关联并上架”会将内容整体状态更新为已上架，并在所有已关联菜单下展示。</div>
 
         <div class="menu-modal-divider"></div>
 
@@ -1895,12 +2262,17 @@
       <div class="bulk-bind-body">
         <div class="bulk-form-row">
           <label class="bulk-form-label required" for="bulkContentCount">内容数量</label>
-          <input class="bulk-number-input" id="bulkContentCount" type="number" min="1" max="50000" placeholder="最大值50000" />
+          <input class="bulk-number-input" id="bulkContentCount" type="number" min="1" max="1000" placeholder="最大值1000" />
         </div>
 
         <div class="bulk-form-row">
           <div class="bulk-form-label">当前项目</div>
           <div class="bulk-project-name">WX-Y06</div>
+        </div>
+
+        <div class="bulk-form-row">
+          <div class="bulk-form-label">规则说明</div>
+          <div class="menu-scope-note bulk-rule-note" id="bulkRuleNote"><strong>批量规则：</strong>内容数量最大值为 1000；已上架内容只需关联到菜单，未上架内容可选择“仅关联”或“关联并上架”。</div>
         </div>
 
         <div class="bulk-form-row target-menu-row">
@@ -2027,16 +2399,14 @@
         <button class="modal-close" type="button" data-close-associated-modal aria-label="关闭">×</button>
       </div>
       <div class="associated-modal-body">
-        <p class="associated-meta" id="associatedMeta">展示该内容已绑定的全部菜单路径和菜单维度状态。</p>
+        <p class="associated-meta" id="associatedMeta">展示该内容已绑定的全部菜单路径。</p>
         <table class="associated-table">
           <colgroup>
             <col />
-            <col style="width: 120px" />
           </colgroup>
           <thead>
             <tr>
               <th>菜单路径</th>
-              <th>状态</th>
             </tr>
           </thead>
           <tbody id="associatedMenuBody"></tbody>
@@ -2048,7 +2418,7 @@
   <div class="modal-mask" id="prdModalMask" role="dialog" aria-modal="true" aria-labelledby="prdModalTitle">
     <div class="modal prd-modal">
       <div class="prd-modal-head">
-        <div class="prd-modal-title" id="prdModalTitle">PRD：内容多菜单关联与菜单维度上下架</div>
+        <div class="prd-modal-title" id="prdModalTitle">PRD：内容多菜单关联与内容状态上架</div>
         <button class="modal-close" type="button" data-close-prd aria-label="关闭">×</button>
       </div>
       <div class="prd-modal-body">
@@ -2061,22 +2431,22 @@
             <a href="#prd-goals">4. 目标</a>
             <a href="#prd-concepts">5. 核心概念</a>
             <a href="#prd-rules">6. 业务规则</a>
-            <a href="#prd-page">7. 页面需求</a>
-            <a href="#prd-linkage">8. 联动规则</a>
-            <a href="#prd-filter">9. 筛选逻辑</a>
-            <a href="#prd-data">10. 数据结构</a>
+            <a href="#prd-flow">7. 业务流程图</a>
+            <a href="#prd-page">8. 页面需求</a>
+            <a href="#prd-linkage">9. 联动规则</a>
+            <a href="#prd-filter">10. 筛选逻辑</a>
             <a href="#prd-acceptance">11. 验收标准</a>
           </aside>
 
           <div class="prd-content">
             <section class="prd-summary">
               <div class="prd-summary-title">阅读摘要</div>
-              <p>本需求解决“同一内容可分发到多个菜单，并在不同菜单下独立上下架”的问题。核心规则是：列表展示内容的全部关联菜单，当前筛选命中的菜单打标；父级菜单不允许关联，只有无子菜单的末级菜单可以关联。</p>
+              <p>本需求解决“同一内容可分发到多个菜单”的问题。核心规则是：菜单只表示内容展示位置，是否展示由内容状态统一控制；列表展示内容的全部关联菜单，当前筛选命中的菜单打标；父级菜单不允许关联，只有无子菜单的末级菜单可以关联。</p>
             </section>
 
             <div class="prd-key-grid" aria-label="关键结论">
-              <div class="prd-key-card"><strong>多菜单关联</strong><span>一条内容可以绑定多个菜单，每条绑定关系都有独立状态。</span></div>
-              <div class="prd-key-card"><strong>菜单维度状态</strong><span>同一内容在菜单A可已上架，在菜单B可未上架。</span></div>
+              <div class="prd-key-card"><strong>多菜单关联</strong><span>一条内容可以绑定多个菜单，菜单只表示展示位置。</span></div>
+              <div class="prd-key-card"><strong>内容统一状态</strong><span>内容已上架后，会在所有已关联菜单下展示。</span></div>
               <div class="prd-key-card"><strong>父级不可关联</strong><span>有子菜单的节点只做层级展示，操作列显示无法关联。</span></div>
               <div class="prd-key-card"><strong>筛选命中标记</strong><span>筛选后仍展示全部关联菜单，并标记当前命中的菜单。</span></div>
             </div>
@@ -2085,9 +2455,9 @@
           <h3 id="prd-info">1. 文档信息</h3>
           <table>
             <tbody>
-              <tr><th>文档名称</th><td>视频管理：内容多菜单关联与菜单维度上下架</td></tr>
-              <tr><th>版本</th><td>V1.0</td></tr>
-              <tr><th>日期</th><td>2026-06-18</td></tr>
+              <tr><th>文档名称</th><td>视频管理：内容多菜单关联与内容状态上架</td></tr>
+              <tr><th>版本</th><td>V1.1</td></tr>
+              <tr><th>日期</th><td>2026-06-22</td></tr>
               <tr><th>适用页面</th><td>商户后台 - 视频管理</td></tr>
               <tr><th>相关原型</th><td><code>video-management.html</code></td></tr>
             </tbody>
@@ -2101,23 +2471,26 @@
             </thead>
             <tbody>
               <tr><td>内容支持关联多个菜单</td><td>同一条内容的“关联菜单”字段可展示多个菜单路径。</td><td>原逻辑偏向一条内容只绑定一个菜单，本次改为一条内容可绑定多个菜单。</td></tr>
-              <tr><td>关联菜单字段改造</td><td>列表默认展示前 2 条关联菜单，超过 2 条显示 <code>+N 查看全部</code>。</td><td>点击“查看全部”后，可查看该内容已关联的全部菜单和状态。</td></tr>
-              <tr><td>菜单维度状态</td><td>每个关联菜单单独展示已上架/未上架。</td><td>同一内容在菜单A可以已上架，在菜单B可以未上架。</td></tr>
-              <tr><td>设置菜单弹窗</td><td>弹窗按菜单树展示，末级菜单可操作。</td><td>父级菜单只做层级展示，显示“无法关联”；末级菜单支持“仅关联”“关联并上架”“取消关联”。</td></tr>
+              <tr><td>关联菜单字段改造</td><td>列表默认展示前 2 条关联菜单，超过 2 条显示 <code>+N 查看全部</code>。</td><td>点击“查看全部”后，可查看该内容已关联的全部菜单路径。</td></tr>
+              <tr><td>内容统一状态</td><td>内容是否展示由“内容状态”统一控制。</td><td>菜单不再单独维护已上架/未上架，避免运营理解成两套状态。</td></tr>
+              <tr><td>设置菜单弹窗</td><td>弹窗按菜单树展示，末级菜单可操作。</td><td>父级菜单只做层级展示，显示“无法关联”；只有“内容已上架 + 当前菜单未关联”时展示“关联到菜单”。</td></tr>
               <tr><td>批量绑定菜单弹窗</td><td>显示内容数量、当前项目、目标菜单树。</td><td>菜单树和操作状态与“设置菜单”弹窗保持一致。</td></tr>
+              <tr><td>批量数量上限</td><td>批量绑定菜单的内容数量最大值为 <code>1000</code>。</td><td>与现有代码能力保持一致，避免原型和实现不一致。</td></tr>
               <tr><td>筛选命中标记</td><td>按菜单筛选后，命中的关联菜单展示“当前筛选命中”。</td><td>列表仍展示该内容全部关联菜单，避免用户误以为内容只绑定了当前筛选菜单。</td></tr>
+              <tr><td>筛选逻辑收敛</td><td>保留“内容状态”和菜单筛选。</td><td>筛选结果为“内容状态命中”与“关联所选菜单”的交集。</td></tr>
+              <tr><td>业务流程图</td><td>PRD 新增按钮展示、操作结果、筛选展示 3 个流程说明。</td><td>帮助开发确认“关联并上架”更新的是内容整体状态。</td></tr>
               <tr><td>PRD入口</td><td>原型右上角新增 <code>PRD</code> 按钮。</td><td>方便评审、开发、测试直接在原型内查看需求说明。</td></tr>
             </tbody>
           </table>
 
           <h3 id="prd-background">3. 背景</h3>
-          <p>当前视频管理需要支持一条内容出现在多个菜单位置。原来偏向“一条内容只关联一个菜单”的逻辑，无法满足同一内容同时投放到多个菜单、且不同菜单下上架状态不同的运营需求。</p>
+          <p>当前视频管理需要支持一条内容出现在多个菜单位置。原来偏向“一条内容只关联一个菜单”的逻辑，无法满足同一内容同时投放到多个菜单的运营需求。</p>
 
           <h3 id="prd-goals">4. 目标</h3>
           <ul>
             <li>支持一条内容关联多个菜单。</li>
-            <li>支持菜单维度的上架状态，而不是只按内容整体状态判断。</li>
             <li>列表中的“关联菜单”字段清楚展示该内容已关联的菜单集合。</li>
+            <li>内容是否展示由内容整体上架状态统一控制，降低运营理解成本。</li>
             <li>设置菜单弹窗与列表字段联动，便于演示完整操作闭环。</li>
           </ul>
 
@@ -2131,9 +2504,10 @@
               <tr><td>菜单</td><td>前台展示内容的导航或分类位置，支持多级结构。</td></tr>
               <tr><td>关联菜单</td><td>某条内容已经绑定的一个菜单节点。</td></tr>
               <tr><td>菜单路径</td><td>从一级菜单到目标菜单的完整路径，例如：<code>一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D</code>。</td></tr>
-              <tr><td>菜单维度状态</td><td>同一条内容在某一个菜单下的状态，例如已上架、未上架。</td></tr>
-              <tr><td>仅关联</td><td>内容绑定到菜单，但不立即在该菜单下上架。</td></tr>
-              <tr><td>关联并上架</td><td>内容绑定到菜单，并在该菜单下立即上架。</td></tr>
+              <tr><td>内容状态</td><td>内容整体的上架状态，决定内容是否在已关联菜单下展示。</td></tr>
+              <tr><td>仅关联</td><td>内容绑定到菜单，不改变内容当前上架状态。</td></tr>
+              <tr><td>关联到菜单</td><td>仅在“内容已上架 + 当前菜单未关联”时展示的关联按钮，含义等同于“仅关联”。</td></tr>
+              <tr><td>关联并上架</td><td>内容绑定到菜单，并将内容整体状态更新为已上架。</td></tr>
               <tr><td>取消关联</td><td>解除内容和某个菜单的绑定关系。</td></tr>
             </tbody>
           </table>
@@ -2143,16 +2517,19 @@
           <ol>
             <li>一条内容可以关联多个菜单。</li>
             <li>同一条内容不可重复关联同一个菜单路径。</li>
-            <li>内容关联菜单后，需要记录该菜单维度下的状态。</li>
-            <li>内容在不同菜单下的状态互相独立。</li>
+            <li>菜单关联关系只记录内容绑定了哪些菜单，不记录菜单维度上下架状态。</li>
+            <li>内容已上架后，会在所有已关联菜单下展示；内容未上架时，所有菜单均不展示。</li>
+            <li>内容已上架但没有任何关联菜单时，内容状态仍为已上架，但前台没有菜单入口展示。</li>
+            <li><code>关联并上架</code> 更新的是内容整体状态，因此会影响该内容所有已关联菜单的展示。</li>
+            <li><code>关联到菜单</code> 的前置条件是内容整体状态已上架，且目标末级菜单当前未关联；如果内容未上架，不展示该按钮。</li>
           </ol>
 
           <table>
             <thead>
-              <tr><th>内容</th><th>菜单路径</th><th>状态</th></tr>
+              <tr><th>内容</th><th>菜单路径</th><th>内容状态</th></tr>
             </thead>
             <tbody>
-              <tr><td>内容A</td><td>一级菜单A / 二级菜单A / 三级菜单B</td><td>未上架</td></tr>
+              <tr><td>内容A</td><td>一级菜单A / 二级菜单A / 三级菜单B</td><td>已上架</td></tr>
               <tr><td>内容A</td><td>一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D</td><td>已上架</td></tr>
             </tbody>
           </table>
@@ -2166,22 +2543,161 @@
           </ol>
 
           <h4>6.3 状态流转规则</h4>
+          <p class="prd-note">操作展示前置判断：系统先判断目标菜单是否可关联，再判断内容是否已关联该菜单，最后判断内容整体状态。只有“可关联末级菜单 + 未关联 + 内容已上架”时展示“关联到菜单”。</p>
           <table>
             <thead>
               <tr><th>操作</th><th>结果</th></tr>
             </thead>
             <tbody>
-              <tr><td>仅关联</td><td>新增菜单关联，状态为未上架。</td></tr>
-              <tr><td>关联并上架</td><td>新增菜单关联，状态为已上架。</td></tr>
-              <tr><td>已关联菜单再次选择仅关联</td><td>保留关联，将状态更新为未上架。</td></tr>
-              <tr><td>已关联菜单再次选择关联并上架</td><td>保留关联，将状态更新为已上架。</td></tr>
+              <tr><td>仅关联</td><td>新增菜单关联，不改变内容状态。</td></tr>
+              <tr><td>关联并上架</td><td>新增菜单关联，并将内容整体状态更新为已上架。</td></tr>
+              <tr><td>内容已上架 + 当前菜单未关联</td><td>只展示“关联到菜单”，关联后会在该菜单下展示。</td></tr>
+              <tr><td>未上架内容关联新菜单</td><td>展示“仅关联 / 关联并上架”。</td></tr>
               <tr><td>取消关联</td><td>删除该菜单路径下的关联关系。</td></tr>
             </tbody>
           </table>
 
-          <h3 id="prd-page">7. 页面需求</h3>
-          <h4>7.1 视频列表 - 关联菜单字段</h4>
-          <p>列表中的“关联菜单”字段展示该内容当前已关联的菜单集合。每条关联展示菜单路径、目标菜单名称和菜单维度状态。</p>
+          <h4>6.4 多选规则</h4>
+          <ol>
+            <li>多选内容时，操作会应用到所有已选内容。</li>
+            <li>如果选中内容里存在未上架内容，未关联末级菜单展示“仅关联 / 关联并上架”。</li>
+            <li>如果选中内容全部已上架，未关联末级菜单只展示“关联到菜单”。</li>
+            <li>点击 <code>仅关联</code> 时，所有已选内容新增菜单关联，内容状态保持原状。</li>
+            <li>点击 <code>关联并上架</code> 时，所有已选内容新增菜单关联，并统一更新为已上架。</li>
+            <li>点击 <code>取消关联</code> 时，所有已选内容删除该菜单关联，内容状态保持原状。</li>
+          </ol>
+
+          <h3 id="prd-flow">7. 业务流程图</h3>
+          <p class="prd-note">给开发的核心判断：菜单只记录关联关系；“关联并上架”更新的是内容整体状态，不是某个菜单下的独立状态。</p>
+          <div class="prd-flow-diagrams">
+            <div class="flowchart-panel">
+              <div class="flowchart-title">设置菜单按钮展示流程</div>
+              <div class="flowchart-board">
+                <div class="flow-row wrap">
+                  <div class="flow-node start">打开设置菜单</div>
+                  <span class="prd-flow-arrow"></span>
+                  <div class="flow-node decision">是否父级菜单</div>
+                  <span class="prd-flow-arrow"></span>
+                  <div class="flow-split">
+                    <div class="flow-lane">
+                      <span class="flow-label">是</span>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node end">无法关联</div>
+                    </div>
+                    <div class="flow-lane">
+                      <span class="flow-label">否</span>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node decision">是否已关联</div>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-split">
+                        <div class="flow-lane">
+                          <span class="flow-label">是</span>
+                          <span class="prd-flow-arrow"></span>
+                          <div class="flow-node end">已关联 / 取消关联</div>
+                        </div>
+                        <div class="flow-lane">
+                          <span class="flow-label">否</span>
+                          <span class="prd-flow-arrow"></span>
+                          <div class="flow-node decision">内容是否已上架</div>
+                          <span class="prd-flow-arrow"></span>
+                          <div class="flow-split">
+                            <div class="flow-lane">
+                              <span class="flow-label">是 + 未关联</span>
+                              <span class="prd-flow-arrow"></span>
+                              <div class="flow-node action">关联到菜单</div>
+                            </div>
+                            <div class="flow-lane">
+                              <span class="flow-label">否</span>
+                              <span class="prd-flow-arrow"></span>
+                              <div class="flow-node action">仅关联 / 关联并上架</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flowchart-panel">
+              <div class="flowchart-title">菜单操作结果流程</div>
+              <div class="flowchart-board">
+                <div class="flow-row wrap">
+                  <div class="flow-node start">用户点击菜单操作</div>
+                  <span class="prd-flow-arrow"></span>
+                  <div class="flow-node decision">操作类型</div>
+                  <span class="prd-flow-arrow"></span>
+                  <div class="flow-split">
+                    <div class="flow-lane">
+                      <span class="flow-label">仅关联</span>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node action">新增菜单关联</div>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node end">内容状态不变</div>
+                    </div>
+                    <div class="flow-lane">
+                      <span class="flow-label">关联到菜单</span>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node action">新增菜单关联</div>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node end">保持已上架</div>
+                    </div>
+                    <div class="flow-lane">
+                      <span class="flow-label">关联并上架</span>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node action">新增菜单关联</div>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node end">内容整体改为已上架</div>
+                    </div>
+                    <div class="flow-lane">
+                      <span class="flow-label">取消关联</span>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node action">删除菜单关联</div>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node end">内容状态不变</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flowchart-panel">
+              <div class="flowchart-title">筛选展示流程</div>
+              <div class="flowchart-board">
+                <div class="flow-row">
+                  <div class="flow-node start">用户选择筛选条件</div>
+                  <span class="prd-flow-arrow"></span>
+                  <div class="flow-split">
+                    <div class="flow-lane">
+                      <span class="flow-label">内容状态</span>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node action">判断内容整体状态</div>
+                    </div>
+                    <div class="flow-lane">
+                      <span class="flow-label">菜单路径</span>
+                      <span class="prd-flow-arrow"></span>
+                      <div class="flow-node action">判断是否关联所选菜单</div>
+                    </div>
+                  </div>
+                  <span class="prd-flow-arrow"></span>
+                  <div class="flow-node decision">取交集</div>
+                  <span class="prd-flow-arrow"></span>
+                  <div class="flow-node end">展示命中内容</div>
+                </div>
+                <div class="flow-row">
+                  <div class="flow-node action">关联菜单字段仍展示全部菜单</div>
+                  <span class="prd-flow-arrow"></span>
+                  <div class="flow-node end">命中路径标记当前筛选命中</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="prd-note">多选内容时，如果选中内容里存在未上架内容，则未关联菜单展示“仅关联 / 关联并上架”。点击“关联并上架”会将所有选中内容整体更新为已上架。</p>
+
+          <h3 id="prd-page">8. 页面需求</h3>
+          <h4>8.1 视频列表 - 关联菜单字段</h4>
+          <p>列表中的“关联菜单”字段展示该内容当前已关联的菜单集合。每条关联展示菜单路径和目标菜单名称，不展示菜单维度上下架状态。</p>
           <ul>
             <li>默认最多展示 2 条菜单关联。</li>
             <li>如果关联菜单数量大于 2 条，展示 <code>+N 查看全部</code>。</li>
@@ -2189,10 +2705,10 @@
             <li>未关联任何菜单时，显示 <code>未关联</code>。</li>
           </ul>
 
-          <h4>7.2 查看全部弹窗</h4>
-          <p>点击 <code>+N 查看全部</code> 后，展示该内容全部已关联菜单。弹窗字段包括菜单路径和状态，不展示“列表展示”等内部说明文案。</p>
+          <h4>8.2 查看全部弹窗</h4>
+          <p>点击 <code>+N 查看全部</code> 后，展示该内容全部已关联菜单。弹窗字段包括菜单路径，不展示“列表展示”等内部说明文案。</p>
 
-          <h4>7.3 设置菜单入口</h4>
+          <h4>8.3 设置菜单入口</h4>
           <ul>
             <li>入口位于视频列表批量操作区域中的 <code>设置菜单</code> 按钮。</li>
             <li>未勾选内容时，按钮置灰不可点击。</li>
@@ -2200,62 +2716,66 @@
             <li>支持单选和多选内容后批量设置菜单。</li>
           </ul>
 
-          <h4>7.4 设置菜单弹窗</h4>
-          <p class="prd-note">设置菜单弹窗按菜单树展示。父级菜单显示“无法关联”，末级菜单显示“仅关联 / 关联并上架”。</p>
+          <h4>8.4 设置菜单弹窗</h4>
+          <p class="prd-note">设置菜单弹窗按菜单树展示。父级菜单显示“无法关联”；未上架内容的未关联末级菜单显示“仅关联 / 关联并上架”；只有“内容已上架 + 当前菜单未关联”时，才显示“关联到菜单”。</p>
           <table>
             <thead>
-              <tr><th>菜单状态</th><th>操作展示</th></tr>
+              <tr><th>菜单场景</th><th>操作展示</th></tr>
             </thead>
             <tbody>
               <tr><td>不可关联父级菜单</td><td>无法关联</td></tr>
-              <tr><td>未关联末级菜单</td><td>仅关联 / 关联并上架</td></tr>
-              <tr><td>已关联未上架</td><td>已关联未上架 / 取消关联</td></tr>
-              <tr><td>已关联已上架</td><td>已关联已上架 / 取消关联</td></tr>
+              <tr><td>未关联末级菜单，内容未上架</td><td>仅关联 / 关联并上架</td></tr>
+              <tr><td>内容已上架 + 当前菜单未关联</td><td>关联到菜单</td></tr>
+              <tr><td>已关联末级菜单</td><td>已关联 / 取消关联</td></tr>
             </tbody>
           </table>
+          <ul>
+            <li>弹窗顶部需要说明：菜单只表示内容展示位置；内容是否展示由内容状态统一控制。</li>
+            <li>弹窗顶部需要说明：关联并上架会将内容整体状态更新为已上架，并在所有已关联菜单下展示。</li>
+          </ul>
 
-          <h3 id="prd-linkage">8. 联动规则</h3>
+          <h4>8.5 批量绑定菜单弹窗</h4>
+          <ul>
+            <li>点击 <code>批量绑定菜单</code> 后打开弹窗。</li>
+            <li>弹窗展示内容数量输入框、当前项目、目标菜单树。</li>
+            <li>内容数量最大值为 1000。</li>
+            <li>弹窗规则说明需要展示当前已选内容的上架状态判断，说明为什么展示“关联到菜单”或“仅关联 / 关联并上架”。</li>
+            <li>如果已选内容全部已上架，未关联末级菜单只展示“关联到菜单”。</li>
+            <li>如果已选内容里存在未上架内容，或未明确选择内容，末级菜单保留“仅关联 / 关联并上架”。</li>
+            <li>点击“仅关联”表示只新增菜单关联，不改变内容状态。</li>
+            <li>点击“关联并上架”表示新增菜单关联，并将命中的内容整体状态更新为已上架。</li>
+            <li>弹窗内需要展示批量规则说明，避免用户误认为“关联并上架”是菜单维度状态。</li>
+          </ul>
+
+          <h3 id="prd-linkage">9. 联动规则</h3>
           <ol>
             <li>打开设置菜单弹窗时，弹窗根据当前选中内容的已关联菜单展示对应状态。</li>
-            <li>点击 <code>仅关联</code> 后，列表中该内容的“关联菜单”字段立即新增该菜单，状态为未上架。</li>
-            <li>点击 <code>关联并上架</code> 后，列表中该内容的“关联菜单”字段立即新增该菜单，状态为已上架。</li>
+            <li>点击 <code>仅关联</code> 或 <code>关联到菜单</code> 后，列表中该内容的“关联菜单”字段立即新增该菜单，内容状态保持不变。</li>
+            <li>点击 <code>关联并上架</code> 后，列表中该内容的“关联菜单”字段立即新增该菜单，并将内容整体状态更新为已上架。</li>
             <li>点击 <code>取消关联</code> 后，列表中该内容的“关联菜单”字段立即移除该菜单。</li>
             <li>若当前选中了多条内容，操作应用到所有已选内容。</li>
           </ol>
 
-          <h3 id="prd-filter">9. 筛选逻辑</h3>
+          <h3 id="prd-filter">10. 筛选逻辑</h3>
           <ol>
             <li>内容只要关联了筛选条件对应的菜单路径，即命中筛选。</li>
             <li>如果内容关联了多个菜单，筛选不同菜单时，同一条内容可能在多个结果中出现。</li>
             <li>筛选后，列表中的“关联菜单”字段仍展示该内容全部已关联菜单，而不是只展示当前筛选命中的菜单。</li>
             <li>为降低“内容重复”的误解，当前筛选命中的菜单需要展示“当前筛选命中”标记。</li>
+            <li>筛选项中的“内容状态”代表内容整体上下架状态。</li>
+            <li>菜单筛选与内容状态筛选取交集，不存在“当前菜单状态”。</li>
           </ol>
-
-          <h3 id="prd-data">10. 数据结构建议</h3>
-          <table>
-            <thead>
-              <tr><th>字段</th><th>说明</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>id</td><td>关联记录ID</td></tr>
-              <tr><td>content_id</td><td>内容ID</td></tr>
-              <tr><td>menu_id</td><td>菜单ID</td></tr>
-              <tr><td>menu_path</td><td>菜单完整路径，用于列表展示</td></tr>
-              <tr><td>status</td><td><code>published</code> / <code>unpublished</code></td></tr>
-              <tr><td>created_at</td><td>创建时间</td></tr>
-              <tr><td>updated_at</td><td>更新时间</td></tr>
-            </tbody>
-          </table>
 
           <h3 id="prd-acceptance">11. 验收标准</h3>
           <h4>11.1 列表展示</h4>
           <ul>
             <li>内容无关联菜单时，显示“未关联”。</li>
-            <li>内容关联 1 条菜单时，展示 1 条菜单路径和状态。</li>
-            <li>内容关联 2 条菜单时，展示 2 条菜单路径和状态，不展示“查看全部”。</li>
+            <li>内容关联 1 条菜单时，展示 1 条菜单路径。</li>
+            <li>内容关联 2 条菜单时，展示 2 条菜单路径，不展示“查看全部”。</li>
             <li>内容关联超过 2 条菜单时，展示前 2 条，并显示 <code>+N 查看全部</code>。</li>
-            <li>点击“查看全部”后，弹窗展示全部菜单路径和状态。</li>
+            <li>点击“查看全部”后，弹窗展示全部菜单路径。</li>
             <li>按菜单筛选后，命中的关联菜单展示“当前筛选命中”标记。</li>
+            <li>筛选项保留“内容状态”和菜单筛选，结果取交集。</li>
           </ul>
 
           <h4>11.2 设置菜单弹窗</h4>
@@ -2264,16 +2784,21 @@
             <li>勾选内容后，设置菜单按钮高亮可点击。</li>
             <li>弹窗菜单按层级树展示。</li>
             <li>父级菜单显示“无法关联”。</li>
-            <li>末级菜单显示“仅关联”和“关联并上架”。</li>
-            <li>已关联菜单展示当前状态和“取消关联”。</li>
+            <li>未上架内容的未关联末级菜单显示“仅关联”和“关联并上架”。</li>
+            <li>只有“内容已上架 + 当前菜单未关联”时，未关联末级菜单才显示“关联到菜单”。</li>
+            <li>已关联菜单展示“已关联”和“取消关联”。</li>
+            <li>批量绑定菜单弹窗需要展示当前已选内容状态判断，避免用户误以为按钮没有更新。</li>
           </ul>
 
           <h4>11.3 联动效果</h4>
           <ul>
-            <li>点击“仅关联”后，列表字段新增对应菜单，状态为未上架。</li>
-            <li>点击“关联并上架”后，列表字段新增对应菜单，状态为已上架。</li>
+            <li>点击“仅关联”或“关联到菜单”后，列表字段新增对应菜单，内容状态保持不变。</li>
+            <li>点击“关联并上架”后，列表字段新增对应菜单，并将内容状态更新为已上架。</li>
             <li>点击“取消关联”后，列表字段移除对应菜单。</li>
             <li>多选内容时，操作对所有已选内容生效。</li>
+            <li>多选内容包含未上架内容时，设置菜单弹窗展示“仅关联 / 关联并上架”。</li>
+            <li>“关联并上架”后，该内容在所有已关联菜单下展示。</li>
+            <li>内容已上架但无关联菜单时，内容状态保持已上架，但前台无菜单入口展示。</li>
           </ul>
 
             </article>
@@ -2291,6 +2816,7 @@
     const menuModalMask = document.getElementById("menuModalMask");
     const bulkBindModalMask = document.getElementById("bulkBindModalMask");
     const bulkContentCount = document.getElementById("bulkContentCount");
+    const bulkRuleNote = document.getElementById("bulkRuleNote");
     const associatedModalMask = document.getElementById("associatedModalMask");
     const prdModalMask = document.getElementById("prdModalMask");
     const associatedMeta = document.getElementById("associatedMeta");
@@ -2329,10 +2855,11 @@
         key: "video-5",
         menus: [
           { path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单B", status: "unpublished" },
-          { path: "一级菜单A / 二级菜单A / 三级菜单B", status: "published" }
+          { path: "一级菜单A / 二级菜单A / 三级菜单B", status: "published" },
+          { path: "一级菜单B / 二级菜单D / 三级菜单E / 四级菜单E", status: "unpublished" }
         ]
       },
-      { key: "video-6", menus: [{ path: "一级菜单A / 二级菜单A / 三级菜单B", status: "published" }] },
+      { key: "video-6", menus: [{ path: "一级菜单B / 二级菜单C / 三级菜单D", status: "published" }] },
       {
         key: "lab",
         menus: [
@@ -2341,11 +2868,28 @@
           { path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单B", status: "unpublished" }
         ]
       },
-      { key: "video-8", menus: [] },
-      { key: "video-9", menus: [{ path: "一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D", status: "published" }] },
-      { key: "video-10", menus: [{ path: "一级菜单A / 二级菜单A / 三级菜单A / 四级菜单A", status: "unpublished" }] }
+      { key: "video-8", menus: [{ path: "一级菜单B / 二级菜单D / 经典合集", status: "published" }] },
+      {
+        key: "video-9",
+        menus: [
+          { path: "一级菜单A / 二级菜单B / 三级菜单C / 四级菜单D", status: "published" },
+          { path: "一级菜单A / 二级菜单B / 正常新增分类 / 四级菜单D", status: "unpublished" }
+        ]
+      },
+      { key: "video-10", menus: [{ path: "一级菜单B / 二级菜单D / 三级菜单E / 四级菜单E", status: "unpublished" }] }
     ];
     const contentMenuStore = {};
+    const menuFilterSelectIds = ["menuOne", "menuTwo", "menuThree", "menuFour"];
+    const menuFilterPaths = [
+      ["一级菜单A", "二级菜单A", "三级菜单A", "四级菜单A"],
+      ["一级菜单A", "二级菜单A", "三级菜单A", "四级菜单B"],
+      ["一级菜单A", "二级菜单A", "三级菜单B"],
+      ["一级菜单A", "二级菜单B", "三级菜单C", "四级菜单D"],
+      ["一级菜单A", "二级菜单B", "正常新增分类", "四级菜单D"],
+      ["一级菜单B", "二级菜单C", "三级菜单D"],
+      ["一级菜单B", "二级菜单D", "三级菜单E", "四级菜单E"],
+      ["一级菜单B", "二级菜单D", "经典合集"]
+    ];
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, (char) => ({
@@ -2365,6 +2909,49 @@
 
     function getRowTitle(row) {
       return row.querySelector(".basic-title")?.textContent.trim() || "当前内容";
+    }
+
+    function isRowPublished(row) {
+      const statusButton = row.querySelector("[data-status]");
+      return statusButton?.textContent.trim() === "下架";
+    }
+
+    function setRowPublished(row, published) {
+      const statusButton = row.querySelector("[data-status]");
+      if (!statusButton) return;
+      statusButton.textContent = published ? "下架" : "上架";
+      statusButton.classList.toggle("warn", published);
+      statusButton.classList.toggle("success", !published);
+    }
+
+    function selectedRowsNeedPublishAction() {
+      const rows = selectedRows();
+      return rows.length === 0 || rows.some((row) => !isRowPublished(row));
+    }
+
+    function selectedRowsStatusSummary() {
+      const rows = selectedRows();
+      const publishedCount = rows.filter((row) => isRowPublished(row)).length;
+      const unpublishedCount = rows.length - publishedCount;
+      return {
+        total: rows.length,
+        publishedCount,
+        unpublishedCount
+      };
+    }
+
+    function syncBulkRuleNote() {
+      if (!bulkRuleNote) return;
+      const summary = selectedRowsStatusSummary();
+      if (summary.total === 0) {
+        bulkRuleNote.innerHTML = "<strong>批量规则：</strong>内容数量最大值为 1000；未明确选择内容时，末级菜单保留“仅关联 / 关联并上架”。";
+        return;
+      }
+      if (summary.unpublishedCount === 0) {
+        bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，均为已上架；未关联菜单只展示“关联到菜单”。";
+        return;
+      }
+      bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，其中 " + summary.unpublishedCount + " 条未上架；未关联菜单展示“仅关联 / 关联并上架”。";
     }
 
     function ensureRowStore(row) {
@@ -2389,20 +2976,70 @@
       };
     }
 
-    function menuStatusMeta(status) {
-      const isPublished = status === "published";
-      return {
-        label: isPublished ? "已上架" : "未上架",
-        className: isPublished ? "published" : "unpublished"
-      };
+    function menuSelectValue(index) {
+      const select = document.getElementById(menuFilterSelectIds[index]);
+      return select && select.selectedIndex > 0 ? select.value : "";
+    }
+
+    function menuPrefixBefore(index) {
+      const prefix = [];
+      for (let i = 0; i < index; i += 1) {
+        const value = menuSelectValue(i);
+        if (!value) break;
+        prefix.push(value);
+      }
+      return prefix;
+    }
+
+    function menuOptionsForLevel(index) {
+      const prefix = menuPrefixBefore(index);
+      if (index > 0 && prefix.length < index) return [];
+      const options = [];
+      menuFilterPaths.forEach((path) => {
+        if (!path[index]) return;
+        const matched = prefix.every((value, prefixIndex) => path[prefixIndex] === value);
+        if (matched && !options.includes(path[index])) {
+          options.push(path[index]);
+        }
+      });
+      return options;
+    }
+
+    function populateMenuSelect(index, preferredValue = "") {
+      const select = document.getElementById(menuFilterSelectIds[index]);
+      if (!select) return;
+      const options = menuOptionsForLevel(index);
+      const disabled = index > 0 && options.length === 0;
+      const nextValue = options.includes(preferredValue) ? preferredValue : "";
+      select.innerHTML = '<option value="">未选择</option>' + options.map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join("");
+      select.disabled = disabled;
+      select.value = nextValue;
+      select.style.color = nextValue ? "var(--text)" : "var(--light)";
+    }
+
+    function refreshMenuFilterOptions(changedIndex = -1) {
+      menuFilterSelectIds.forEach((id, index) => {
+        const select = document.getElementById(id);
+        const preferredValue = changedIndex >= 0 && index > changedIndex ? "" : (select?.value || "");
+        populateMenuSelect(index, preferredValue);
+      });
     }
 
     function activeMenuFilterPath() {
-      const selected = ["menuOne", "menuTwo", "menuThree", "menuFour"]
+      const selected = menuFilterSelectIds
         .map((id) => document.getElementById(id))
         .filter((select) => select && select.selectedIndex > 0)
         .map((select) => select.value);
       return selected.join(" / ");
+    }
+
+    function contentStatusMatches(row) {
+      const statusSelect = document.getElementById("statusFilter");
+      const status = statusSelect && statusSelect.selectedIndex > 0 ? statusSelect.value : "";
+      if (!status || status === "全部") return true;
+      if (status === "已上架") return isRowPublished(row);
+      if (status === "未上架" || status === "已下架") return !isRowPublished(row);
+      return true;
     }
 
     function menuMatchesFilter(item, activePath) {
@@ -2411,7 +3048,6 @@
 
     function menuLineHtml(item, activePath) {
       const pathInfo = splitMenuPath(item.path);
-      const status = menuStatusMeta(item.status);
       const hit = activePath && menuMatchesFilter(item, activePath)
         ? '<span class="filter-hit">当前筛选命中</span>'
         : "";
@@ -2419,7 +3055,7 @@
         <div class="menu-assoc-item">
           <div class="menu-assoc-text">
             <div class="menu-path">${escapeHtml(pathInfo.parent)}</div>
-            <div><span class="menu-leaf">${escapeHtml(pathInfo.leaf)}</span><span class="state-pill ${status.className}">${status.label}</span>${hit}</div>
+            <div><span class="menu-leaf">${escapeHtml(pathInfo.leaf)}</span>${hit}</div>
           </div>
         </div>
       `;
@@ -2451,7 +3087,8 @@
 
       videoRows.forEach((row) => {
         const detail = ensureRowStore(row);
-        const visible = !activePath || detail.menus.some((item) => menuMatchesFilter(item, activePath));
+        const menuMatched = !activePath || detail.menus.some((item) => menuMatchesFilter(item, activePath));
+        const visible = menuMatched && contentStatusMatches(row);
         row.style.display = visible ? "" : "none";
         if (visible) visibleCount += 1;
         renderRowAssociatedMenus(row);
@@ -2463,13 +3100,31 @@
     }
 
     function resetMenuFilters() {
-      ["menuOne", "menuTwo", "menuThree", "menuFour"].forEach((id) => {
+      menuFilterSelectIds.forEach((id) => {
         const select = document.getElementById(id);
         if (!select) return;
         select.selectedIndex = 0;
         select.style.color = "var(--light)";
       });
+      refreshMenuFilterOptions();
       applyMenuFilter();
+    }
+
+    function resetAdvancedFilters(shouldCollapse = true) {
+      const filterArea = document.getElementById("filterArea");
+      if (!filterArea) return;
+      filterArea.querySelectorAll("input").forEach((input) => {
+        input.value = "";
+      });
+      filterArea.querySelectorAll("select").forEach((select) => {
+        select.selectedIndex = 0;
+        select.style.color = ["projectName", "listSort"].includes(select.id) ? "var(--text)" : "var(--light)";
+      });
+      if (shouldCollapse) {
+        filterArea.classList.remove("open");
+        const toggle = document.querySelector('[data-toggle="filterArea"]');
+        if (toggle) toggle.textContent = "展开筛选";
+      }
     }
 
     function setupContentMenuStore() {
@@ -2487,29 +3142,31 @@
     function syncMenuModalState() {
       const firstSelectedRow = selectedRows()[0];
       const selectedDetail = firstSelectedRow ? ensureRowStore(firstSelectedRow) : null;
+      const shouldShowPublishAction = selectedRowsNeedPublishAction();
 
       document.querySelectorAll(".menu-action-buttons[data-menu-path]").forEach((container) => {
         const current = selectedDetail?.menus.find((item) => item.path === container.dataset.menuPath);
         if (current) {
-          renderLinkedMenuState(container, current.status === "published" ? "publish" : "only");
+          renderLinkedMenuState(container);
           return;
         }
-        renderUnlinkedMenuState(container);
+        renderUnlinkedMenuState(container, shouldShowPublishAction);
       });
     }
 
     function updateSelectedContentMenus(path, mode) {
-      const status = mode === "publish" ? "published" : "unpublished";
       selectedRows().forEach((row) => {
         const detail = ensureRowStore(row);
         const existing = detail.menus.find((item) => item.path === path);
-        if (existing) {
-          existing.status = status;
-        } else {
-          detail.menus.unshift({ path, status });
+        if (!existing) {
+          detail.menus.unshift({ path });
+        }
+        if (mode === "publish") {
+          setRowPublished(row, true);
         }
         renderRowAssociatedMenus(row);
       });
+      applyMenuFilter();
     }
 
     function removeSelectedContentMenu(path) {
@@ -2550,8 +3207,10 @@
     }
 
     function resetBulkBindMenuState() {
+      const shouldShowPublishAction = selectedRowsNeedPublishAction();
+      syncBulkRuleNote();
       document.querySelectorAll(".menu-action-buttons[data-bulk-menu-path]").forEach((container) => {
-        renderBulkUnlinkedMenuState(container);
+        renderBulkUnlinkedMenuState(container, shouldShowPublishAction);
       });
     }
 
@@ -2571,15 +3230,12 @@
       const activePath = activeMenuFilterPath();
       associatedMeta.textContent = detail.title + "，共关联 " + detail.menus.length + " 个菜单。";
       associatedMenuBody.innerHTML = detail.menus.map((item) => {
-        const statusLabel = item.status === "published" ? "已上架" : "未上架";
-        const statusClass = item.status === "published" ? "published" : "unpublished";
         const hit = activePath && menuMatchesFilter(item, activePath)
           ? '<span class="filter-hit">当前筛选命中</span>'
           : "";
         return `
           <tr>
             <td><div class="associated-path">${item.path}${hit}</div></td>
-            <td><span class="state-pill ${statusClass}">${statusLabel}</span></td>
           </tr>
         `;
       }).join("");
@@ -2603,43 +3259,45 @@
       prdModalMask.classList.remove("open");
     }
 
-    function renderUnlinkedMenuState(container) {
+    function renderUnlinkedMenuState(container, showPublishAction = true) {
       container.dataset.menuState = "unlinked";
-      container.innerHTML = `
-        <button class="btn tiny outline-blue" type="button" data-link-menu="only">仅关联</button>
-        <button class="btn tiny primary" type="button" data-link-menu="publish">关联并上架</button>
-      `;
+      container.innerHTML = showPublishAction
+        ? `
+          <button class="btn tiny outline-blue" type="button" data-link-menu="only">仅关联</button>
+          <button class="btn tiny primary" type="button" data-link-menu="publish">关联并上架</button>
+        `
+        : '<button class="btn tiny primary" type="button" data-link-menu="only">关联到菜单</button>';
     }
 
-    function renderLinkedMenuState(container, mode) {
-      container.dataset.menuState = mode;
-      const isPublished = mode === "publish";
-      const label = isPublished ? "已关联已上架" : "已关联未上架";
+    function renderLinkedMenuState(container) {
+      container.dataset.menuState = "linked";
       container.innerHTML = `
-        <span class="menu-status ${isPublished ? "published" : "unpublished"}">${label}</span>
+        <span class="menu-status published">已关联</span>
         <button class="btn tiny outline-red" type="button" data-unlink-menu>取消关联</button>
       `;
     }
 
-    function renderBulkUnlinkedMenuState(container) {
+    function renderBulkUnlinkedMenuState(container, showPublishAction = true) {
       container.dataset.menuState = "unlinked";
-      container.innerHTML = `
-        <button class="btn tiny outline-blue" type="button" data-bulk-link-menu="only">仅关联</button>
-        <button class="btn tiny primary" type="button" data-bulk-link-menu="publish">关联并上架</button>
-      `;
+      container.innerHTML = showPublishAction
+        ? `
+          <button class="btn tiny outline-blue" type="button" data-bulk-link-menu="only">仅关联</button>
+          <button class="btn tiny primary" type="button" data-bulk-link-menu="publish">关联并上架</button>
+        `
+        : '<button class="btn tiny primary" type="button" data-bulk-link-menu="only">关联到菜单</button>';
     }
 
-    function renderBulkLinkedMenuState(container, mode) {
-      container.dataset.menuState = mode;
-      const isPublished = mode === "publish";
-      const label = isPublished ? "已关联已上架" : "已关联未上架";
+    function renderBulkLinkedMenuState(container) {
+      container.dataset.menuState = "linked";
       container.innerHTML = `
-        <span class="menu-status ${isPublished ? "published" : "unpublished"}">${label}</span>
+        <span class="menu-status published">已关联</span>
         <button class="btn tiny outline-red" type="button" data-bulk-unlink-menu>取消关联</button>
       `;
     }
 
     setupContentMenuStore();
+    refreshMenuFilterOptions();
+    resetAdvancedFilters(false);
 
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
@@ -2670,14 +3328,19 @@
     });
 
     document.querySelector("[data-reset-filters]").addEventListener("click", () => {
-      document.getElementById("filterArea").classList.remove("open");
+      resetAdvancedFilters();
+      applyMenuFilter();
       showToast("筛选项已重置");
     });
 
     document.querySelectorAll("select").forEach((select) => {
       select.addEventListener("change", () => {
         select.style.color = select.selectedIndex === 0 ? "var(--light)" : "var(--text)";
-        if (["menuOne", "menuTwo", "menuThree", "menuFour"].includes(select.id)) {
+        if (menuFilterSelectIds.includes(select.id)) {
+          refreshMenuFilterOptions(menuFilterSelectIds.indexOf(select.id));
+          applyMenuFilter(true);
+        }
+        if (select.id === "statusFilter") {
           applyMenuFilter(true);
         }
       });
@@ -2702,11 +3365,16 @@
       button.addEventListener("click", () => {
         const action = button.dataset.action;
         if (action === "重置") {
+          resetAdvancedFilters();
           resetMenuFilters();
           showToast("筛选条件已重置");
           return;
         }
-        if (action === "查询" || action === "正片" || action === "预览" || action === "详情编辑") {
+        if (action === "查询") {
+          applyMenuFilter(true);
+          return;
+        }
+        if (action === "正片" || action === "预览" || action === "详情编辑") {
           showToast(action + "已触发");
           return;
         }
@@ -2732,9 +3400,8 @@
     document.querySelectorAll("[data-status]").forEach((button) => {
       button.addEventListener("click", () => {
         const next = button.textContent.trim() === "下架" ? "上架" : "下架";
-        button.textContent = next;
-        button.classList.toggle("warn", next === "下架");
-        button.classList.toggle("success", next === "上架");
+        setRowPublished(button.closest("tr"), next === "下架");
+        applyMenuFilter();
         showToast("视频状态已切换为" + next);
       });
     });
@@ -2791,14 +3458,14 @@
         const mode = linkButton.dataset.linkMenu;
         const container = linkButton.closest(".menu-action-buttons");
         updateSelectedContentMenus(container.dataset.menuPath, mode);
-        renderLinkedMenuState(container, mode);
-        showToast(mode === "publish" ? "已关联菜单并上架，列表已更新" : "已关联菜单，列表已更新为未上架");
+        renderLinkedMenuState(container);
+        showToast(mode === "publish" ? "已关联菜单，并将内容状态更新为已上架" : "已关联菜单，内容状态保持不变");
       }
 
       if (unlinkButton) {
         const container = unlinkButton.closest(".menu-action-buttons");
         removeSelectedContentMenu(container.dataset.menuPath);
-        renderUnlinkedMenuState(container);
+        renderUnlinkedMenuState(container, selectedRowsNeedPublishAction());
         showToast("已取消菜单关联，列表已更新");
       }
     });
@@ -2809,8 +3476,8 @@
       if (!linkButton && !unlinkButton) return;
 
       const count = Number(bulkContentCount.value);
-      if (count > 50000) {
-        showToast("内容数量最大值为50000");
+      if (count > 1000) {
+        showToast("内容数量最大值为1000");
         bulkContentCount.focus();
         return;
       }
@@ -2818,15 +3485,15 @@
       const container = (linkButton || unlinkButton).closest(".menu-action-buttons");
       if (linkButton) {
         const mode = linkButton.dataset.bulkLinkMenu;
-        renderBulkLinkedMenuState(container, mode);
+        renderBulkLinkedMenuState(container);
         const scopeText = count > 0 ? "已为 " + count + " 条内容" : "已";
         showToast(mode === "publish"
-          ? scopeText + "批量关联菜单并上架"
-          : scopeText + "批量关联菜单，当前菜单未上架");
+          ? scopeText + "批量关联菜单，并将内容状态更新为已上架"
+          : scopeText + "批量关联菜单，内容状态保持不变");
       }
 
       if (unlinkButton) {
-        renderBulkUnlinkedMenuState(container);
+        renderBulkUnlinkedMenuState(container, selectedRowsNeedPublishAction());
         showToast(count > 0 ? "已为 " + count + " 条内容批量取消菜单关联" : "已取消菜单关联");
       }
     });
