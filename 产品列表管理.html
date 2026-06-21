@@ -1,0 +1,1699 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>产品模板管理</title>
+  <style>
+    :root {
+      --primary: #409eff;
+      --primary-hover: #2f8eed;
+      --danger: #ff6b6f;
+      --success: #67c23a;
+      --success-bg: #f0f9eb;
+      --text: #606266;
+      --heading: #303133;
+      --muted: #909399;
+      --placeholder: #bfc4cc;
+      --border: #e4e7ed;
+      --border-soft: #ebeef5;
+      --page-bg: #f6f7f9;
+      --white: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1440px;
+      min-height: 1118px;
+      background: var(--page-bg);
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .topbar {
+      height: 56px;
+      background: var(--white);
+      display: grid;
+      grid-template-columns: 160px 1fr 240px;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .menu-icon {
+      width: 18px;
+      height: 18px;
+      color: #5f7083;
+      display: block;
+    }
+
+    .top-title {
+      justify-self: center;
+      color: #1f2329;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .top-actions {
+      justify-self: end;
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .prd-entry {
+      height: 28px;
+      min-width: 54px;
+      border: 1px solid var(--primary);
+      border-radius: 3px;
+      background: var(--white);
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0 12px;
+    }
+
+    .user-menu {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #606266;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      width: 12px;
+      height: 12px;
+      border-right: 1px solid #909399;
+      border-bottom: 1px solid #909399;
+      transform: translateY(-2px) rotate(45deg);
+    }
+
+    .workspace {
+      padding: 47px 42px 56px;
+    }
+
+    .tabline {
+      height: 31px;
+      border-bottom: 1px solid #dfe3eb;
+      margin-bottom: 13px;
+    }
+
+    .tab {
+      display: inline-flex;
+      align-items: flex-start;
+      height: 31px;
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+      font-weight: 700;
+      padding-top: 1px;
+    }
+
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+
+    .filters {
+      height: 119px;
+      padding: 22px 22px 20px;
+      display: grid;
+      grid-template-columns: 270px 270px 270px 380px minmax(220px, 1fr) auto;
+      column-gap: 28px;
+      row-gap: 18px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .field label {
+      text-align: right;
+      color: #606266;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .control {
+      height: 29px;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      background: var(--white);
+      color: #909399;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      position: relative;
+      min-width: 0;
+    }
+
+    .control.input {
+      color: var(--placeholder);
+    }
+
+    .control.select::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+      position: absolute;
+      right: 13px;
+      top: 9px;
+      transform: rotate(45deg);
+    }
+
+    .date-field {
+      grid-template-columns: 82px 270px;
+    }
+
+    .date-range {
+      height: 29px;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      background: var(--white);
+      display: grid;
+      grid-template-columns: 36px 1fr 28px 1fr;
+      align-items: center;
+      color: var(--placeholder);
+      overflow: hidden;
+    }
+
+    .calendar {
+      width: 14px;
+      height: 14px;
+      justify-self: center;
+      color: #b8bec8;
+    }
+
+    .date-sep {
+      justify-self: center;
+      color: #909399;
+      font-weight: 700;
+    }
+
+    .create-area {
+      grid-column: 1 / 2;
+      grid-row: 2;
+      padding-left: 0;
+      align-self: end;
+    }
+
+    .filter-actions {
+      grid-column: 6;
+      grid-row: 2;
+      align-self: end;
+      justify-self: end;
+      display: flex;
+      gap: 11px;
+    }
+
+    .btn {
+      height: 29px;
+      min-width: 54px;
+      border: 1px solid #dcdfe6;
+      border-radius: 2px;
+      background: var(--white);
+      color: #606266;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 13px;
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      color: var(--white);
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .btn.primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .btn.danger {
+      color: var(--white);
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .create-area .btn {
+      min-width: 79px;
+    }
+
+    .table-panel {
+      height: 234px;
+      padding: 18px 18px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: var(--white);
+      border: 1px solid var(--border-soft);
+    }
+
+    th,
+    td {
+      height: 37px;
+      border-right: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      text-align: left;
+      padding: 0 12px;
+      color: #606266;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      height: 36px;
+      color: #909399;
+      background: var(--white);
+      font-weight: 700;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: center;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    th:last-child,
+    td:last-child {
+      border-right: 0;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 22px;
+      min-width: 40px;
+      padding: 0 9px;
+      border-radius: 4px;
+      color: var(--success);
+      background: var(--success-bg);
+      border: 1px solid #d8f0ce;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow: visible;
+    }
+
+    .actions .btn {
+      height: 23px;
+      min-width: 43px;
+      padding: 0 10px;
+      font-size: 12px;
+      border-radius: 2px;
+    }
+
+    .actions .wide {
+      min-width: 65px;
+    }
+
+    .pagination {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      color: #606266;
+      font-weight: 600;
+    }
+
+    .page-size {
+      width: 116px;
+      height: 32px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      color: #606266;
+      position: relative;
+      background: var(--white);
+    }
+
+    .page-size::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+      transform: rotate(45deg);
+    }
+
+    .pager-arrow {
+      width: 18px;
+      text-align: center;
+      color: #c0c4cc;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .current-page {
+      width: 18px;
+      text-align: center;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .jump {
+      width: 51px;
+      height: 32px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--white);
+      color: #606266;
+    }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      background: rgba(0, 0, 0, .42);
+      z-index: 20;
+      padding-top: 8px;
+    }
+
+    .modal-mask.open {
+      display: flex;
+    }
+
+    .ad-modal {
+      position: relative;
+      width: 924px;
+      height: 734px;
+      background: var(--white);
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-head {
+      height: 62px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 auto;
+    }
+
+    .modal-title {
+      margin: 0;
+      color: var(--heading);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #909399;
+      cursor: pointer;
+      font-size: 24px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .ad-toolbar {
+      height: 42px;
+      margin: 0 16px;
+      border-bottom: 1px solid #d7dce4;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex: 0 0 auto;
+    }
+
+    .ad-tabs {
+      display: flex;
+      align-items: flex-start;
+      gap: 38px;
+      height: 42px;
+    }
+
+    .ad-tab {
+      height: 42px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #303133;
+      cursor: pointer;
+      padding: 0;
+      font-weight: 700;
+    }
+
+    .ad-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .ad-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 3px;
+    }
+
+    .ad-search input {
+      width: 218px;
+      height: 30px;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      outline: none;
+      padding: 0 10px;
+      color: #606266;
+    }
+
+    .ad-search input::placeholder {
+      color: #c0c4cc;
+    }
+
+    .ad-search .btn {
+      height: 30px;
+      min-width: 58px;
+    }
+
+    .ad-body {
+      padding: 22px 16px 0;
+      min-height: 0;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ad-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 28px;
+      row-gap: 22px;
+      align-content: start;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .ad-option {
+      min-width: 0;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #258dff;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ad-option.group {
+      color: #606266;
+    }
+
+    .ad-option input {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      accent-color: var(--primary);
+      flex: 0 0 auto;
+    }
+
+    .ad-option span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ad-empty {
+      display: none;
+      color: #909399;
+      padding-top: 68px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .ad-empty.show {
+      display: block;
+    }
+
+    .ad-footer {
+      height: 100px;
+      border-top: 1px solid #e4e7ed;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: start;
+      padding-top: 11px;
+      flex: 0 0 auto;
+    }
+
+    .ad-page {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #606266;
+      font-weight: 500;
+    }
+
+    .ad-page-size {
+      width: 100px;
+      height: 26px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      position: relative;
+      background: var(--white);
+    }
+
+    .ad-page-size::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      top: 8px;
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+      transform: rotate(45deg);
+    }
+
+    .ad-page-btn {
+      width: 24px;
+      height: 24px;
+      border: 0;
+      border-radius: 2px;
+      background: #f4f6f9;
+      color: #606266;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .ad-page-btn.active {
+      color: var(--white);
+      background: var(--primary);
+    }
+
+    .ad-actions {
+      position: absolute;
+      right: 16px;
+      bottom: 15px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .ad-actions .btn {
+      width: 60px;
+      height: 32px;
+      font-weight: 500;
+    }
+
+    .pack-modal {
+      position: relative;
+      width: 700px;
+      min-height: 392px;
+      background: var(--white);
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+      overflow: hidden;
+    }
+
+    .pack-form {
+      padding: 0 40px 78px;
+      display: grid;
+      row-gap: 12px;
+    }
+
+    .pack-row {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pack-row label {
+      color: #606266;
+      text-align: right;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .pack-row input[type="text"] {
+      width: 100%;
+      height: 36px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      color: #606266;
+      outline: none;
+      padding: 0 12px;
+      font: inherit;
+    }
+
+    .pack-row input[type="text"]::placeholder {
+      color: #c0c4cc;
+    }
+
+    .upload-btn {
+      width: 126px;
+      height: 36px;
+      border: 0;
+      border-radius: 2px;
+      background: var(--primary);
+      color: var(--white);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    .upload-icon {
+      position: relative;
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+    }
+
+    .upload-icon::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 2px;
+      height: 10px;
+      background: currentColor;
+    }
+
+    .upload-icon::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 2px;
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-top: 2px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .required-mark {
+      color: var(--danger);
+      margin-right: 4px;
+    }
+
+    .reason-group {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .reason-group label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .reason-group input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--primary);
+    }
+
+    .reason-group input:checked + span {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .pack-actions {
+      position: absolute;
+      right: 20px;
+      bottom: 54px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .pack-actions .btn {
+      width: 68px;
+      height: 36px;
+      font-weight: 500;
+    }
+
+    .prd-mask {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      background: rgba(0, 0, 0, .42);
+      z-index: 40;
+      padding: 8px;
+    }
+
+    .prd-mask.open {
+      display: flex;
+    }
+
+    .prd-panel {
+      width: min(1180px, calc(100vw - 16px));
+      height: calc(100vh - 16px);
+      background: var(--white);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, .22);
+      display: flex;
+      flex-direction: column;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .prd-head {
+      height: 58px;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 auto;
+    }
+
+    .prd-head h2 {
+      margin: 0;
+      color: var(--heading);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .prd-layout {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 236px minmax(0, 1fr);
+    }
+
+    .prd-sidebar {
+      min-height: 0;
+      background: #f5f8fc;
+      border-right: 1px solid var(--border-soft);
+      padding: 20px 14px;
+      overflow: auto;
+    }
+
+    .prd-sidebar-title {
+      margin: 0 0 16px;
+      color: #4b5563;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .prd-nav {
+      display: grid;
+      gap: 4px;
+    }
+
+    .prd-nav a {
+      height: 34px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #4b5563;
+      text-decoration: none;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .prd-nav a.active {
+      color: var(--primary);
+      background: #e5f2ff;
+      font-weight: 700;
+    }
+
+    .prd-body {
+      padding: 22px 34px 44px;
+      overflow: auto;
+      line-height: 1.72;
+      min-width: 0;
+    }
+
+    .prd-body h3 {
+      margin: 26px 0 10px;
+      color: var(--heading);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .prd-body h4 {
+      margin: 18px 0 8px;
+      color: var(--heading);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .prd-summary {
+      border: 1px solid #d6e8ff;
+      background: #f3f8ff;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .prd-summary h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .prd-summary p {
+      margin: 0;
+    }
+
+    .prd-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .prd-card {
+      border: 1px solid var(--border-soft);
+      background: var(--white);
+      padding: 16px 14px;
+      min-height: 104px;
+    }
+
+    .prd-card h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .prd-card p {
+      margin: 0;
+      color: #4b5563;
+    }
+
+    .prd-body p,
+    .prd-body li {
+      color: #4b5563;
+    }
+
+    .prd-body ul,
+    .prd-body ol {
+      margin: 8px 0 14px;
+      padding-left: 22px;
+    }
+
+    .prd-body table {
+      width: 100%;
+      margin: 10px 0 18px;
+      table-layout: auto;
+      border-collapse: collapse;
+      border: 1px solid var(--border-soft);
+    }
+
+    .prd-body th,
+    .prd-body td {
+      height: auto;
+      padding: 10px 12px;
+      border-right: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      text-align: left;
+      vertical-align: top;
+      white-space: normal;
+      word-break: break-word;
+      overflow: visible;
+      text-overflow: clip;
+    }
+
+    .prd-body th {
+      color: var(--muted);
+      background: #fbfcff;
+      font-weight: 700;
+    }
+
+    .prd-body code {
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 3px;
+      padding: 2px 5px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+    }
+
+    @media (max-width: 1500px) {
+      .filters {
+        grid-template-columns: repeat(3, 270px) 380px;
+        height: auto;
+      }
+
+      .filter-actions {
+        grid-column: 4;
+      }
+
+      .table-panel {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 1360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <svg class="menu-icon" viewBox="0 0 18 18" aria-hidden="true">
+      <path fill="currentColor" d="M3 4.1h5.7a2 2 0 0 0 3.8 0H15V2.9h-2.5a2 2 0 0 0-3.8 0H3v1.2Zm0 5.5h2.5a2 2 0 0 0 3.8 0H15V8.4H9.3a2 2 0 0 0-3.8 0H3v1.2Zm0 5.5h6.2a2 2 0 0 0 3.8 0H15v-1.2h-2a2 2 0 0 0-3.8 0H3v1.2Z" />
+    </svg>
+    <div class="top-title">产品模板管理</div>
+    <div class="top-actions">
+      <button class="prd-entry" id="openPrd" type="button">PRD</button>
+      <div class="user-menu">
+        <span>超级管理员</span>
+        <span class="chevron" aria-hidden="true"></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <div class="tabline">
+      <div class="tab">模板设置</div>
+    </div>
+
+    <section class="panel filters" aria-label="模板筛选">
+      <div class="field">
+        <label>产品类型</label>
+        <div class="control select">全部</div>
+      </div>
+
+      <div class="field">
+        <label>模板名称</label>
+        <div class="control input">请输入</div>
+      </div>
+
+      <div class="field">
+        <label>内容类型</label>
+        <div class="control select">全部</div>
+      </div>
+
+      <div class="field date-field">
+        <label>创建时间</label>
+        <div class="date-range">
+          <svg class="calendar" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor" d="M4 1h1.4v2H4V1Zm6.6 0H12v2h-1.4V1ZM2.5 2.5h11A1.5 1.5 0 0 1 15 4v9a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13V4a1.5 1.5 0 0 1 1.5-1.5Zm0 4V13h11V6.5h-11Zm0-1.2h11V4h-11v1.3Z" />
+          </svg>
+          <span>开始日期</span>
+          <span class="date-sep">-</span>
+          <span>结束日期</span>
+        </div>
+      </div>
+
+      <div class="create-area">
+        <button class="btn primary" type="button">创建模板</button>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn primary" type="button">查询</button>
+        <button class="btn" type="button">重置</button>
+      </div>
+    </section>
+
+    <section class="panel table-panel" aria-label="模板列表">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 70px;">序号</th>
+            <th style="width: 212px;">模板ID</th>
+            <th style="width: 210px;">模板名称</th>
+            <th style="width: 210px;">内容类型</th>
+            <th style="width: 210px;">状态</th>
+            <th style="width: 210px;">创建人</th>
+            <th style="width: 210px;">创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>69ddbb03e9104c6b3f93e3f2</td>
+            <td>WX-Y06</td>
+            <td>短视频、漫画、视频、帖子</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-14 11:56:51</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary" type="button">下架</button>
+                <button class="btn primary" type="button">详情</button>
+                <button class="btn primary wide" type="button">配置菜单</button>
+                <button class="btn primary wide js-open-ad" type="button">配置广告</button>
+                <button class="btn primary wide" type="button">更新模板</button>
+                <button class="btn primary wide js-open-pack" type="button">打包配置</button>
+                <button class="btn danger" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>69d5b81f7514132a4ca1229c</td>
+            <td>WX- T01</td>
+            <td>视频</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-08 10:06:23</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary" type="button">下架</button>
+                <button class="btn primary" type="button">详情</button>
+                <button class="btn primary wide" type="button">配置菜单</button>
+                <button class="btn primary wide js-open-ad" type="button">配置广告</button>
+                <button class="btn primary wide" type="button">更新模板</button>
+                <button class="btn primary wide js-open-pack" type="button">打包配置</button>
+                <button class="btn danger" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>69d495857514132a4ca120ef</td>
+            <td>WX- Y02</td>
+            <td>视频、短视频</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-07 13:26:29</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary" type="button">下架</button>
+                <button class="btn primary" type="button">详情</button>
+                <button class="btn primary wide" type="button">配置菜单</button>
+                <button class="btn primary wide js-open-ad" type="button">配置广告</button>
+                <button class="btn primary wide" type="button">更新模板</button>
+                <button class="btn primary wide js-open-pack" type="button">打包配置</button>
+                <button class="btn danger" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        <span>共 3 条</span>
+        <span class="page-size">10条/页</span>
+        <span class="pager-arrow">‹</span>
+        <span class="current-page">1</span>
+        <span class="pager-arrow">›</span>
+        <span>前往</span>
+        <span class="jump">1</span>
+        <span>页</span>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-mask" id="adModal" aria-hidden="true">
+    <section class="ad-modal" role="dialog" aria-modal="true" aria-labelledby="adModalTitle">
+      <div class="modal-head">
+        <h2 class="modal-title" id="adModalTitle">配置广告</h2>
+        <button class="modal-close js-close-ad" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div class="ad-toolbar">
+        <div class="ad-tabs" role="tablist" aria-label="广告端类型">
+          <button class="ad-tab active" type="button" data-tab="app" role="tab" aria-selected="true">APP端</button>
+          <button class="ad-tab" type="button" data-tab="web" role="tab" aria-selected="false">WEB端</button>
+        </div>
+        <div class="ad-search">
+          <input id="adSearch" type="search" placeholder="请输入广告名称" aria-label="搜索广告" />
+          <button class="btn primary" id="adSearchBtn" type="button">搜索</button>
+          <button class="btn" id="adResetBtn" type="button">重置</button>
+        </div>
+      </div>
+
+      <div class="ad-body">
+        <div class="ad-list" id="adList"></div>
+        <div class="ad-empty" id="adEmpty">暂无匹配广告</div>
+      </div>
+
+      <div class="ad-footer">
+        <div class="ad-page">
+          <span id="adTotal">共 74 条</span>
+          <span class="ad-page-size">20条/页</span>
+          <button class="ad-page-btn" type="button" aria-label="上一页">‹</button>
+          <button class="ad-page-btn active" type="button">1</button>
+          <button class="ad-page-btn" type="button">2</button>
+          <button class="ad-page-btn" type="button">3</button>
+          <button class="ad-page-btn" type="button">4</button>
+          <button class="ad-page-btn" type="button" aria-label="下一页">›</button>
+        </div>
+      </div>
+
+      <div class="ad-actions">
+        <button class="btn js-close-ad" type="button">取消</button>
+        <button class="btn primary js-close-ad" type="button">确定</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-mask" id="packModal" aria-hidden="true">
+    <section class="pack-modal" role="dialog" aria-modal="true" aria-labelledby="packTitle">
+      <div class="modal-head">
+        <h2 class="modal-title" id="packTitle">打包配置</h2>
+        <button class="modal-close js-close-pack" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <form class="pack-form">
+        <div class="pack-row">
+          <label for="webImage">填写镜像地址（Web响应式）</label>
+          <input id="webImage" type="text" value="reg.hshuane.com/myriad/wx-y06-web:main-e46c5" />
+        </div>
+        <div class="pack-row">
+          <label for="h5Image">填写H5地址（APP移动端）</label>
+          <input id="h5Image" type="text" value="reg.hshuane.com/myriad/group1-video-h5:main-f" />
+        </div>
+        <div class="pack-row">
+          <label for="navImage">导航页镜像地址</label>
+          <input id="navImage" type="text" placeholder="请输入导航页镜像地址" />
+        </div>
+        <div class="pack-row">
+          <label>上传APP母包（APP移动端）</label>
+          <div>
+            <button class="upload-btn" id="uploadTrigger" type="button">
+              <span class="upload-icon" aria-hidden="true"></span>
+              点击上传
+            </button>
+            <input id="appPackage" type="file" hidden />
+          </div>
+        </div>
+        <div class="pack-row">
+          <label><span class="required-mark">*</span>修改原因</label>
+          <div class="reason-group">
+            <label>
+              <input type="radio" name="packReason" checked />
+              <span>修复bug</span>
+            </label>
+            <label>
+              <input type="radio" name="packReason" />
+              <span>更换地址</span>
+            </label>
+          </div>
+        </div>
+      </form>
+
+      <div class="pack-actions">
+        <button class="btn js-close-pack" type="button">取消</button>
+        <button class="btn primary js-close-pack" type="button">确定</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="prd-mask" id="prdMask" aria-hidden="true">
+    <section class="prd-panel" role="dialog" aria-modal="true" aria-labelledby="prdTitle">
+      <div class="prd-head">
+        <h2 id="prdTitle">PRD：产品列表管理</h2>
+        <button class="modal-close" id="closePrd" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div class="prd-layout">
+        <aside class="prd-sidebar" aria-label="文档目录">
+          <p class="prd-sidebar-title">文档目录</p>
+          <nav class="prd-nav">
+            <a class="active" href="#prd-info">1. 文档信息</a>
+            <a href="#prd-change">2. 本次新增/变更内容</a>
+            <a href="#prd-goal">3. 背景与目标</a>
+            <a href="#prd-page">4. 页面结构</a>
+            <a href="#prd-list">5. 模板列表</a>
+            <a href="#prd-ad">6. 配置广告弹窗</a>
+            <a href="#prd-api">7. 接口建议</a>
+            <a href="#prd-permission">8. 权限与日志</a>
+            <a href="#prd-acceptance">9. 验收标准</a>
+          </nav>
+        </aside>
+
+        <div class="prd-body">
+          <section class="prd-summary">
+            <h3>阅读摘要</h3>
+            <p>本需求解决“产品模板维度配置广告”的问题。核心规则是：模板列表提供配置广告入口，弹窗按 APP端/WEB端切换广告位，广告搜索只作用于当前端类型，保存时仅更新当前模板对应端类型的广告配置。</p>
+          </section>
+
+          <div class="prd-cards">
+            <article class="prd-card">
+              <h4>模板维度配置</h4>
+              <p>每个产品模板可独立维护广告位配置。</p>
+            </article>
+            <article class="prd-card">
+              <h4>端类型隔离</h4>
+              <p>APP端和WEB端广告位列表、勾选状态相互独立。</p>
+            </article>
+            <article class="prd-card">
+              <h4>广告搜索</h4>
+              <p>搜索只筛选当前端类型下的广告位名称。</p>
+            </article>
+            <article class="prd-card">
+              <h4>保存可追溯</h4>
+              <p>确定保存后写入操作日志和配置变更记录。</p>
+            </article>
+          </div>
+
+        <h3 id="prd-info">1. 文档信息</h3>
+        <table>
+          <tbody>
+            <tr><th>文档名称</th><td>产品列表管理</td></tr>
+            <tr><th>版本</th><td>V1.0</td></tr>
+            <tr><th>日期</th><td>2026-06-21</td></tr>
+            <tr><th>适用页面</th><td>总后台 - 产品模板管理</td></tr>
+            <tr><th>相关原型</th><td><code>产品列表管理.html</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="prd-change">2. 本次新增/变更内容</h3>
+        <table>
+          <thead>
+            <tr><th>新增/变更项</th><th>用户能看到什么</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>产品模板管理列表</td><td>模板设置页签、筛选区、模板列表和分页</td><td>用于管理员查看和维护产品模板。</td></tr>
+            <tr><td>模板筛选</td><td>产品类型、模板名称、内容类型、创建时间</td><td>真实系统需接入查询接口。</td></tr>
+            <tr><td>配置广告入口</td><td>每条模板操作列展示“配置广告”按钮</td><td>点击后打开配置广告弹窗。</td></tr>
+            <tr><td>配置广告弹窗</td><td>APP端、WEB端广告位列表</td><td>支持勾选广告位、切换端类型、分页展示和确认保存。</td></tr>
+            <tr><td>广告搜索</td><td>弹窗内新增搜索框、搜索按钮、重置按钮</td><td>支持按广告位名称筛选当前端的广告位。</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="prd-goal">3. 背景与目标</h3>
+        <p>产品模板用于承载不同产品形态和内容类型的配置。运营或管理员需要在模板维度维护菜单、广告、打包等配置，保证不同模板在前台使用时具备对应的展示能力。</p>
+        <ul>
+          <li>管理员可在产品模板列表查看模板基础信息和状态。</li>
+          <li>管理员可通过筛选条件快速定位模板。</li>
+          <li>管理员可在模板维度配置 APP端、WEB端广告位。</li>
+          <li>配置广告弹窗支持搜索，降低广告位较多时的查找成本。</li>
+          <li>弹窗保存后，系统可记录该模板的广告配置变更。</li>
+        </ul>
+
+        <h3 id="prd-page">4. 页面结构</h3>
+        <h4>4.1 顶部区域</h4>
+        <table>
+          <thead>
+            <tr><th>区域</th><th>展示内容</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>左侧</td><td>菜单折叠图标</td></tr>
+            <tr><td>中间</td><td>页面标题：产品模板管理</td></tr>
+            <tr><td>右侧</td><td>PRD 入口、当前登录用户：超级管理员</td></tr>
+          </tbody>
+        </table>
+
+        <h4>4.2 筛选区</h4>
+        <table>
+          <thead>
+            <tr><th>字段</th><th>类型</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>产品类型</td><td>下拉选择</td><td>默认全部。</td></tr>
+            <tr><td>模板名称</td><td>文本输入</td><td>支持按模板名称模糊搜索。</td></tr>
+            <tr><td>内容类型</td><td>下拉选择</td><td>默认全部。</td></tr>
+            <tr><td>创建时间</td><td>日期范围</td><td>支持选择开始日期和结束日期。</td></tr>
+          </tbody>
+        </table>
+        <p>操作按钮包括：创建模板、查询、重置。</p>
+
+        <h3 id="prd-list">5. 模板列表</h3>
+        <table>
+          <thead>
+            <tr><th>字段</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>序号</td><td>当前页内行序号。</td></tr>
+            <tr><td>模板ID</td><td>模板唯一标识。</td></tr>
+            <tr><td>模板名称</td><td>模板展示名称，例如 WX-Y06。</td></tr>
+            <tr><td>内容类型</td><td>该模板支持的内容类型，例如短视频、漫画、视频、帖子。</td></tr>
+            <tr><td>状态</td><td>当前模板状态，例如上架。</td></tr>
+            <tr><td>创建人</td><td>创建模板的后台账号。</td></tr>
+            <tr><td>创建时间</td><td>模板创建时间。</td></tr>
+            <tr><td>操作</td><td>下架、详情、配置菜单、配置广告、更新模板、打包配置、删除。</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="prd-ad">6. 配置广告弹窗</h3>
+        <h4>6.1 入口与布局</h4>
+        <p>入口位置：模板列表每行操作列中的 <code>配置广告</code> 按钮。点击后打开弹窗，弹窗标题为 <code>配置广告</code>。</p>
+        <table>
+          <thead>
+            <tr><th>区域</th><th>内容</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>标题区</td><td>标题“配置广告”和关闭按钮。</td></tr>
+            <tr><td>端类型页签</td><td>APP端、WEB端，默认选中 APP端。</td></tr>
+            <tr><td>搜索区</td><td>广告名称输入框、搜索按钮、重置按钮。</td></tr>
+            <tr><td>广告位列表</td><td>当前端类型下的广告位复选框列表。</td></tr>
+            <tr><td>分页区</td><td>总条数、每页条数、页码。</td></tr>
+            <tr><td>底部操作</td><td>取消、确定。</td></tr>
+          </tbody>
+        </table>
+
+        <h4>6.2 端类型页签</h4>
+        <ol>
+          <li>默认进入弹窗时选中 APP端。</li>
+          <li>点击 WEB端后，列表切换为 WEB端广告位。</li>
+          <li>切换端类型时，清空当前搜索关键词。</li>
+          <li>不同端类型的广告勾选状态互相独立。</li>
+        </ol>
+
+        <h4>6.3 广告位列表</h4>
+        <table>
+          <thead>
+            <tr><th>端类型</th><th>广告位名称示例</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>APP端</td><td>Y06APP 菜单插入广告</td></tr>
+            <tr><td>APP端</td><td>16:9【A】帖子详情页底部横幅</td></tr>
+            <tr><td>APP端</td><td>16:9【A】个人中心弹窗广告</td></tr>
+            <tr><td>APP端</td><td>1:1【A】搜索页顶部图标位广告-A</td></tr>
+            <tr><td>WEB端</td><td>WEB端 首页顶部横幅</td></tr>
+            <tr><td>WEB端</td><td>WEB端 搜索结果页顶部广告</td></tr>
+          </tbody>
+        </table>
+        <ol>
+          <li>已配置的广告位默认勾选。</li>
+          <li>未配置的广告位默认不勾选。</li>
+          <li>用户可手动勾选或取消勾选广告位。</li>
+          <li>广告位名称过长时可单行省略，鼠标悬停展示完整名称。</li>
+        </ol>
+
+        <h4>6.4 搜索功能</h4>
+        <p>搜索范围：当前选中端类型下的广告位名称。</p>
+        <ol>
+          <li>支持广告位名称模糊搜索。</li>
+          <li>输入关键词时，列表可即时筛选。</li>
+          <li>点击搜索按钮时，按当前关键词筛选。</li>
+          <li>搜索不跨端类型，例如 APP端搜索只查 APP端广告位。</li>
+          <li>搜索结果为空时，展示空状态：暂无匹配广告。</li>
+          <li>搜索后分页总条数展示为当前命中的数量。</li>
+          <li>点击重置后，清空搜索关键词、恢复列表和原总条数。</li>
+        </ol>
+
+        <h4>6.5 底部按钮</h4>
+        <table>
+          <thead>
+            <tr><th>按钮</th><th>规则</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>取消</td><td>关闭弹窗，不保存本次修改。</td></tr>
+            <tr><td>确定</td><td>保存当前模板的广告配置，并关闭弹窗。</td></tr>
+            <tr><td>关闭 X</td><td>关闭弹窗，不保存本次修改。</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="prd-api">7. 接口建议</h3>
+        <h4>7.1 获取模板广告配置</h4>
+        <table>
+          <thead>
+            <tr><th>参数</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>templateId</td><td>模板ID。</td></tr>
+            <tr><td>terminal</td><td>端类型：APP 或 WEB。</td></tr>
+            <tr><td>keyword</td><td>广告位名称关键词，可选。</td></tr>
+            <tr><td>pageNum</td><td>页码。</td></tr>
+            <tr><td>pageSize</td><td>每页条数。</td></tr>
+          </tbody>
+        </table>
+
+        <h4>7.2 保存模板广告配置</h4>
+        <table>
+          <thead>
+            <tr><th>参数</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>templateId</td><td>模板ID。</td></tr>
+            <tr><td>terminal</td><td>端类型。</td></tr>
+            <tr><td>selectedAdIds</td><td>当前端类型下勾选的广告位ID列表。</td></tr>
+          </tbody>
+        </table>
+        <ol>
+          <li>保存时以后端接收到的 <code>selectedAdIds</code> 作为当前端类型最终配置。</li>
+          <li>只保存当前端类型，不影响另一个端类型的广告配置。</li>
+          <li>保存成功后写入操作日志。</li>
+          <li>保存失败时保留弹窗，并展示错误提示。</li>
+        </ol>
+
+        <h3 id="prd-permission">8. 权限与日志</h3>
+        <ol>
+          <li>只有具备产品模板管理权限的管理员可访问页面。</li>
+          <li>只有具备广告配置权限的管理员可点击“配置广告”并保存。</li>
+          <li>无权限时，按钮置灰或隐藏，后端必须二次校验。</li>
+          <li>保存广告配置时记录操作对象、模板ID、操作类型、操作人、操作时间、变更前、变更后。</li>
+        </ol>
+
+        <h3 id="prd-acceptance">9. 验收标准</h3>
+        <ul>
+          <li>点击列表任意一行“配置广告”，打开配置广告弹窗。</li>
+          <li>弹窗标题、APP端/WEB端页签、搜索区、广告位列表、分页、取消和确定按钮展示正确。</li>
+          <li>默认选中 APP端，并展示 APP端广告位。</li>
+          <li>点击 WEB端后，广告位列表切换为 WEB端数据。</li>
+          <li>在搜索框输入关键词后，列表只展示当前端类型下命中的广告位。</li>
+          <li>点击重置后，搜索框清空，列表恢复当前端类型完整数据。</li>
+          <li>搜索无结果时展示“暂无匹配广告”。</li>
+          <li>勾选或取消勾选广告位后，复选框状态正确变化。</li>
+          <li>点击取消或关闭 X 后，弹窗关闭且不保存修改。</li>
+          <li>点击确定后，保存当前模板广告配置并关闭弹窗。</li>
+          <li>保存成功后写入操作日志。</li>
+        </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const adModal = document.getElementById("adModal");
+    const packModal = document.getElementById("packModal");
+    const prdMask = document.getElementById("prdMask");
+    const adList = document.getElementById("adList");
+    const adEmpty = document.getElementById("adEmpty");
+    const adSearch = document.getElementById("adSearch");
+    const adTotal = document.getElementById("adTotal");
+    const uploadTrigger = document.getElementById("uploadTrigger");
+    const appPackage = document.getElementById("appPackage");
+
+    const adData = {
+      app: {
+        total: 74,
+        items: [
+          { text: "Y06APP 菜单插入广告", checked: false, group: true },
+          { text: "16:9【A】帖子详情页底部横幅", checked: true },
+          { text: "【A】帖子详情页顶部横幅", checked: true },
+          { text: "16:9【A】个人中心中部横幅", checked: true },
+          { text: "3:4【A】个人中心弹窗广告", checked: true },
+          { text: "16:9【A】个人中心顶部横幅", checked: true },
+          { text: "16:9【A】播放结束覆盖广告", checked: true },
+          { text: "16:9【A】播放暂停覆盖广告", checked: true },
+          { text: "16:9【A】漫画/写真详情底部横幅", checked: true },
+          { text: "16:9【A】漫画/写真详情顶部横幅", checked: true },
+          { text: "16:9【A】应用中心底部横幅", checked: true },
+          { text: "1:1【A】搜索页顶部图标位广告-A", checked: true },
+          { text: "16:9【A】首页-中插-横幅", checked: true },
+          { text: "16:9【A】二级菜单顶部-banner", checked: true },
+          { text: "一级菜单广告", checked: false, group: true },
+          { text: "16:9【A】首页顶部横幅", checked: true },
+          { text: "1:1【A】主页底部悬浮广告", checked: true },
+          { text: "1:1【A】主页浮窗广告位", checked: true },
+          { text: "16：9【A】首页底部横幅】", checked: true },
+          { text: "1:1【A】各主页顶部icon式广告位", checked: true }
+        ]
+      },
+      web: {
+        total: 18,
+        items: [
+          { text: "WEB端 首页顶部横幅", checked: true },
+          { text: "WEB端 首页底部横幅", checked: true },
+          { text: "WEB端 搜索结果页顶部广告", checked: true },
+          { text: "WEB端 详情页右侧广告", checked: true },
+          { text: "WEB端 播放页暂停广告", checked: true },
+          { text: "WEB端 播放页结束广告", checked: false },
+          { text: "WEB端 个人中心顶部横幅", checked: true },
+          { text: "WEB端 菜单插入广告", checked: false, group: true }
+        ]
+      }
+    };
+
+    let activeAdTab = "app";
+
+    function renderAds() {
+      const keyword = adSearch.value.trim().toLowerCase();
+      const source = adData[activeAdTab];
+      const items = source.items.filter((item) => item.text.toLowerCase().includes(keyword));
+
+      adList.innerHTML = items.map((item) => `
+        <label class="ad-option${item.group ? " group" : ""}">
+          <input type="checkbox"${item.checked ? " checked" : ""} />
+          <span title="${item.text}">${item.text}</span>
+        </label>
+      `).join("");
+
+      adEmpty.classList.toggle("show", items.length === 0);
+      adTotal.textContent = keyword ? `共 ${items.length} 条` : `共 ${source.total} 条`;
+    }
+
+    function openAdModal() {
+      adModal.classList.add("open");
+      adModal.setAttribute("aria-hidden", "false");
+      adSearch.focus();
+      renderAds();
+    }
+
+    function closeAdModal() {
+      adModal.classList.remove("open");
+      adModal.setAttribute("aria-hidden", "true");
+    }
+
+    function openPackModal() {
+      packModal.classList.add("open");
+      packModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closePackModal() {
+      packModal.classList.remove("open");
+      packModal.setAttribute("aria-hidden", "true");
+    }
+
+    function openPrd() {
+      prdMask.classList.add("open");
+      prdMask.setAttribute("aria-hidden", "false");
+    }
+
+    function closePrd() {
+      prdMask.classList.remove("open");
+      prdMask.setAttribute("aria-hidden", "true");
+    }
+
+    document.querySelectorAll(".js-open-ad").forEach((button) => {
+      button.addEventListener("click", openAdModal);
+    });
+
+    document.querySelectorAll(".js-close-ad").forEach((button) => {
+      button.addEventListener("click", closeAdModal);
+    });
+
+    document.querySelectorAll(".js-open-pack").forEach((button) => {
+      button.addEventListener("click", openPackModal);
+    });
+
+    document.querySelectorAll(".js-close-pack").forEach((button) => {
+      button.addEventListener("click", closePackModal);
+    });
+
+    uploadTrigger.addEventListener("click", () => {
+      appPackage.click();
+    });
+
+    document.getElementById("openPrd").addEventListener("click", openPrd);
+    document.getElementById("closePrd").addEventListener("click", closePrd);
+
+    document.querySelectorAll(".ad-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        activeAdTab = tab.dataset.tab;
+        document.querySelectorAll(".ad-tab").forEach((item) => {
+          const selected = item === tab;
+          item.classList.toggle("active", selected);
+          item.setAttribute("aria-selected", String(selected));
+        });
+        adSearch.value = "";
+        renderAds();
+      });
+    });
+
+    adSearch.addEventListener("input", renderAds);
+    document.getElementById("adSearchBtn").addEventListener("click", renderAds);
+    document.getElementById("adResetBtn").addEventListener("click", () => {
+      adSearch.value = "";
+      renderAds();
+      adSearch.focus();
+    });
+
+    adModal.addEventListener("click", (event) => {
+      if (event.target === adModal) {
+        closeAdModal();
+      }
+    });
+
+    packModal.addEventListener("click", (event) => {
+      if (event.target === packModal) {
+        closePackModal();
+      }
+    });
+
+    prdMask.addEventListener("click", (event) => {
+      if (event.target === prdMask) {
+        closePrd();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && adModal.classList.contains("open")) {
+        closeAdModal();
+      }
+      if (event.key === "Escape" && packModal.classList.contains("open")) {
+        closePackModal();
+      }
+      if (event.key === "Escape" && prdMask.classList.contains("open")) {
+        closePrd();
+      }
+    });
+  </script>
+</body>
+</html>
