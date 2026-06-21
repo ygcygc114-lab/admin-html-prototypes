@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>产品模板管理</title>
+  <style>
+    :root {
+      --primary: #409eff;
+      --primary-hover: #2f8eed;
+      --danger: #ff6b6f;
+      --success: #67c23a;
+      --success-bg: #f0f9eb;
+      --text: #606266;
+      --heading: #303133;
+      --muted: #909399;
+      --placeholder: #bfc4cc;
+      --border: #e4e7ed;
+      --border-soft: #ebeef5;
+      --page-bg: #f6f7f9;
+      --white: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1440px;
+      min-height: 1118px;
+      background: var(--page-bg);
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .topbar {
+      height: 56px;
+      background: var(--white);
+      display: grid;
+      grid-template-columns: 160px 1fr 240px;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .menu-icon {
+      width: 18px;
+      height: 18px;
+      color: #5f7083;
+      display: block;
+    }
+
+    .top-title {
+      justify-self: center;
+      color: #1f2329;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .user-menu {
+      justify-self: end;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #606266;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      width: 12px;
+      height: 12px;
+      border-right: 1px solid #909399;
+      border-bottom: 1px solid #909399;
+      transform: translateY(-2px) rotate(45deg);
+    }
+
+    .workspace {
+      padding: 47px 42px 56px;
+    }
+
+    .tabline {
+      height: 31px;
+      border-bottom: 1px solid #dfe3eb;
+      margin-bottom: 13px;
+    }
+
+    .tab {
+      display: inline-flex;
+      align-items: flex-start;
+      height: 31px;
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+      font-weight: 700;
+      padding-top: 1px;
+    }
+
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+
+    .filters {
+      height: 119px;
+      padding: 22px 22px 20px;
+      display: grid;
+      grid-template-columns: 270px 270px 270px 380px minmax(220px, 1fr) auto;
+      column-gap: 28px;
+      row-gap: 18px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .field label {
+      text-align: right;
+      color: #606266;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .control {
+      height: 29px;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      background: var(--white);
+      color: #909399;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      position: relative;
+      min-width: 0;
+    }
+
+    .control.input {
+      color: var(--placeholder);
+    }
+
+    .control.select::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+      position: absolute;
+      right: 13px;
+      top: 9px;
+      transform: rotate(45deg);
+    }
+
+    .date-field {
+      grid-template-columns: 82px 270px;
+    }
+
+    .date-range {
+      height: 29px;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      background: var(--white);
+      display: grid;
+      grid-template-columns: 36px 1fr 28px 1fr;
+      align-items: center;
+      color: var(--placeholder);
+      overflow: hidden;
+    }
+
+    .calendar {
+      width: 14px;
+      height: 14px;
+      justify-self: center;
+      color: #b8bec8;
+    }
+
+    .date-sep {
+      justify-self: center;
+      color: #909399;
+      font-weight: 700;
+    }
+
+    .create-area {
+      grid-column: 1 / 2;
+      grid-row: 2;
+      padding-left: 0;
+      align-self: end;
+    }
+
+    .filter-actions {
+      grid-column: 6;
+      grid-row: 2;
+      align-self: end;
+      justify-self: end;
+      display: flex;
+      gap: 11px;
+    }
+
+    .btn {
+      height: 29px;
+      min-width: 54px;
+      border: 1px solid #dcdfe6;
+      border-radius: 2px;
+      background: var(--white);
+      color: #606266;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 13px;
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      color: var(--white);
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .btn.primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .btn.danger {
+      color: var(--white);
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .create-area .btn {
+      min-width: 79px;
+    }
+
+    .table-panel {
+      height: 234px;
+      padding: 18px 18px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: var(--white);
+      border: 1px solid var(--border-soft);
+    }
+
+    th,
+    td {
+      height: 37px;
+      border-right: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      text-align: left;
+      padding: 0 12px;
+      color: #606266;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      height: 36px;
+      color: #909399;
+      background: var(--white);
+      font-weight: 700;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: center;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    th:last-child,
+    td:last-child {
+      border-right: 0;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 22px;
+      min-width: 40px;
+      padding: 0 9px;
+      border-radius: 4px;
+      color: var(--success);
+      background: var(--success-bg);
+      border: 1px solid #d8f0ce;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow: visible;
+    }
+
+    .actions .btn {
+      height: 23px;
+      min-width: 43px;
+      padding: 0 10px;
+      font-size: 12px;
+      border-radius: 2px;
+    }
+
+    .actions .wide {
+      min-width: 65px;
+    }
+
+    .pagination {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      color: #606266;
+      font-weight: 600;
+    }
+
+    .page-size {
+      width: 116px;
+      height: 32px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      color: #606266;
+      position: relative;
+      background: var(--white);
+    }
+
+    .page-size::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+      transform: rotate(45deg);
+    }
+
+    .pager-arrow {
+      width: 18px;
+      text-align: center;
+      color: #c0c4cc;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .current-page {
+      width: 18px;
+      text-align: center;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .jump {
+      width: 51px;
+      height: 32px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--white);
+      color: #606266;
+    }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      background: rgba(0, 0, 0, .42);
+      z-index: 20;
+      padding-top: 8px;
+    }
+
+    .modal-mask.open {
+      display: flex;
+    }
+
+    .ad-modal {
+      position: relative;
+      width: 924px;
+      height: 734px;
+      background: var(--white);
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-head {
+      height: 62px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 auto;
+    }
+
+    .modal-title {
+      margin: 0;
+      color: var(--heading);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #909399;
+      cursor: pointer;
+      font-size: 24px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .ad-toolbar {
+      height: 42px;
+      margin: 0 16px;
+      border-bottom: 1px solid #d7dce4;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex: 0 0 auto;
+    }
+
+    .ad-tabs {
+      display: flex;
+      align-items: flex-start;
+      gap: 38px;
+      height: 42px;
+    }
+
+    .ad-tab {
+      height: 42px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #303133;
+      cursor: pointer;
+      padding: 0;
+      font-weight: 700;
+    }
+
+    .ad-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .ad-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 3px;
+    }
+
+    .ad-search input {
+      width: 218px;
+      height: 30px;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      outline: none;
+      padding: 0 10px;
+      color: #606266;
+    }
+
+    .ad-search input::placeholder {
+      color: #c0c4cc;
+    }
+
+    .ad-search .btn {
+      height: 30px;
+      min-width: 58px;
+    }
+
+    .ad-body {
+      padding: 22px 16px 0;
+      min-height: 0;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ad-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 28px;
+      row-gap: 22px;
+      align-content: start;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .ad-option {
+      min-width: 0;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #258dff;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ad-option.group {
+      color: #606266;
+    }
+
+    .ad-option input {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      accent-color: var(--primary);
+      flex: 0 0 auto;
+    }
+
+    .ad-option span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ad-empty {
+      display: none;
+      color: #909399;
+      padding-top: 68px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .ad-empty.show {
+      display: block;
+    }
+
+    .ad-footer {
+      height: 100px;
+      border-top: 1px solid #e4e7ed;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: start;
+      padding-top: 11px;
+      flex: 0 0 auto;
+    }
+
+    .ad-page {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #606266;
+      font-weight: 500;
+    }
+
+    .ad-page-size {
+      width: 100px;
+      height: 26px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      position: relative;
+      background: var(--white);
+    }
+
+    .ad-page-size::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      top: 8px;
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+      transform: rotate(45deg);
+    }
+
+    .ad-page-btn {
+      width: 24px;
+      height: 24px;
+      border: 0;
+      border-radius: 2px;
+      background: #f4f6f9;
+      color: #606266;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .ad-page-btn.active {
+      color: var(--white);
+      background: var(--primary);
+    }
+
+    .ad-actions {
+      position: absolute;
+      right: 16px;
+      bottom: 15px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .ad-actions .btn {
+      width: 60px;
+      height: 32px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 1500px) {
+      .filters {
+        grid-template-columns: repeat(3, 270px) 380px;
+        height: auto;
+      }
+
+      .filter-actions {
+        grid-column: 4;
+      }
+
+      .table-panel {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 1360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <svg class="menu-icon" viewBox="0 0 18 18" aria-hidden="true">
+      <path fill="currentColor" d="M3 4.1h5.7a2 2 0 0 0 3.8 0H15V2.9h-2.5a2 2 0 0 0-3.8 0H3v1.2Zm0 5.5h2.5a2 2 0 0 0 3.8 0H15V8.4H9.3a2 2 0 0 0-3.8 0H3v1.2Zm0 5.5h6.2a2 2 0 0 0 3.8 0H15v-1.2h-2a2 2 0 0 0-3.8 0H3v1.2Z" />
+    </svg>
+    <div class="top-title">产品模板管理</div>
+    <div class="user-menu">
+      <span>超级管理员</span>
+      <span class="chevron" aria-hidden="true"></span>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <div class="tabline">
+      <div class="tab">模板设置</div>
+    </div>
+
+    <section class="panel filters" aria-label="模板筛选">
+      <div class="field">
+        <label>产品类型</label>
+        <div class="control select">全部</div>
+      </div>
+
+      <div class="field">
+        <label>模板名称</label>
+        <div class="control input">请输入</div>
+      </div>
+
+      <div class="field">
+        <label>内容类型</label>
+        <div class="control select">全部</div>
+      </div>
+
+      <div class="field date-field">
+        <label>创建时间</label>
+        <div class="date-range">
+          <svg class="calendar" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor" d="M4 1h1.4v2H4V1Zm6.6 0H12v2h-1.4V1ZM2.5 2.5h11A1.5 1.5 0 0 1 15 4v9a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13V4a1.5 1.5 0 0 1 1.5-1.5Zm0 4V13h11V6.5h-11Zm0-1.2h11V4h-11v1.3Z" />
+          </svg>
+          <span>开始日期</span>
+          <span class="date-sep">-</span>
+          <span>结束日期</span>
+        </div>
+      </div>
+
+      <div class="create-area">
+        <button class="btn primary" type="button">创建模板</button>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn primary" type="button">查询</button>
+        <button class="btn" type="button">重置</button>
+      </div>
+    </section>
+
+    <section class="panel table-panel" aria-label="模板列表">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 70px;">序号</th>
+            <th style="width: 212px;">模板ID</th>
+            <th style="width: 210px;">模板名称</th>
+            <th style="width: 210px;">内容类型</th>
+            <th style="width: 210px;">状态</th>
+            <th style="width: 210px;">创建人</th>
+            <th style="width: 210px;">创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>69ddbb03e9104c6b3f93e3f2</td>
+            <td>WX-Y06</td>
+            <td>短视频、漫画、视频、帖子</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-14 11:56:51</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary" type="button">下架</button>
+                <button class="btn primary" type="button">详情</button>
+                <button class="btn primary wide" type="button">配置菜单</button>
+                <button class="btn primary wide js-open-ad" type="button">配置广告</button>
+                <button class="btn primary wide" type="button">更新模板</button>
+                <button class="btn primary wide" type="button">打包配置</button>
+                <button class="btn danger" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>69d5b81f7514132a4ca1229c</td>
+            <td>WX- T01</td>
+            <td>视频</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-08 10:06:23</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary" type="button">下架</button>
+                <button class="btn primary" type="button">详情</button>
+                <button class="btn primary wide" type="button">配置菜单</button>
+                <button class="btn primary wide js-open-ad" type="button">配置广告</button>
+                <button class="btn primary wide" type="button">更新模板</button>
+                <button class="btn primary wide" type="button">打包配置</button>
+                <button class="btn danger" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>69d495857514132a4ca120ef</td>
+            <td>WX- Y02</td>
+            <td>视频、短视频</td>
+            <td><span class="status">上架</span></td>
+            <td>admin</td>
+            <td>2026-04-07 13:26:29</td>
+            <td>
+              <div class="actions">
+                <button class="btn primary" type="button">下架</button>
+                <button class="btn primary" type="button">详情</button>
+                <button class="btn primary wide" type="button">配置菜单</button>
+                <button class="btn primary wide js-open-ad" type="button">配置广告</button>
+                <button class="btn primary wide" type="button">更新模板</button>
+                <button class="btn primary wide" type="button">打包配置</button>
+                <button class="btn danger" type="button">删除</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        <span>共 3 条</span>
+        <span class="page-size">10条/页</span>
+        <span class="pager-arrow">‹</span>
+        <span class="current-page">1</span>
+        <span class="pager-arrow">›</span>
+        <span>前往</span>
+        <span class="jump">1</span>
+        <span>页</span>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-mask" id="adModal" aria-hidden="true">
+    <section class="ad-modal" role="dialog" aria-modal="true" aria-labelledby="adModalTitle">
+      <div class="modal-head">
+        <h2 class="modal-title" id="adModalTitle">配置广告</h2>
+        <button class="modal-close js-close-ad" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div class="ad-toolbar">
+        <div class="ad-tabs" role="tablist" aria-label="广告端类型">
+          <button class="ad-tab active" type="button" data-tab="app" role="tab" aria-selected="true">APP端</button>
+          <button class="ad-tab" type="button" data-tab="web" role="tab" aria-selected="false">WEB端</button>
+        </div>
+        <div class="ad-search">
+          <input id="adSearch" type="search" placeholder="请输入广告名称" aria-label="搜索广告" />
+          <button class="btn primary" id="adSearchBtn" type="button">搜索</button>
+          <button class="btn" id="adResetBtn" type="button">重置</button>
+        </div>
+      </div>
+
+      <div class="ad-body">
+        <div class="ad-list" id="adList"></div>
+        <div class="ad-empty" id="adEmpty">暂无匹配广告</div>
+      </div>
+
+      <div class="ad-footer">
+        <div class="ad-page">
+          <span id="adTotal">共 74 条</span>
+          <span class="ad-page-size">20条/页</span>
+          <button class="ad-page-btn" type="button" aria-label="上一页">‹</button>
+          <button class="ad-page-btn active" type="button">1</button>
+          <button class="ad-page-btn" type="button">2</button>
+          <button class="ad-page-btn" type="button">3</button>
+          <button class="ad-page-btn" type="button">4</button>
+          <button class="ad-page-btn" type="button" aria-label="下一页">›</button>
+        </div>
+      </div>
+
+      <div class="ad-actions">
+        <button class="btn js-close-ad" type="button">取消</button>
+        <button class="btn primary js-close-ad" type="button">确定</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const adModal = document.getElementById("adModal");
+    const adList = document.getElementById("adList");
+    const adEmpty = document.getElementById("adEmpty");
+    const adSearch = document.getElementById("adSearch");
+    const adTotal = document.getElementById("adTotal");
+
+    const adData = {
+      app: {
+        total: 74,
+        items: [
+          { text: "Y06APP 菜单插入广告", checked: false, group: true },
+          { text: "16:9【A】帖子详情页底部横幅", checked: true },
+          { text: "【A】帖子详情页顶部横幅", checked: true },
+          { text: "16:9【A】个人中心中部横幅", checked: true },
+          { text: "3:4【A】个人中心弹窗广告", checked: true },
+          { text: "16:9【A】个人中心顶部横幅", checked: true },
+          { text: "16:9【A】播放结束覆盖广告", checked: true },
+          { text: "16:9【A】播放暂停覆盖广告", checked: true },
+          { text: "16:9【A】漫画/写真详情底部横幅", checked: true },
+          { text: "16:9【A】漫画/写真详情顶部横幅", checked: true },
+          { text: "16:9【A】应用中心底部横幅", checked: true },
+          { text: "1:1【A】搜索页顶部图标位广告-A", checked: true },
+          { text: "16:9【A】首页-中插-横幅", checked: true },
+          { text: "16:9【A】二级菜单顶部-banner", checked: true },
+          { text: "一级菜单广告", checked: false, group: true },
+          { text: "16:9【A】首页顶部横幅", checked: true },
+          { text: "1:1【A】主页底部悬浮广告", checked: true },
+          { text: "1:1【A】主页浮窗广告位", checked: true },
+          { text: "16：9【A】首页底部横幅】", checked: true },
+          { text: "1:1【A】各主页顶部icon式广告位", checked: true }
+        ]
+      },
+      web: {
+        total: 18,
+        items: [
+          { text: "WEB端 首页顶部横幅", checked: true },
+          { text: "WEB端 首页底部横幅", checked: true },
+          { text: "WEB端 搜索结果页顶部广告", checked: true },
+          { text: "WEB端 详情页右侧广告", checked: true },
+          { text: "WEB端 播放页暂停广告", checked: true },
+          { text: "WEB端 播放页结束广告", checked: false },
+          { text: "WEB端 个人中心顶部横幅", checked: true },
+          { text: "WEB端 菜单插入广告", checked: false, group: true }
+        ]
+      }
+    };
+
+    let activeAdTab = "app";
+
+    function renderAds() {
+      const keyword = adSearch.value.trim().toLowerCase();
+      const source = adData[activeAdTab];
+      const items = source.items.filter((item) => item.text.toLowerCase().includes(keyword));
+
+      adList.innerHTML = items.map((item) => `
+        <label class="ad-option${item.group ? " group" : ""}">
+          <input type="checkbox"${item.checked ? " checked" : ""} />
+          <span title="${item.text}">${item.text}</span>
+        </label>
+      `).join("");
+
+      adEmpty.classList.toggle("show", items.length === 0);
+      adTotal.textContent = keyword ? `共 ${items.length} 条` : `共 ${source.total} 条`;
+    }
+
+    function openAdModal() {
+      adModal.classList.add("open");
+      adModal.setAttribute("aria-hidden", "false");
+      adSearch.focus();
+      renderAds();
+    }
+
+    function closeAdModal() {
+      adModal.classList.remove("open");
+      adModal.setAttribute("aria-hidden", "true");
+    }
+
+    document.querySelectorAll(".js-open-ad").forEach((button) => {
+      button.addEventListener("click", openAdModal);
+    });
+
+    document.querySelectorAll(".js-close-ad").forEach((button) => {
+      button.addEventListener("click", closeAdModal);
+    });
+
+    document.querySelectorAll(".ad-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        activeAdTab = tab.dataset.tab;
+        document.querySelectorAll(".ad-tab").forEach((item) => {
+          const selected = item === tab;
+          item.classList.toggle("active", selected);
+          item.setAttribute("aria-selected", String(selected));
+        });
+        adSearch.value = "";
+        renderAds();
+      });
+    });
+
+    adSearch.addEventListener("input", renderAds);
+    document.getElementById("adSearchBtn").addEventListener("click", renderAds);
+    document.getElementById("adResetBtn").addEventListener("click", () => {
+      adSearch.value = "";
+      renderAds();
+      adSearch.focus();
+    });
+
+    adModal.addEventListener("click", (event) => {
+      if (event.target === adModal) {
+        closeAdModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && adModal.classList.contains("open")) {
+        closeAdModal();
+      }
+    });
+  </script>
+</body>
+</html>
