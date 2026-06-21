@@ -664,6 +664,142 @@
       font-weight: 500;
     }
 
+    .pack-modal {
+      position: relative;
+      width: 700px;
+      min-height: 392px;
+      background: var(--white);
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+      overflow: hidden;
+    }
+
+    .pack-form {
+      padding: 0 40px 78px;
+      display: grid;
+      row-gap: 12px;
+    }
+
+    .pack-row {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pack-row label {
+      color: #606266;
+      text-align: right;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .pack-row input[type="text"] {
+      width: 100%;
+      height: 36px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      color: #606266;
+      outline: none;
+      padding: 0 12px;
+      font: inherit;
+    }
+
+    .pack-row input[type="text"]::placeholder {
+      color: #c0c4cc;
+    }
+
+    .upload-btn {
+      width: 126px;
+      height: 36px;
+      border: 0;
+      border-radius: 2px;
+      background: var(--primary);
+      color: var(--white);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    .upload-icon {
+      position: relative;
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+    }
+
+    .upload-icon::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 2px;
+      height: 10px;
+      background: currentColor;
+    }
+
+    .upload-icon::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 2px;
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-top: 2px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .required-mark {
+      color: var(--danger);
+      margin-right: 4px;
+    }
+
+    .reason-group {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .reason-group label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .reason-group input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--primary);
+    }
+
+    .reason-group input:checked + span {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .pack-actions {
+      position: absolute;
+      right: 20px;
+      bottom: 54px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .pack-actions .btn {
+      width: 68px;
+      height: 36px;
+      font-weight: 500;
+    }
+
     .prd-mask {
       position: fixed;
       inset: 0;
@@ -969,7 +1105,7 @@
                 <button class="btn primary wide" type="button">配置菜单</button>
                 <button class="btn primary wide js-open-ad" type="button">配置广告</button>
                 <button class="btn primary wide" type="button">更新模板</button>
-                <button class="btn primary wide" type="button">打包配置</button>
+                <button class="btn primary wide js-open-pack" type="button">打包配置</button>
                 <button class="btn danger" type="button">删除</button>
               </div>
             </td>
@@ -989,7 +1125,7 @@
                 <button class="btn primary wide" type="button">配置菜单</button>
                 <button class="btn primary wide js-open-ad" type="button">配置广告</button>
                 <button class="btn primary wide" type="button">更新模板</button>
-                <button class="btn primary wide" type="button">打包配置</button>
+                <button class="btn primary wide js-open-pack" type="button">打包配置</button>
                 <button class="btn danger" type="button">删除</button>
               </div>
             </td>
@@ -1009,7 +1145,7 @@
                 <button class="btn primary wide" type="button">配置菜单</button>
                 <button class="btn primary wide js-open-ad" type="button">配置广告</button>
                 <button class="btn primary wide" type="button">更新模板</button>
-                <button class="btn primary wide" type="button">打包配置</button>
+                <button class="btn primary wide js-open-pack" type="button">打包配置</button>
                 <button class="btn danger" type="button">删除</button>
               </div>
             </td>
@@ -1074,10 +1210,62 @@
     </section>
   </div>
 
+  <div class="modal-mask" id="packModal" aria-hidden="true">
+    <section class="pack-modal" role="dialog" aria-modal="true" aria-labelledby="packTitle">
+      <div class="modal-head">
+        <h2 class="modal-title" id="packTitle">打包配置</h2>
+        <button class="modal-close js-close-pack" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <form class="pack-form">
+        <div class="pack-row">
+          <label for="webImage">填写镜像地址（Web响应式）</label>
+          <input id="webImage" type="text" value="reg.hshuane.com/myriad/wx-y06-web:main-e46c5" />
+        </div>
+        <div class="pack-row">
+          <label for="h5Image">填写H5地址（APP移动端）</label>
+          <input id="h5Image" type="text" value="reg.hshuane.com/myriad/group1-video-h5:main-f" />
+        </div>
+        <div class="pack-row">
+          <label for="navImage">导航页镜像地址</label>
+          <input id="navImage" type="text" placeholder="请输入导航页镜像地址" />
+        </div>
+        <div class="pack-row">
+          <label>上传APP母包（APP移动端）</label>
+          <div>
+            <button class="upload-btn" id="uploadTrigger" type="button">
+              <span class="upload-icon" aria-hidden="true"></span>
+              点击上传
+            </button>
+            <input id="appPackage" type="file" hidden />
+          </div>
+        </div>
+        <div class="pack-row">
+          <label><span class="required-mark">*</span>修改原因</label>
+          <div class="reason-group">
+            <label>
+              <input type="radio" name="packReason" checked />
+              <span>修复bug</span>
+            </label>
+            <label>
+              <input type="radio" name="packReason" />
+              <span>更换地址</span>
+            </label>
+          </div>
+        </div>
+      </form>
+
+      <div class="pack-actions">
+        <button class="btn js-close-pack" type="button">取消</button>
+        <button class="btn primary js-close-pack" type="button">确定</button>
+      </div>
+    </section>
+  </div>
+
   <div class="prd-mask" id="prdMask" aria-hidden="true">
     <section class="prd-panel" role="dialog" aria-modal="true" aria-labelledby="prdTitle">
       <div class="prd-head">
-        <h2 id="prdTitle">PRD：产品模板管理菜单</h2>
+        <h2 id="prdTitle">PRD：产品列表管理</h2>
         <button class="modal-close" id="closePrd" type="button" aria-label="关闭">×</button>
       </div>
 
@@ -1125,11 +1313,11 @@
         <h3 id="prd-info">1. 文档信息</h3>
         <table>
           <tbody>
-            <tr><th>文档名称</th><td>产品模板管理菜单</td></tr>
+            <tr><th>文档名称</th><td>产品列表管理</td></tr>
             <tr><th>版本</th><td>V1.0</td></tr>
             <tr><th>日期</th><td>2026-06-21</td></tr>
             <tr><th>适用页面</th><td>总后台 - 产品模板管理</td></tr>
-            <tr><th>相关原型</th><td><code>产品模板管理菜单.html</code></td></tr>
+            <tr><th>相关原型</th><td><code>产品列表管理.html</code></td></tr>
           </tbody>
         </table>
 
@@ -1333,11 +1521,14 @@
 
   <script>
     const adModal = document.getElementById("adModal");
+    const packModal = document.getElementById("packModal");
     const prdMask = document.getElementById("prdMask");
     const adList = document.getElementById("adList");
     const adEmpty = document.getElementById("adEmpty");
     const adSearch = document.getElementById("adSearch");
     const adTotal = document.getElementById("adTotal");
+    const uploadTrigger = document.getElementById("uploadTrigger");
+    const appPackage = document.getElementById("appPackage");
 
     const adData = {
       app: {
@@ -1410,6 +1601,16 @@
       adModal.setAttribute("aria-hidden", "true");
     }
 
+    function openPackModal() {
+      packModal.classList.add("open");
+      packModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closePackModal() {
+      packModal.classList.remove("open");
+      packModal.setAttribute("aria-hidden", "true");
+    }
+
     function openPrd() {
       prdMask.classList.add("open");
       prdMask.setAttribute("aria-hidden", "false");
@@ -1426,6 +1627,18 @@
 
     document.querySelectorAll(".js-close-ad").forEach((button) => {
       button.addEventListener("click", closeAdModal);
+    });
+
+    document.querySelectorAll(".js-open-pack").forEach((button) => {
+      button.addEventListener("click", openPackModal);
+    });
+
+    document.querySelectorAll(".js-close-pack").forEach((button) => {
+      button.addEventListener("click", closePackModal);
+    });
+
+    uploadTrigger.addEventListener("click", () => {
+      appPackage.click();
     });
 
     document.getElementById("openPrd").addEventListener("click", openPrd);
@@ -1458,6 +1671,12 @@
       }
     });
 
+    packModal.addEventListener("click", (event) => {
+      if (event.target === packModal) {
+        closePackModal();
+      }
+    });
+
     prdMask.addEventListener("click", (event) => {
       if (event.target === prdMask) {
         closePrd();
@@ -1467,6 +1686,9 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && adModal.classList.contains("open")) {
         closeAdModal();
+      }
+      if (event.key === "Escape" && packModal.classList.contains("open")) {
+        closePackModal();
       }
       if (event.key === "Escape" && prdMask.classList.contains("open")) {
         closePrd();
