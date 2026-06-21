@@ -70,8 +70,27 @@
       font-weight: 700;
     }
 
-    .user-menu {
+    .top-actions {
       justify-self: end;
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .prd-entry {
+      height: 28px;
+      min-width: 54px;
+      border: 1px solid var(--primary);
+      border-radius: 3px;
+      background: var(--white);
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0 12px;
+    }
+
+    .user-menu {
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -645,6 +664,203 @@
       font-weight: 500;
     }
 
+    .prd-mask {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      background: rgba(0, 0, 0, .42);
+      z-index: 40;
+      padding: 8px;
+    }
+
+    .prd-mask.open {
+      display: flex;
+    }
+
+    .prd-panel {
+      width: min(1180px, calc(100vw - 16px));
+      height: calc(100vh - 16px);
+      background: var(--white);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, .22);
+      display: flex;
+      flex-direction: column;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .prd-head {
+      height: 58px;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 auto;
+    }
+
+    .prd-head h2 {
+      margin: 0;
+      color: var(--heading);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .prd-layout {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 236px minmax(0, 1fr);
+    }
+
+    .prd-sidebar {
+      min-height: 0;
+      background: #f5f8fc;
+      border-right: 1px solid var(--border-soft);
+      padding: 20px 14px;
+      overflow: auto;
+    }
+
+    .prd-sidebar-title {
+      margin: 0 0 16px;
+      color: #4b5563;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .prd-nav {
+      display: grid;
+      gap: 4px;
+    }
+
+    .prd-nav a {
+      height: 34px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #4b5563;
+      text-decoration: none;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .prd-nav a.active {
+      color: var(--primary);
+      background: #e5f2ff;
+      font-weight: 700;
+    }
+
+    .prd-body {
+      padding: 22px 34px 44px;
+      overflow: auto;
+      line-height: 1.72;
+      min-width: 0;
+    }
+
+    .prd-body h3 {
+      margin: 26px 0 10px;
+      color: var(--heading);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .prd-body h4 {
+      margin: 18px 0 8px;
+      color: var(--heading);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .prd-summary {
+      border: 1px solid #d6e8ff;
+      background: #f3f8ff;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .prd-summary h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .prd-summary p {
+      margin: 0;
+    }
+
+    .prd-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .prd-card {
+      border: 1px solid var(--border-soft);
+      background: var(--white);
+      padding: 16px 14px;
+      min-height: 104px;
+    }
+
+    .prd-card h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .prd-card p {
+      margin: 0;
+      color: #4b5563;
+    }
+
+    .prd-body p,
+    .prd-body li {
+      color: #4b5563;
+    }
+
+    .prd-body ul,
+    .prd-body ol {
+      margin: 8px 0 14px;
+      padding-left: 22px;
+    }
+
+    .prd-body table {
+      width: 100%;
+      margin: 10px 0 18px;
+      table-layout: auto;
+      border-collapse: collapse;
+      border: 1px solid var(--border-soft);
+    }
+
+    .prd-body th,
+    .prd-body td {
+      height: auto;
+      padding: 10px 12px;
+      border-right: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      text-align: left;
+      vertical-align: top;
+      white-space: normal;
+      word-break: break-word;
+      overflow: visible;
+      text-overflow: clip;
+    }
+
+    .prd-body th {
+      color: var(--muted);
+      background: #fbfcff;
+      font-weight: 700;
+    }
+
+    .prd-body code {
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 3px;
+      padding: 2px 5px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+    }
+
     @media (max-width: 1500px) {
       .filters {
         grid-template-columns: repeat(3, 270px) 380px;
@@ -671,9 +887,12 @@
       <path fill="currentColor" d="M3 4.1h5.7a2 2 0 0 0 3.8 0H15V2.9h-2.5a2 2 0 0 0-3.8 0H3v1.2Zm0 5.5h2.5a2 2 0 0 0 3.8 0H15V8.4H9.3a2 2 0 0 0-3.8 0H3v1.2Zm0 5.5h6.2a2 2 0 0 0 3.8 0H15v-1.2h-2a2 2 0 0 0-3.8 0H3v1.2Z" />
     </svg>
     <div class="top-title">产品模板管理</div>
-    <div class="user-menu">
-      <span>超级管理员</span>
-      <span class="chevron" aria-hidden="true"></span>
+    <div class="top-actions">
+      <button class="prd-entry" id="openPrd" type="button">PRD</button>
+      <div class="user-menu">
+        <span>超级管理员</span>
+        <span class="chevron" aria-hidden="true"></span>
+      </div>
     </div>
   </header>
 
@@ -855,8 +1074,266 @@
     </section>
   </div>
 
+  <div class="prd-mask" id="prdMask" aria-hidden="true">
+    <section class="prd-panel" role="dialog" aria-modal="true" aria-labelledby="prdTitle">
+      <div class="prd-head">
+        <h2 id="prdTitle">PRD：产品模板管理菜单</h2>
+        <button class="modal-close" id="closePrd" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div class="prd-layout">
+        <aside class="prd-sidebar" aria-label="文档目录">
+          <p class="prd-sidebar-title">文档目录</p>
+          <nav class="prd-nav">
+            <a class="active" href="#prd-info">1. 文档信息</a>
+            <a href="#prd-change">2. 本次新增/变更内容</a>
+            <a href="#prd-goal">3. 背景与目标</a>
+            <a href="#prd-page">4. 页面结构</a>
+            <a href="#prd-list">5. 模板列表</a>
+            <a href="#prd-ad">6. 配置广告弹窗</a>
+            <a href="#prd-api">7. 接口建议</a>
+            <a href="#prd-permission">8. 权限与日志</a>
+            <a href="#prd-acceptance">9. 验收标准</a>
+          </nav>
+        </aside>
+
+        <div class="prd-body">
+          <section class="prd-summary">
+            <h3>阅读摘要</h3>
+            <p>本需求解决“产品模板维度配置广告”的问题。核心规则是：模板列表提供配置广告入口，弹窗按 APP端/WEB端切换广告位，广告搜索只作用于当前端类型，保存时仅更新当前模板对应端类型的广告配置。</p>
+          </section>
+
+          <div class="prd-cards">
+            <article class="prd-card">
+              <h4>模板维度配置</h4>
+              <p>每个产品模板可独立维护广告位配置。</p>
+            </article>
+            <article class="prd-card">
+              <h4>端类型隔离</h4>
+              <p>APP端和WEB端广告位列表、勾选状态相互独立。</p>
+            </article>
+            <article class="prd-card">
+              <h4>广告搜索</h4>
+              <p>搜索只筛选当前端类型下的广告位名称。</p>
+            </article>
+            <article class="prd-card">
+              <h4>保存可追溯</h4>
+              <p>确定保存后写入操作日志和配置变更记录。</p>
+            </article>
+          </div>
+
+        <h3 id="prd-info">1. 文档信息</h3>
+        <table>
+          <tbody>
+            <tr><th>文档名称</th><td>产品模板管理菜单</td></tr>
+            <tr><th>版本</th><td>V1.0</td></tr>
+            <tr><th>日期</th><td>2026-06-21</td></tr>
+            <tr><th>适用页面</th><td>总后台 - 产品模板管理</td></tr>
+            <tr><th>相关原型</th><td><code>产品模板管理菜单.html</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="prd-change">2. 本次新增/变更内容</h3>
+        <table>
+          <thead>
+            <tr><th>新增/变更项</th><th>用户能看到什么</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>产品模板管理列表</td><td>模板设置页签、筛选区、模板列表和分页</td><td>用于管理员查看和维护产品模板。</td></tr>
+            <tr><td>模板筛选</td><td>产品类型、模板名称、内容类型、创建时间</td><td>真实系统需接入查询接口。</td></tr>
+            <tr><td>配置广告入口</td><td>每条模板操作列展示“配置广告”按钮</td><td>点击后打开配置广告弹窗。</td></tr>
+            <tr><td>配置广告弹窗</td><td>APP端、WEB端广告位列表</td><td>支持勾选广告位、切换端类型、分页展示和确认保存。</td></tr>
+            <tr><td>广告搜索</td><td>弹窗内新增搜索框、搜索按钮、重置按钮</td><td>支持按广告位名称筛选当前端的广告位。</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="prd-goal">3. 背景与目标</h3>
+        <p>产品模板用于承载不同产品形态和内容类型的配置。运营或管理员需要在模板维度维护菜单、广告、打包等配置，保证不同模板在前台使用时具备对应的展示能力。</p>
+        <ul>
+          <li>管理员可在产品模板列表查看模板基础信息和状态。</li>
+          <li>管理员可通过筛选条件快速定位模板。</li>
+          <li>管理员可在模板维度配置 APP端、WEB端广告位。</li>
+          <li>配置广告弹窗支持搜索，降低广告位较多时的查找成本。</li>
+          <li>弹窗保存后，系统可记录该模板的广告配置变更。</li>
+        </ul>
+
+        <h3 id="prd-page">4. 页面结构</h3>
+        <h4>4.1 顶部区域</h4>
+        <table>
+          <thead>
+            <tr><th>区域</th><th>展示内容</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>左侧</td><td>菜单折叠图标</td></tr>
+            <tr><td>中间</td><td>页面标题：产品模板管理</td></tr>
+            <tr><td>右侧</td><td>PRD 入口、当前登录用户：超级管理员</td></tr>
+          </tbody>
+        </table>
+
+        <h4>4.2 筛选区</h4>
+        <table>
+          <thead>
+            <tr><th>字段</th><th>类型</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>产品类型</td><td>下拉选择</td><td>默认全部。</td></tr>
+            <tr><td>模板名称</td><td>文本输入</td><td>支持按模板名称模糊搜索。</td></tr>
+            <tr><td>内容类型</td><td>下拉选择</td><td>默认全部。</td></tr>
+            <tr><td>创建时间</td><td>日期范围</td><td>支持选择开始日期和结束日期。</td></tr>
+          </tbody>
+        </table>
+        <p>操作按钮包括：创建模板、查询、重置。</p>
+
+        <h3 id="prd-list">5. 模板列表</h3>
+        <table>
+          <thead>
+            <tr><th>字段</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>序号</td><td>当前页内行序号。</td></tr>
+            <tr><td>模板ID</td><td>模板唯一标识。</td></tr>
+            <tr><td>模板名称</td><td>模板展示名称，例如 WX-Y06。</td></tr>
+            <tr><td>内容类型</td><td>该模板支持的内容类型，例如短视频、漫画、视频、帖子。</td></tr>
+            <tr><td>状态</td><td>当前模板状态，例如上架。</td></tr>
+            <tr><td>创建人</td><td>创建模板的后台账号。</td></tr>
+            <tr><td>创建时间</td><td>模板创建时间。</td></tr>
+            <tr><td>操作</td><td>下架、详情、配置菜单、配置广告、更新模板、打包配置、删除。</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="prd-ad">6. 配置广告弹窗</h3>
+        <h4>6.1 入口与布局</h4>
+        <p>入口位置：模板列表每行操作列中的 <code>配置广告</code> 按钮。点击后打开弹窗，弹窗标题为 <code>配置广告</code>。</p>
+        <table>
+          <thead>
+            <tr><th>区域</th><th>内容</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>标题区</td><td>标题“配置广告”和关闭按钮。</td></tr>
+            <tr><td>端类型页签</td><td>APP端、WEB端，默认选中 APP端。</td></tr>
+            <tr><td>搜索区</td><td>广告名称输入框、搜索按钮、重置按钮。</td></tr>
+            <tr><td>广告位列表</td><td>当前端类型下的广告位复选框列表。</td></tr>
+            <tr><td>分页区</td><td>总条数、每页条数、页码。</td></tr>
+            <tr><td>底部操作</td><td>取消、确定。</td></tr>
+          </tbody>
+        </table>
+
+        <h4>6.2 端类型页签</h4>
+        <ol>
+          <li>默认进入弹窗时选中 APP端。</li>
+          <li>点击 WEB端后，列表切换为 WEB端广告位。</li>
+          <li>切换端类型时，清空当前搜索关键词。</li>
+          <li>不同端类型的广告勾选状态互相独立。</li>
+        </ol>
+
+        <h4>6.3 广告位列表</h4>
+        <table>
+          <thead>
+            <tr><th>端类型</th><th>广告位名称示例</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>APP端</td><td>Y06APP 菜单插入广告</td></tr>
+            <tr><td>APP端</td><td>16:9【A】帖子详情页底部横幅</td></tr>
+            <tr><td>APP端</td><td>16:9【A】个人中心弹窗广告</td></tr>
+            <tr><td>APP端</td><td>1:1【A】搜索页顶部图标位广告-A</td></tr>
+            <tr><td>WEB端</td><td>WEB端 首页顶部横幅</td></tr>
+            <tr><td>WEB端</td><td>WEB端 搜索结果页顶部广告</td></tr>
+          </tbody>
+        </table>
+        <ol>
+          <li>已配置的广告位默认勾选。</li>
+          <li>未配置的广告位默认不勾选。</li>
+          <li>用户可手动勾选或取消勾选广告位。</li>
+          <li>广告位名称过长时可单行省略，鼠标悬停展示完整名称。</li>
+        </ol>
+
+        <h4>6.4 搜索功能</h4>
+        <p>搜索范围：当前选中端类型下的广告位名称。</p>
+        <ol>
+          <li>支持广告位名称模糊搜索。</li>
+          <li>输入关键词时，列表可即时筛选。</li>
+          <li>点击搜索按钮时，按当前关键词筛选。</li>
+          <li>搜索不跨端类型，例如 APP端搜索只查 APP端广告位。</li>
+          <li>搜索结果为空时，展示空状态：暂无匹配广告。</li>
+          <li>搜索后分页总条数展示为当前命中的数量。</li>
+          <li>点击重置后，清空搜索关键词、恢复列表和原总条数。</li>
+        </ol>
+
+        <h4>6.5 底部按钮</h4>
+        <table>
+          <thead>
+            <tr><th>按钮</th><th>规则</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>取消</td><td>关闭弹窗，不保存本次修改。</td></tr>
+            <tr><td>确定</td><td>保存当前模板的广告配置，并关闭弹窗。</td></tr>
+            <tr><td>关闭 X</td><td>关闭弹窗，不保存本次修改。</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="prd-api">7. 接口建议</h3>
+        <h4>7.1 获取模板广告配置</h4>
+        <table>
+          <thead>
+            <tr><th>参数</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>templateId</td><td>模板ID。</td></tr>
+            <tr><td>terminal</td><td>端类型：APP 或 WEB。</td></tr>
+            <tr><td>keyword</td><td>广告位名称关键词，可选。</td></tr>
+            <tr><td>pageNum</td><td>页码。</td></tr>
+            <tr><td>pageSize</td><td>每页条数。</td></tr>
+          </tbody>
+        </table>
+
+        <h4>7.2 保存模板广告配置</h4>
+        <table>
+          <thead>
+            <tr><th>参数</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>templateId</td><td>模板ID。</td></tr>
+            <tr><td>terminal</td><td>端类型。</td></tr>
+            <tr><td>selectedAdIds</td><td>当前端类型下勾选的广告位ID列表。</td></tr>
+          </tbody>
+        </table>
+        <ol>
+          <li>保存时以后端接收到的 <code>selectedAdIds</code> 作为当前端类型最终配置。</li>
+          <li>只保存当前端类型，不影响另一个端类型的广告配置。</li>
+          <li>保存成功后写入操作日志。</li>
+          <li>保存失败时保留弹窗，并展示错误提示。</li>
+        </ol>
+
+        <h3 id="prd-permission">8. 权限与日志</h3>
+        <ol>
+          <li>只有具备产品模板管理权限的管理员可访问页面。</li>
+          <li>只有具备广告配置权限的管理员可点击“配置广告”并保存。</li>
+          <li>无权限时，按钮置灰或隐藏，后端必须二次校验。</li>
+          <li>保存广告配置时记录操作对象、模板ID、操作类型、操作人、操作时间、变更前、变更后。</li>
+        </ol>
+
+        <h3 id="prd-acceptance">9. 验收标准</h3>
+        <ul>
+          <li>点击列表任意一行“配置广告”，打开配置广告弹窗。</li>
+          <li>弹窗标题、APP端/WEB端页签、搜索区、广告位列表、分页、取消和确定按钮展示正确。</li>
+          <li>默认选中 APP端，并展示 APP端广告位。</li>
+          <li>点击 WEB端后，广告位列表切换为 WEB端数据。</li>
+          <li>在搜索框输入关键词后，列表只展示当前端类型下命中的广告位。</li>
+          <li>点击重置后，搜索框清空，列表恢复当前端类型完整数据。</li>
+          <li>搜索无结果时展示“暂无匹配广告”。</li>
+          <li>勾选或取消勾选广告位后，复选框状态正确变化。</li>
+          <li>点击取消或关闭 X 后，弹窗关闭且不保存修改。</li>
+          <li>点击确定后，保存当前模板广告配置并关闭弹窗。</li>
+          <li>保存成功后写入操作日志。</li>
+        </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <script>
     const adModal = document.getElementById("adModal");
+    const prdMask = document.getElementById("prdMask");
     const adList = document.getElementById("adList");
     const adEmpty = document.getElementById("adEmpty");
     const adSearch = document.getElementById("adSearch");
@@ -933,6 +1410,16 @@
       adModal.setAttribute("aria-hidden", "true");
     }
 
+    function openPrd() {
+      prdMask.classList.add("open");
+      prdMask.setAttribute("aria-hidden", "false");
+    }
+
+    function closePrd() {
+      prdMask.classList.remove("open");
+      prdMask.setAttribute("aria-hidden", "true");
+    }
+
     document.querySelectorAll(".js-open-ad").forEach((button) => {
       button.addEventListener("click", openAdModal);
     });
@@ -940,6 +1427,9 @@
     document.querySelectorAll(".js-close-ad").forEach((button) => {
       button.addEventListener("click", closeAdModal);
     });
+
+    document.getElementById("openPrd").addEventListener("click", openPrd);
+    document.getElementById("closePrd").addEventListener("click", closePrd);
 
     document.querySelectorAll(".ad-tab").forEach((tab) => {
       tab.addEventListener("click", () => {
@@ -968,9 +1458,18 @@
       }
     });
 
+    prdMask.addEventListener("click", (event) => {
+      if (event.target === prdMask) {
+        closePrd();
+      }
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && adModal.classList.contains("open")) {
         closeAdModal();
+      }
+      if (event.key === "Escape" && prdMask.classList.contains("open")) {
+        closePrd();
       }
     });
   </script>
