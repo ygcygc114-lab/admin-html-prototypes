@@ -2128,7 +2128,7 @@
             <option>WX2-01</option>
           </select>
         </div>
-        <div class="menu-scope-note"><strong>规则说明：</strong>菜单只表示内容展示位置；内容是否展示由内容状态统一控制。点击“关联并上架”会将内容整体状态更新为已上架，并在所有已关联菜单下展示。</div>
+        <div class="menu-scope-note"><strong>规则说明：</strong>菜单只表示内容展示位置；单条内容最多关联 50 个菜单。内容是否展示由内容状态统一控制。点击“关联并上架”会将内容整体状态更新为已上架，并在所有已关联菜单下展示。</div>
 
         <div class="menu-modal-divider"></div>
 
@@ -2272,7 +2272,7 @@
 
         <div class="bulk-form-row">
           <div class="bulk-form-label">规则说明</div>
-          <div class="menu-scope-note bulk-rule-note" id="bulkRuleNote"><strong>批量规则：</strong>内容数量最大值为 1000；已上架内容只需关联到菜单，未上架内容可选择“仅关联”或“关联并上架”。</div>
+          <div class="menu-scope-note bulk-rule-note" id="bulkRuleNote"><strong>批量规则：</strong>内容数量最大值为 1000；单条内容最多关联 50 个菜单；已上架内容只需关联到菜单，未上架内容可选择“仅关联”或“关联并上架”。</div>
         </div>
 
         <div class="bulk-form-row target-menu-row">
@@ -2471,6 +2471,7 @@
             </thead>
             <tbody>
               <tr><td>内容支持关联多个菜单</td><td>同一条内容的“关联菜单”字段可展示多个菜单路径。</td><td>原逻辑偏向一条内容只绑定一个菜单，本次改为一条内容可绑定多个菜单。</td></tr>
+              <tr><td>关联菜单数量限制</td><td>单条内容最多可关联 50 个菜单。</td><td>达到上限后，未关联菜单显示“已达上限”，不可继续新增关联。</td></tr>
               <tr><td>关联菜单字段改造</td><td>列表默认展示前 2 条关联菜单，超过 2 条显示 <code>+N 查看全部</code>。</td><td>点击“查看全部”后，可查看该内容已关联的全部菜单路径。</td></tr>
               <tr><td>内容统一状态</td><td>内容是否展示由“内容状态”统一控制。</td><td>菜单不再单独维护已上架/未上架，避免运营理解成两套状态。</td></tr>
               <tr><td>设置菜单弹窗</td><td>弹窗按菜单树展示，末级菜单可操作。</td><td>父级菜单只做层级展示，显示“无法关联”；只有“内容已上架 + 当前菜单未关联”时展示“关联到菜单”。</td></tr>
@@ -2516,6 +2517,7 @@
           <h4>6.1 内容与菜单关系</h4>
           <ol>
             <li>一条内容可以关联多个菜单。</li>
+            <li>单条内容最多关联 50 个菜单，达到上限后不可继续新增菜单关联。</li>
             <li>同一条内容不可重复关联同一个菜单路径。</li>
             <li>菜单关联关系只记录内容绑定了哪些菜单，不记录菜单维度上下架状态。</li>
             <li>内容已上架后，会在所有已关联菜单下展示；内容未上架时，所有菜单均不展示。</li>
@@ -2724,6 +2726,7 @@
             </thead>
             <tbody>
               <tr><td>不可关联父级菜单</td><td>无法关联</td></tr>
+              <tr><td>已达到 50 个菜单上限</td><td>已达上限</td></tr>
               <tr><td>未关联末级菜单，内容未上架</td><td>仅关联 / 关联并上架</td></tr>
               <tr><td>内容已上架 + 当前菜单未关联</td><td>关联到菜单</td></tr>
               <tr><td>已关联末级菜单</td><td>已关联 / 取消关联</td></tr>
@@ -2731,6 +2734,7 @@
           </table>
           <ul>
             <li>弹窗顶部需要说明：菜单只表示内容展示位置；内容是否展示由内容状态统一控制。</li>
+            <li>弹窗顶部需要说明：单条内容最多关联 50 个菜单。</li>
             <li>弹窗顶部需要说明：关联并上架会将内容整体状态更新为已上架，并在所有已关联菜单下展示。</li>
           </ul>
 
@@ -2739,6 +2743,7 @@
             <li>点击 <code>批量绑定菜单</code> 后打开弹窗。</li>
             <li>弹窗展示内容数量输入框、当前项目、目标菜单树。</li>
             <li>内容数量最大值为 1000。</li>
+            <li>弹窗规则说明需要展示：单条内容最多关联 50 个菜单。</li>
             <li>弹窗规则说明需要展示当前已选内容的上架状态判断，说明为什么展示“关联到菜单”或“仅关联 / 关联并上架”。</li>
             <li>如果已选内容全部已上架，未关联末级菜单只展示“关联到菜单”。</li>
             <li>如果已选内容里存在未上架内容，或未明确选择内容，末级菜单保留“仅关联 / 关联并上架”。</li>
@@ -2784,6 +2789,7 @@
             <li>勾选内容后，设置菜单按钮高亮可点击。</li>
             <li>弹窗菜单按层级树展示。</li>
             <li>父级菜单显示“无法关联”。</li>
+            <li>单条内容已关联 50 个菜单时，未关联末级菜单显示“已达上限”，不可继续关联。</li>
             <li>未上架内容的未关联末级菜单显示“仅关联”和“关联并上架”。</li>
             <li>只有“内容已上架 + 当前菜单未关联”时，未关联末级菜单才显示“关联到菜单”。</li>
             <li>已关联菜单展示“已关联”和“取消关联”。</li>
@@ -2825,6 +2831,7 @@
     const selectAll = document.getElementById("selectAll");
     const rowChecks = Array.from(document.querySelectorAll(".row-check"));
     const videoRows = Array.from(document.querySelectorAll(".video-table tbody tr"));
+    const MAX_ASSOCIATED_MENUS = 50;
     let toastTimer = null;
     const initialContentMenus = [
       {
@@ -2944,14 +2951,14 @@
       if (!bulkRuleNote) return;
       const summary = selectedRowsStatusSummary();
       if (summary.total === 0) {
-        bulkRuleNote.innerHTML = "<strong>批量规则：</strong>内容数量最大值为 1000；未明确选择内容时，末级菜单保留“仅关联 / 关联并上架”。";
+        bulkRuleNote.innerHTML = "<strong>批量规则：</strong>内容数量最大值为 1000；单条内容最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单；未明确选择内容时，末级菜单保留“仅关联 / 关联并上架”。";
         return;
       }
       if (summary.unpublishedCount === 0) {
-        bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，均为已上架；未关联菜单只展示“关联到菜单”。";
+        bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，均为已上架；单条内容最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单；未关联菜单只展示“关联到菜单”。";
         return;
       }
-      bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，其中 " + summary.unpublishedCount + " 条未上架；未关联菜单展示“仅关联 / 关联并上架”。";
+      bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，其中 " + summary.unpublishedCount + " 条未上架；单条内容最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单；未关联菜单展示“仅关联 / 关联并上架”。";
     }
 
     function ensureRowStore(row) {
@@ -2965,6 +2972,14 @@
         };
       }
       return contentMenuStore[row.dataset.videoKey];
+    }
+
+    function selectedRowsMenuLimitReached(path) {
+      return selectedRows().some((row) => {
+        const detail = ensureRowStore(row);
+        const existing = detail.menus.find((item) => item.path === path);
+        return !existing && detail.menus.length >= MAX_ASSOCIATED_MENUS;
+      });
     }
 
     function splitMenuPath(path) {
@@ -3150,11 +3165,19 @@
           renderLinkedMenuState(container);
           return;
         }
+        if (selectedRowsMenuLimitReached(container.dataset.menuPath)) {
+          renderLimitMenuState(container);
+          return;
+        }
         renderUnlinkedMenuState(container, shouldShowPublishAction);
       });
     }
 
     function updateSelectedContentMenus(path, mode) {
+      if (selectedRowsMenuLimitReached(path)) {
+        showToast("已达到最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单的限制");
+        return false;
+      }
       selectedRows().forEach((row) => {
         const detail = ensureRowStore(row);
         const existing = detail.menus.find((item) => item.path === path);
@@ -3167,6 +3190,7 @@
         renderRowAssociatedMenus(row);
       });
       applyMenuFilter();
+      return true;
     }
 
     function removeSelectedContentMenu(path) {
@@ -3277,7 +3301,16 @@
       `;
     }
 
+    function renderLimitMenuState(container) {
+      container.dataset.menuState = "limit";
+      container.innerHTML = '<span class="menu-status disabled">已达上限</span>';
+    }
+
     function renderBulkUnlinkedMenuState(container, showPublishAction = true) {
+      if (selectedRowsMenuLimitReached(container.dataset.bulkMenuPath)) {
+        renderLimitMenuState(container);
+        return;
+      }
       container.dataset.menuState = "unlinked";
       container.innerHTML = showPublishAction
         ? `
@@ -3457,7 +3490,7 @@
       if (linkButton) {
         const mode = linkButton.dataset.linkMenu;
         const container = linkButton.closest(".menu-action-buttons");
-        updateSelectedContentMenus(container.dataset.menuPath, mode);
+        if (!updateSelectedContentMenus(container.dataset.menuPath, mode)) return;
         renderLinkedMenuState(container);
         showToast(mode === "publish" ? "已关联菜单，并将内容状态更新为已上架" : "已关联菜单，内容状态保持不变");
       }
@@ -3484,6 +3517,11 @@
 
       const container = (linkButton || unlinkButton).closest(".menu-action-buttons");
       if (linkButton) {
+        if (selectedRowsMenuLimitReached(container.dataset.bulkMenuPath)) {
+          renderLimitMenuState(container);
+          showToast("已达到最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单的限制");
+          return;
+        }
         const mode = linkButton.dataset.bulkLinkMenu;
         renderBulkLinkedMenuState(container);
         const scopeText = count > 0 ? "已为 " + count + " 条内容" : "已";

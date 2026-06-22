@@ -1454,13 +1454,13 @@
                 <div class="multi-select" id="contentTypeSelect">
                   <button class="multi-select-trigger" type="button" id="contentTypeTrigger">视频</button>
                   <div class="multi-select-menu" id="contentTypeMenu">
-                    <label class="multi-select-option"><input type="checkbox" value="视频" checked /> 视频</label>
-                    <label class="multi-select-option"><input type="checkbox" value="漫画" /> 漫画</label>
-                    <label class="multi-select-option"><input type="checkbox" value="帖子" /> 帖子</label>
-                    <label class="multi-select-option"><input type="checkbox" value="小说" /> 小说</label>
+                    <label class="multi-select-option"><input type="radio" name="contentType" value="视频" checked /> 视频</label>
+                    <label class="multi-select-option"><input type="radio" name="contentType" value="漫画" /> 漫画</label>
+                    <label class="multi-select-option"><input type="radio" name="contentType" value="帖子" /> 帖子</label>
+                    <label class="multi-select-option"><input type="radio" name="contentType" value="小说" /> 小说</label>
                   </div>
                 </div>
-                <div class="field-hint">内容类型支持单选或多选；默认选择「视频」。不同内容类型对应不同分类。</div>
+                <div class="field-hint">内容类型为单选；默认选择「视频」。不同内容类型对应不同分类。</div>
               </div>
             </div>
 
@@ -1490,7 +1490,7 @@
 
             <div id="manualCard" class="source-card hidden">
               <div class="source-title">运营指定内容</div>
-              <div class="hint">仅可选择当前内容类型和分类范围内设为推荐且已上架的内容；可选择多条。该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。排序数值越大越靠前。</div>
+              <div class="hint">仅可选择当前内容类型和分类范围内设为推荐且已上架的内容；最少选择 10 条，最多选择 50 条。该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。排序数值越大越靠前。</div>
               <div class="field-hint">运营指定内容会优先参与首屏和「换一批」展示，未填满当前批次时由首页默认推荐内容补足，并按内容 ID 去重。</div>
 
               <div class="selected-header">
@@ -1669,7 +1669,7 @@
 
             <div class="normal-slot-manual hidden" id="normalSlotManualCard">
               <div class="source-title">运营指定内容</div>
-              <div class="hint">仅可选择当前菜单实际内容范围内已上架的内容，最多 50 条；运营指定内容优先用于展示位，剩余展示位按内容列表默认排序补足。</div>
+              <div class="hint">仅可选择当前菜单实际内容范围内已上架的内容，最少 10 条，最多 50 条；运营指定内容优先用于展示位，剩余展示位按内容列表默认排序补足。</div>
               <div class="field-hint">运营指定内容会优先参与首屏和「换一批」展示，消耗完后继续展示当前菜单默认内容，并按内容 ID 去重。</div>
               <div class="selected-header">
                 <div class="selected-title">
@@ -1747,7 +1747,7 @@
         <button class="modal-close" type="button" id="closeModal">×</button>
       </div>
       <div class="modal-body">
-        <div class="limit-tip" id="limitTip">最多可选择 50 条运营指定内容，移除后可继续添加。</div>
+        <div class="limit-tip" id="limitTip">至少选择 10 条运营指定内容，最多可选择 50 条。</div>
         <div class="modal-filters" id="videoFilters">
           <input class="input" id="videoKeyword" placeholder="请输入内容名称" />
           <select class="select video-category-filter" id="videoCategoryFilter"></select>
@@ -1756,7 +1756,7 @@
         </div>
         <div class="selection-status" id="selectionStatus">
           <span>已选 <strong id="modalSelectedCount">0</strong>/<strong id="modalMaxCount">50</strong></span>
-          <span class="muted" id="modalRemainCount">本次还可选择 50 条</span>
+          <span class="muted" id="modalRemainCount">至少还需选择 10 条</span>
         </div>
         <div class="modal-tip" id="categoryScopeTip">
           <span id="categoryScopeText">当前可选范围：当前内容类型下全部分类中设为推荐且已上架的内容。</span>
@@ -1788,7 +1788,7 @@
       </div>
       <div class="modal-actions">
         <button class="ghost-btn" type="button" id="cancelModal">取消</button>
-        <button class="save-btn" type="button" id="confirmVideos">确认选择</button>
+        <button class="save-btn" type="button" id="confirmVideos" disabled>确认选择</button>
       </div>
     </div>
   </div>
@@ -1814,7 +1814,7 @@
           </div>
           <div class="prd-summary-item">
             <strong>核心限制</strong>
-            <span>运营指定内容最多 50 条，且只能从当前内容类型和分类范围内设为推荐、已上架的内容中选择。</span>
+            <span>运营指定内容最少 10 条、最多 50 条，且只能从当前内容类型和分类范围内设为推荐、已上架的内容中选择。</span>
           </div>
           <div class="prd-summary-item">
             <strong>展示边界</strong>
@@ -1861,7 +1861,7 @@
               </tr>
               <tr>
                 <td>运营指定</td>
-                <td>运营从当前内容类型和分类范围内设为推荐且已上架的内容中选择内容用于首页展示；可选择多条，最多 50 条。</td>
+                <td>运营从当前内容类型和分类范围内设为推荐且已上架的内容中选择内容用于首页展示；最少 10 条，最多 50 条。</td>
               </tr>
             </tbody>
           </table>
@@ -1870,7 +1870,7 @@
         <section class="prd-section">
           <h3>五、内容类型与分类范围规则</h3>
           <ol>
-            <li>「内容类型」用于控制热门推荐可展示的媒体内容范围，支持单选或多选；可选项为系统固定枚举：视频、漫画、帖子、小说。</li>
+            <li>「内容类型」用于控制热门推荐可展示的媒体内容范围，支持单选；可选项为系统固定枚举：视频、漫画、帖子、小说。</li>
             <li>默认选择「视频」内容类型；默认分类为「全部」。</li>
             <li>不同内容类型对应不同分类集合，分类选项需根据已选内容类型动态展示。</li>
             <li>切换内容类型后，分类自动回到「全部」。</li>
@@ -1878,8 +1878,8 @@
             <li>如展示内容来源为「自动选择」，切换内容类型不触发确认；分类自动回到「全部」，系统中暂存的运营指定内容自动移除不符合新范围的内容。</li>
             <li>「选择分类」用于在已选内容类型下继续控制热门推荐的内容范围，支持选择一个或多个分类。</li>
             <li>分类选项来源于商户管理后台「老司机标签」的分类设置；除「全部」外，其余分类均按内容类型读取对应配置。</li>
-            <li>当分类数量较多或选择多个内容类型时，分类选择使用可搜索的分组多选面板展示。</li>
-            <li>分类面板按内容类型分组展示分类，支持按分类名称搜索。</li>
+            <li>当分类数量较多时，分类选择使用可搜索的多选面板展示。</li>
+            <li>分类面板按当前内容类型展示分类，支持按分类名称搜索。</li>
             <li>分类面板展示已选摘要，并通过「取消 / 确定」控制本次选择是否生效。</li>
             <li>选择分类触发器在选择 1-2 个具体分类时展示分类名称，选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
             <li>选择「全部」时，自动选择和运营指定均可覆盖当前已选内容类型下的全部分类内容；「全部」不包含未选中的内容类型。</li>
@@ -1903,10 +1903,9 @@
             <li>弹窗内容范围由外层「内容类型」和「选择分类」共同决定，不允许选择范围外的内容。</li>
             <li>当外层分类范围为「全部」或选择多个具体分类时，弹窗展示分类筛选；当外层仅选择一个具体分类时，隐藏分类筛选。</li>
             <li>弹窗分类筛选仅用于在当前内容类型和分类范围内缩小列表，不改变外层内容类型和分类范围。</li>
-            <li>当外层选择多个内容类型时，弹窗分类筛选项需展示内容类型前缀，例如「视频-欧美」「帖子-推荐」，避免同名分类混淆。</li>
             <li>支持按内容名称搜索。</li>
             <li>弹窗列表展示「内容名称」；当前分类范围为「全部」或选择多个具体分类时，额外展示「分类」列。</li>
-            <li>当外层选择多个内容类型时，弹窗列表展示「类型」列；右侧已选内容区域和管理弹窗也需展示内容类型，方便识别混合内容。</li>
+            <li>由于内容类型为单选，内容选择弹窗不展示「类型」列；右侧已选内容区域和管理弹窗可保留「类型」列，方便识别内容媒资类型。</li>
             <li>当前仅选择一个具体分类时，弹窗隐藏「分类」列。</li>
             <li>弹窗顶部「当前范围」在选择 1-2 个具体分类时直接展示分类名称；选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
             <li>选择 3 个及以上具体分类时，当前可选范围说明展示前 3 个分类和总数量，并提供「展开 / 收起」查看全部分类标签。</li>
@@ -1915,8 +1914,9 @@
             <li>支持勾选一条或多条内容。</li>
             <li>首次进入运营指定配置时，默认无已选内容；内容选择弹窗不默认勾选任何内容。</li>
             <li>已添加的内容复选框默认选中，用户可取消勾选；确认后从已选内容中移除。</li>
-            <li>弹窗中展示当前已选数量和最大可选数量，例如「已选 3/50」。</li>
-            <li>弹窗中展示剩余可选数量，例如「本次还可选择 47 条」。</li>
+            <li>弹窗中展示当前已选数量、最小可选数量和最大可选数量，例如「已选 3/50」「至少还需选择 7 条」。</li>
+            <li>当已选数量达到 10 条后，弹窗展示剩余可选数量，例如「本次还可选择 40 条」。</li>
+            <li>运营指定内容最少需选择 10 条；少于 10 条时，「确认选择」按钮置灰不可提交。</li>
             <li>达到 50 条上限后，不允许继续勾选新增内容。</li>
             <li>达到 50 条上限后，添加入口可展示为「调整内容」，用于进入弹窗取消已选内容。</li>
             <li>达到 50 条上限后，仍允许进入内容选择弹窗取消已选内容；取消后可继续选择新内容。</li>
@@ -1927,7 +1927,7 @@
         <section class="prd-section">
           <h3>七、已选内容管理规则</h3>
           <ol>
-            <li>右侧区域显示已选数量，例如「已选内容 3/50」，数量上限为所有内容类型、所有分类合计 50 条。</li>
+            <li>右侧区域显示已选数量，例如「已选内容 3/50」，数量限制为所有内容类型、所有分类合计 10-50 条。</li>
             <li>无已选内容时，右侧区域显示「暂无已选内容」。</li>
             <li>默认仅展示前 3 条已选内容，避免右侧面板过长。</li>
             <li>当已选内容超过 3 条时，显示「查看全部 X 条」。</li>
@@ -1957,7 +1957,7 @@
           <ol>
             <li>热门推荐启用后，首页展示热门推荐模块。</li>
             <li>搜推引擎仍负责热门推荐的默认推荐结果及默认排序。</li>
-            <li>若展示内容来源为「自动选择」，直接按当前内容类型和分类范围内的搜推引擎默认结果展示；当选择多个内容类型或多个分类时，需将当前内容范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
+            <li>若展示内容来源为「自动选择」，直接按当前内容类型和分类范围内的搜推引擎默认结果展示；当选择多个分类时，需将当前内容范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
             <li>若展示内容来源为「运营指定」，首页展示层优先展示运营指定内容。</li>
             <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，剩余展示位置由当前内容类型和分类范围内的搜推引擎默认推荐内容补足。</li>
             <li>展示位数量由首页模板或前端展示规则决定，后台不配置展示位数量。</li>
@@ -2016,7 +2016,8 @@
           <div class="prd-code" style="margin-top: 10px;">选择推荐内容弹窗：
 [请输入内容名称]  [全部已选分类]  当前范围：已选 5 个分类  [查询]
 
-已选 3/50                         本次还可选择 47 条
+已选 3/50                         至少还需选择 7 条
+提示：至少选择 10 条运营指定内容，当前还差 7 条。
 当前可选范围：二次元、欧美、日韩 等 5 个分类下设为推荐且已上架的内容。展开
 
 展开后：
@@ -2034,7 +2035,7 @@
           <h3>十二、验收标准</h3>
           <ol>
             <li>热门推荐配置中支持选择「展示内容来源」。</li>
-            <li>热门推荐配置中支持选择「内容类型」，内容类型支持单选或多选，可选项为系统固定枚举：视频、漫画、帖子、小说。</li>
+            <li>热门推荐配置中支持选择「内容类型」，内容类型支持单选，可选项为系统固定枚举：视频、漫画、帖子、小说。</li>
             <li>内容类型默认选择「视频」。</li>
             <li>每个内容类型对应不同分类集合，分类选项需根据已选内容类型动态展示。</li>
             <li>内容类型变化后，分类默认回到「全部」。</li>
@@ -2045,8 +2046,8 @@
             <li>默认分类为「全部」。</li>
             <li>「全部」表示当前已选内容类型下的全部分类，不包含未选中的内容类型。</li>
             <li>热门推荐「选择分类」支持选择一个或多个分类。</li>
-            <li>选择多个内容类型或分类数量较多时，「选择分类」使用可搜索的分组多选面板。</li>
-            <li>分类面板按内容类型分组展示分类，并支持按分类名称搜索。</li>
+            <li>分类数量较多时，「选择分类」使用可搜索的多选面板。</li>
+            <li>分类面板按当前内容类型展示分类，并支持按分类名称搜索。</li>
             <li>分类面板展示已选摘要，并支持「取消 / 确定」；点击「确定」后分类选择生效。</li>
             <li>选择分类触发器在选择 1-2 个具体分类时展示分类名称，选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
             <li>「全部」与具体分类互斥；选择「全部」时取消已选具体分类，选择具体分类时取消「全部」。</li>
@@ -2059,17 +2060,17 @@
             <li>内容选择弹窗的内容范围由外层「内容类型」和「选择分类」共同决定，不允许选择范围外的内容。</li>
             <li>当外层分类范围为「全部」或选择多个具体分类时，内容选择弹窗展示分类筛选；当外层仅选择一个具体分类时，隐藏分类筛选。</li>
             <li>内容选择弹窗分类筛选仅用于在当前内容类型和分类范围内缩小列表，不改变外层内容类型和分类范围。</li>
-            <li>选择多个内容类型时，内容选择弹窗分类筛选项展示内容类型前缀，避免同名分类混淆。</li>
             <li>内容选择弹窗支持按内容名称搜索。</li>
             <li>内容选择弹窗不展示「推荐状态」列。</li>
             <li>内容选择弹窗不展示「选择状态」列，是否可选通过复选框状态表达。</li>
-            <li>选择多个内容类型时，内容选择弹窗展示「类型」列。</li>
-            <li>选择多个内容类型时，右侧已选内容区域和管理弹窗展示「类型」列。</li>
+            <li>内容类型为单选时，内容选择弹窗不展示「类型」列。</li>
+            <li>右侧已选内容区域和管理弹窗可展示「类型」列，用于识别内容媒资类型。</li>
             <li>当前分类范围为「全部」或选择多个具体分类时，内容选择弹窗展示「分类」列；当前仅选择一个具体分类时隐藏「分类」列。</li>
             <li>内容选择弹窗顶部「当前范围」在选择 1-2 个具体分类时展示分类名称，选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
             <li>选择 3 个及以上具体分类时，内容选择弹窗支持展开查看全部分类标签，并支持收起。</li>
-            <li>内容选择弹窗显示已选数量和最大可选数量。</li>
-            <li>运营指定内容最多支持选择 50 条，数量上限按全部已选内容合计计算，不按内容类型或分类分别计算。</li>
+            <li>内容选择弹窗显示已选数量、最小可选数量和最大可选数量。</li>
+            <li>运营指定内容最少支持选择 10 条，最多支持选择 50 条，数量上下限按全部已选内容合计计算，不按内容类型或分类分别计算。</li>
+            <li>少于 10 条时，内容选择弹窗「确认选择」按钮置灰不可提交；保存运营指定配置时也需校验数量不低于 10 条。</li>
             <li>达到 50 条后，不允许继续勾选新增内容。</li>
             <li>达到 50 条后，添加入口可展示为「调整内容」，用于进入弹窗取消已选内容。</li>
             <li>达到 50 条后，仍允许进入内容选择弹窗取消已选内容；取消后可继续选择新内容。</li>
@@ -2087,7 +2088,7 @@
             <li>添加内容时，系统自动分配未占用的排序值，优先分配当前可用的最大排序值。</li>
             <li>展示内容来源为「运营指定」时，排序值为空、非整数、超出范围或重复，系统提示错误并禁止保存。</li>
             <li>展示内容来源为「自动选择」时，运营指定内容不生效，隐藏的排序错误不影响保存。</li>
-            <li>自动选择时，如选择多个内容类型或多个分类，系统需将当前内容范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
+            <li>自动选择时，如选择多个分类，系统需将当前内容范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
             <li>运营指定内容仅影响首页热门推荐模块中的展示内容选择与展示优先级，不回写、不修改搜推引擎默认推荐结果。</li>
             <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，可由当前内容类型和分类范围内的搜推引擎默认推荐内容补足。</li>
             <li>首页前端点击「换一批」时，优先继续展示未展示过的运营指定内容；运营指定内容消耗完后展示首页热门推荐默认内容的后续分页数据。</li>
@@ -2228,7 +2229,7 @@
             <li>适用于菜单类型为「展示媒体内容」的菜单。</li>
             <li>媒体内容包括：长视频、短视频、漫画、帖子、小说。</li>
             <li>菜单类型为「AI工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
-            <li>不适用于首页固定功能模块；首页热门推荐仍按「首页热门推荐配置」规则执行，包括 50 条运营指定上限。</li>
+            <li>不适用于首页固定功能模块；首页热门推荐仍按「首页热门推荐配置」规则执行，包括 10-50 条运营指定数量限制。</li>
           </ol>
         </section>
 
@@ -2248,7 +2249,7 @@
               </tr>
               <tr>
                 <td>运营指定</td>
-                <td>运营可从当前菜单实际内容范围内选择已上架内容作为展示位优先内容，最多 50 条。</td>
+                <td>运营可从当前菜单实际内容范围内选择已上架内容作为展示位优先内容，最少 10 条，最多 50 条。</td>
               </tr>
               <tr>
                 <td>当前菜单实际内容范围</td>
@@ -2274,7 +2275,8 @@
             <li>点击「添加内容」打开内容选择弹窗。</li>
             <li>弹窗仅展示当前菜单实际内容范围内已上架的内容。</li>
             <li>普通菜单内容选择弹窗不展示「全部分类」筛选，避免运营误以为可跨当前菜单范围切换分类；内容范围以当前菜单实际内容范围为准。</li>
-            <li>运营指定内容最多 50 条，数量上限按当前菜单合计计算。</li>
+            <li>运营指定内容最少 10 条、最多 50 条，数量上下限按当前菜单合计计算。</li>
+            <li>少于 10 条时，内容选择弹窗「确认选择」按钮置灰不可提交；保存运营指定配置时也需校验数量不低于 10 条。</li>
             <li>达到 50 条后，不允许继续新增，但允许移除已选内容后继续添加。</li>
             <li>运营指定内容支持排序，排序值在当前菜单内唯一。</li>
             <li>排序值不限定在 0-10；只要是有效数值且在当前菜单内不重复即可。</li>
@@ -2358,7 +2360,7 @@
           <h3>十、保存校验</h3>
           <ol>
             <li>菜单类型为「展示媒体内容」时，保存展示位内容设置、运营指定内容、排序值和内容列表样式。</li>
-            <li>展示位内容设置为「运营指定」时，校验运营指定内容数量不超过 50 条。</li>
+            <li>展示位内容设置为「运营指定」时，校验运营指定内容数量不少于 10 条且不超过 50 条。</li>
             <li>展示位内容设置为「运营指定」时，校验排序值在当前菜单内唯一。</li>
             <li>展示位内容设置为「运营指定」时，校验已选内容仍属于当前菜单实际内容范围。</li>
             <li>菜单类型仍为「展示媒体内容」且展示位内容设置为「自动选择」时，运营指定内容可在当前编辑页暂存但不生效，隐藏排序错误不阻止保存。</li>
@@ -2384,7 +2386,7 @@
             <li>选择「自动选择」时，不展示运营指定内容配置区；前台按当前菜单默认内容展示。</li>
             <li>选择「运营指定」时，展示运营指定内容配置区和添加内容入口。</li>
             <li>运营指定内容只能选择当前菜单实际内容范围内已上架、可见的内容。</li>
-            <li>运营指定内容最多支持 50 条。</li>
+            <li>运营指定内容最少支持 10 条，最多支持 50 条。</li>
             <li>达到 50 条后，不允许继续新增运营指定内容；移除已选内容后可继续新增。</li>
             <li>运营指定内容排序值在当前菜单内唯一，数值越大越靠前。</li>
             <li>排序值不限制为 0-10。</li>
@@ -2422,8 +2424,8 @@
 
           <h4>11.6 范围隔离</h4>
           <ol>
-            <li>普通菜单展示配置不影响首页热门推荐配置；首页热门推荐按 50 条运营指定上限执行。</li>
-            <li>普通菜单运营指定内容上限为 50 条，与首页热门推荐的 50 条上限相互独立，分别按各自模块计算。</li>
+            <li>普通菜单展示配置不影响首页热门推荐配置；首页热门推荐按 10-50 条运营指定数量限制执行。</li>
+            <li>普通菜单运营指定内容数量限制为 10-50 条，与首页热门推荐的 10-50 条限制相互独立，分别按各自模块计算。</li>
             <li>普通菜单的内容列表样式配置不影响首页热门推荐模块，首页热门推荐仍由首页模板决定展示位置和样式。</li>
           </ol>
         </section>
@@ -2472,7 +2474,7 @@
     const contentTypeSelect = document.getElementById('contentTypeSelect');
     const contentTypeTrigger = document.getElementById('contentTypeTrigger');
     const contentTypeMenu = document.getElementById('contentTypeMenu');
-    const contentTypeInputs = [...contentTypeMenu.querySelectorAll('input[type="checkbox"]')];
+    const contentTypeInputs = [...contentTypeMenu.querySelectorAll('input[type="radio"]')];
     const hotCategorySelect = document.getElementById('hotCategorySelect');
     const hotCategoryTrigger = document.getElementById('hotCategoryTrigger');
     const hotCategoryMenu = document.getElementById('hotCategoryMenu');
@@ -2539,6 +2541,7 @@
     const modalTip = document.getElementById('contentModalTip');
     let previousNormalContentType = normalContentType.value;
     let activeManualContext = 'home';
+    const MIN_SELECTED = 10;
     const MAX_SELECTED = 50;
     const SUMMARY_LIMIT = 3;
     const currentMenuKey = 'home';
@@ -2844,7 +2847,7 @@
     }
 
     function setSelectedContentTypes(types) {
-      const nextTypes = types.length ? types : ['视频'];
+      const nextTypes = [types[0] || '视频'];
       contentTypeInputs.forEach((input) => {
         input.checked = nextTypes.includes(input.value);
       });
@@ -3104,6 +3107,7 @@
         previousHotCategories = ['全部'];
         previousContentTypes = [...nextTypes];
         pruneSelectedContentByCategories(['全部'], nextTypes);
+        contentTypeSelect.classList.remove('open');
       });
     });
 
@@ -3152,8 +3156,8 @@
       manageWrap.style.display = 'none';
       confirmVideos.style.display = 'inline-block';
       modalTip.textContent = context === 'normal'
-        ? '仅展示当前菜单实际内容范围内已上架的内容；确认后加入运营指定内容。'
-        : '仅展示设为推荐且已上架的内容；确认后加入运营指定内容。';
+        ? `仅展示当前菜单实际内容范围内已上架的内容；至少选择 ${MIN_SELECTED} 条，最多选择 ${MAX_SELECTED} 条，确认后加入运营指定内容。`
+        : `仅展示设为推荐且已上架的内容；至少选择 ${MIN_SELECTED} 条，最多选择 ${MAX_SELECTED} 条，确认后加入运营指定内容。`;
       modalSelectedNames = new Set(getSelectedNames(context));
       scopeDetailExpanded = false;
       videoCategoryFilter.value = '__all__';
@@ -3176,7 +3180,7 @@
       manageWrap.style.display = 'block';
       confirmVideos.style.display = 'none';
       limitTip.classList.remove('show');
-      modalTip.textContent = '最多支持 50 条；可在此查看全部已选内容、调整排序或移除内容。排序数值越大越靠前。';
+      modalTip.textContent = `需满足 ${MIN_SELECTED}-${MAX_SELECTED} 条；可在此查看全部已选内容、调整排序或移除内容。排序数值越大越靠前。`;
       renderManageRows(context);
       contentModal.classList.add('open');
       contentModal.setAttribute('aria-hidden', 'false');
@@ -3459,10 +3463,15 @@
     function updateModalSelectionStatus() {
       const total = modalSelectedNames.size;
       const remain = Math.max(MAX_SELECTED - total, 0);
+      const missingMin = Math.max(MIN_SELECTED - total, 0);
       modalSelectedCount.textContent = total;
       modalMaxCount.textContent = MAX_SELECTED;
-      modalRemainCount.textContent = remain > 0 ? `本次还可选择 ${remain} 条` : '已达到选择上限';
-      limitTip.classList.toggle('show', remain === 0);
+      modalRemainCount.textContent = missingMin > 0 ? `至少还需选择 ${missingMin} 条` : (remain > 0 ? `本次还可选择 ${remain} 条` : '已达到选择上限');
+      limitTip.textContent = missingMin > 0
+        ? `至少选择 ${MIN_SELECTED} 条运营指定内容，当前还差 ${missingMin} 条。`
+        : `最多可选择 ${MAX_SELECTED} 条运营指定内容，移除后可继续添加。`;
+      limitTip.classList.toggle('show', missingMin > 0 || remain === 0);
+      confirmVideos.disabled = missingMin > 0;
 
       const reached = total >= MAX_SELECTED;
       videoRows.querySelectorAll('input[type="checkbox"]').forEach((input) => {
