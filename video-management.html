@@ -2128,7 +2128,7 @@
             <option>WX2-01</option>
           </select>
         </div>
-        <div class="menu-scope-note"><strong>规则说明：</strong>菜单只表示内容展示位置；单条内容最多关联 50 个菜单。内容是否展示由内容状态统一控制。点击“关联并上架”会将内容整体状态更新为已上架，并在所有已关联菜单下展示。</div>
+        <div class="menu-scope-note" id="menuRuleNote"><strong>规则说明：</strong>菜单只表示内容展示位置；单条内容最多关联 50 个菜单。内容是否展示由内容状态统一控制。</div>
 
         <div class="menu-modal-divider"></div>
 
@@ -2272,7 +2272,7 @@
 
         <div class="bulk-form-row">
           <div class="bulk-form-label">规则说明</div>
-          <div class="menu-scope-note bulk-rule-note" id="bulkRuleNote"><strong>批量规则：</strong>内容数量最大值为 1000；单条内容最多关联 50 个菜单；已上架内容只需关联到菜单，未上架内容可选择“仅关联”或“关联并上架”。</div>
+          <div class="menu-scope-note bulk-rule-note" id="bulkRuleNote"><strong>批量规则：</strong>内容数量最大值为 1000；单条内容最多关联 50 个菜单；全部未上架时可选择“仅关联”或“关联并上架”。</div>
         </div>
 
         <div class="bulk-form-row target-menu-row">
@@ -2562,8 +2562,9 @@
           <h4>6.4 多选规则</h4>
           <ol>
             <li>多选内容时，操作会应用到所有已选内容。</li>
-            <li>如果选中内容里存在未上架内容，未关联末级菜单展示“仅关联 / 关联并上架”。</li>
             <li>如果选中内容全部已上架，未关联末级菜单只展示“关联到菜单”。</li>
+            <li>如果选中内容全部未上架，未关联末级菜单展示“仅关联 / 关联并上架”。</li>
+            <li>如果选中内容同时包含已上架和未上架，未关联末级菜单只展示“关联到菜单”。</li>
             <li>点击 <code>仅关联</code> 时，所有已选内容新增菜单关联，内容状态保持原状。</li>
             <li>点击 <code>关联并上架</code> 时，所有已选内容新增菜单关联，并统一更新为已上架。</li>
             <li>点击 <code>取消关联</code> 时，所有已选内容删除该菜单关联，内容状态保持原状。</li>
@@ -2695,7 +2696,7 @@
               </div>
             </div>
           </div>
-          <p class="prd-note">多选内容时，如果选中内容里存在未上架内容，则未关联菜单展示“仅关联 / 关联并上架”。点击“关联并上架”会将所有选中内容整体更新为已上架。</p>
+          <p class="prd-note">多选内容时，只有“全部未上架”才展示“仅关联 / 关联并上架”；如果同时包含已上架和未上架，则只展示“关联到菜单”，不改变内容状态。</p>
 
           <h3 id="prd-page">8. 页面需求</h3>
           <h4>8.1 视频列表 - 关联菜单字段</h4>
@@ -2719,7 +2720,7 @@
           </ul>
 
           <h4>8.4 设置菜单弹窗</h4>
-          <p class="prd-note">设置菜单弹窗按菜单树展示。父级菜单显示“无法关联”；未上架内容的未关联末级菜单显示“仅关联 / 关联并上架”；只有“内容已上架 + 当前菜单未关联”时，才显示“关联到菜单”。</p>
+          <p class="prd-note">设置菜单弹窗按菜单树展示。父级菜单显示“无法关联”；全部未上架时展示“仅关联 / 关联并上架”；全部已上架或混合状态时展示“关联到菜单”。</p>
           <table>
             <thead>
               <tr><th>菜单场景</th><th>操作展示</th></tr>
@@ -2727,8 +2728,9 @@
             <tbody>
               <tr><td>不可关联父级菜单</td><td>无法关联</td></tr>
               <tr><td>已达到 50 个菜单上限</td><td>已达上限</td></tr>
-              <tr><td>未关联末级菜单，内容未上架</td><td>仅关联 / 关联并上架</td></tr>
-              <tr><td>内容已上架 + 当前菜单未关联</td><td>关联到菜单</td></tr>
+              <tr><td>已选内容全部未上架</td><td>仅关联 / 关联并上架</td></tr>
+              <tr><td>已选内容全部已上架</td><td>关联到菜单</td></tr>
+              <tr><td>已选内容包含已上架和未上架</td><td>关联到菜单</td></tr>
               <tr><td>已关联末级菜单</td><td>已关联 / 取消关联</td></tr>
             </tbody>
           </table>
@@ -2746,7 +2748,8 @@
             <li>弹窗规则说明需要展示：单条内容最多关联 50 个菜单。</li>
             <li>弹窗规则说明需要展示当前已选内容的上架状态判断，说明为什么展示“关联到菜单”或“仅关联 / 关联并上架”。</li>
             <li>如果已选内容全部已上架，未关联末级菜单只展示“关联到菜单”。</li>
-            <li>如果已选内容里存在未上架内容，或未明确选择内容，末级菜单保留“仅关联 / 关联并上架”。</li>
+            <li>如果已选内容全部未上架，或未明确选择内容，末级菜单保留“仅关联 / 关联并上架”。</li>
+            <li>如果已选内容同时包含已上架和未上架，末级菜单只展示“关联到菜单”。</li>
             <li>点击“仅关联”表示只新增菜单关联，不改变内容状态。</li>
             <li>点击“关联并上架”表示新增菜单关联，并将命中的内容整体状态更新为已上架。</li>
             <li>弹窗内需要展示批量规则说明，避免用户误认为“关联并上架”是菜单维度状态。</li>
@@ -2790,8 +2793,9 @@
             <li>弹窗菜单按层级树展示。</li>
             <li>父级菜单显示“无法关联”。</li>
             <li>单条内容已关联 50 个菜单时，未关联末级菜单显示“已达上限”，不可继续关联。</li>
-            <li>未上架内容的未关联末级菜单显示“仅关联”和“关联并上架”。</li>
-            <li>只有“内容已上架 + 当前菜单未关联”时，未关联末级菜单才显示“关联到菜单”。</li>
+            <li>全部未上架时，未关联末级菜单显示“仅关联”和“关联并上架”。</li>
+            <li>全部已上架时，未关联末级菜单显示“关联到菜单”。</li>
+            <li>混合状态时，未关联末级菜单只显示“关联到菜单”。</li>
             <li>已关联菜单展示“已关联”和“取消关联”。</li>
             <li>批量绑定菜单弹窗需要展示当前已选内容状态判断，避免用户误以为按钮没有更新。</li>
           </ul>
@@ -2802,7 +2806,8 @@
             <li>点击“关联并上架”后，列表字段新增对应菜单，并将内容状态更新为已上架。</li>
             <li>点击“取消关联”后，列表字段移除对应菜单。</li>
             <li>多选内容时，操作对所有已选内容生效。</li>
-            <li>多选内容包含未上架内容时，设置菜单弹窗展示“仅关联 / 关联并上架”。</li>
+            <li>多选内容全部未上架时，设置菜单弹窗展示“仅关联 / 关联并上架”。</li>
+            <li>多选内容同时包含已上架和未上架时，设置菜单弹窗只展示“关联到菜单”。</li>
             <li>“关联并上架”后，该内容在所有已关联菜单下展示。</li>
             <li>内容已上架但无关联菜单时，内容状态保持已上架，但前台无菜单入口展示。</li>
           </ul>
@@ -2820,6 +2825,7 @@
     const modalMask = document.getElementById("modalMask");
     const modalText = document.getElementById("modalText");
     const menuModalMask = document.getElementById("menuModalMask");
+    const menuRuleNote = document.getElementById("menuRuleNote");
     const bulkBindModalMask = document.getElementById("bulkBindModalMask");
     const bulkContentCount = document.getElementById("bulkContentCount");
     const bulkRuleNote = document.getElementById("bulkRuleNote");
@@ -2933,7 +2939,7 @@
 
     function selectedRowsNeedPublishAction() {
       const rows = selectedRows();
-      return rows.length === 0 || rows.some((row) => !isRowPublished(row));
+      return rows.length === 0 || rows.every((row) => !isRowPublished(row));
     }
 
     function selectedRowsStatusSummary() {
@@ -2958,7 +2964,29 @@
         bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，均为已上架；单条内容最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单；未关联菜单只展示“关联到菜单”。";
         return;
       }
-      bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，其中 " + summary.unpublishedCount + " 条未上架；单条内容最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单；未关联菜单展示“仅关联 / 关联并上架”。";
+      if (summary.publishedCount === 0) {
+        bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，均为未上架；单条内容最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单；未关联菜单展示“仅关联 / 关联并上架”。";
+        return;
+      }
+      bulkRuleNote.innerHTML = "<strong>批量规则：</strong>当前已选 " + summary.total + " 条内容，包含已上架和未上架；本次仅关联菜单，不改变内容状态。";
+    }
+
+    function syncMenuRuleNote() {
+      if (!menuRuleNote) return;
+      const summary = selectedRowsStatusSummary();
+      if (summary.total === 0) {
+        menuRuleNote.innerHTML = "<strong>规则说明：</strong>菜单只表示内容展示位置；单条内容最多关联 " + MAX_ASSOCIATED_MENUS + " 个菜单。";
+        return;
+      }
+      if (summary.unpublishedCount === 0) {
+        menuRuleNote.innerHTML = "<strong>规则说明：</strong>当前已选 " + summary.total + " 条内容，均为已上架；未关联菜单只展示“关联到菜单”。";
+        return;
+      }
+      if (summary.publishedCount === 0) {
+        menuRuleNote.innerHTML = "<strong>规则说明：</strong>当前已选 " + summary.total + " 条内容，均为未上架；未关联菜单展示“仅关联 / 关联并上架”。";
+        return;
+      }
+      menuRuleNote.innerHTML = "<strong>规则说明：</strong>当前已选 " + summary.total + " 条内容，包含已上架和未上架；本次仅关联菜单，不改变内容状态。";
     }
 
     function ensureRowStore(row) {
@@ -3158,6 +3186,7 @@
       const firstSelectedRow = selectedRows()[0];
       const selectedDetail = firstSelectedRow ? ensureRowStore(firstSelectedRow) : null;
       const shouldShowPublishAction = selectedRowsNeedPublishAction();
+      syncMenuRuleNote();
 
       document.querySelectorAll(".menu-action-buttons[data-menu-path]").forEach((container) => {
         const current = selectedDetail?.menus.find((item) => item.path === container.dataset.menuPath);
