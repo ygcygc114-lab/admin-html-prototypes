@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>万象管理后台 - 商户角色管理</title>
+    <style>
+      :root {
+        --bg: #f6f8fb;
+        --surface: #ffffff;
+        --line: #e3e8f0;
+        --line-strong: #d9e1ec;
+        --text: #3f4652;
+        --text-strong: #1f2329;
+        --muted: #8f98a8;
+        --blue: #409eff;
+        --blue-hover: #2f8df0;
+        --green: #67c23a;
+        --green-bg: #f0f9eb;
+        --orange: #e6a23c;
+        --red: #f56c6c;
+        --shadow: 0 1px 2px rgba(20, 35, 60, 0.03);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 1180px;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .topbar {
+        position: relative;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 34px 0 18px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .topbar h1 {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        color: #111827;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      .icon-only {
+        width: 24px;
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        background: transparent;
+        color: #334155;
+        padding: 0;
+      }
+
+      .account-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 0;
+        background: transparent;
+        color: #4b5563;
+        font-size: 15px;
+        padding: 4px 0;
+      }
+
+      .workspace {
+        padding: 46px;
+      }
+
+      .filter-panel,
+      .table-panel {
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: 3px;
+      }
+
+      .filter-panel {
+        min-height: 92px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 20px;
+      }
+
+      .filters {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 22px 32px;
+      }
+
+      .field {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: #5f6673;
+        font-size: 14px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .field > span {
+        flex: 0 0 auto;
+      }
+
+      .field input,
+      .field select,
+      .select-wrap,
+      .date-range {
+        height: 32px;
+      }
+
+      .field input,
+      .select-wrap,
+      .date-range {
+        border: 1px solid #d8dee9;
+        border-radius: 4px;
+        background: #fff;
+      }
+
+      .field input {
+        width: 172px;
+        padding: 0 12px;
+        color: var(--text);
+        outline: none;
+      }
+
+      .field input::placeholder {
+        color: #a7afbc;
+      }
+
+      .field input:focus,
+      .select-wrap:focus-within,
+      .date-range:focus-within {
+        border-color: var(--blue);
+      }
+
+      .select-wrap {
+        position: relative;
+        width: 200px;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .select-wrap select {
+        width: 100%;
+        height: 100%;
+        padding: 0 34px 0 12px;
+        border: 0;
+        outline: none;
+        appearance: none;
+        background: transparent;
+        color: #798292;
+      }
+
+      .select-wrap svg {
+        position: absolute;
+        right: 10px;
+        color: #b2bac8;
+        pointer-events: none;
+      }
+
+      .field-wide .date-range {
+        width: 350px;
+      }
+
+      .date-range {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 8px;
+        color: #8d96a5;
+      }
+
+      .date-range svg {
+        flex: 0 0 auto;
+        color: #a6afbe;
+      }
+
+      .date-range input {
+        width: 136px;
+        border: 0;
+        padding: 0 9px;
+        color: #7a8392;
+      }
+
+      .date-range span {
+        color: #5f6673;
+        font-weight: 600;
+      }
+
+      .filter-actions {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+      }
+
+      .primary,
+      .ghost,
+      .mini,
+      .page-size,
+      .pager,
+      .page-active {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 3px;
+        height: 32px;
+        border: 1px solid transparent;
+        white-space: nowrap;
+      }
+
+      .primary {
+        background: var(--blue);
+        color: #fff;
+        border-color: var(--blue);
+        padding: 0 15px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .primary:hover {
+        background: var(--blue-hover);
+        border-color: var(--blue-hover);
+      }
+
+      .ghost {
+        background: #fff;
+        color: #5f6673;
+        border-color: #d8dee9;
+        padding: 0 15px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .table-panel {
+        margin-top: 20px;
+        padding: 20px;
+      }
+
+      .toolbar {
+        height: 32px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .add-button {
+        height: 32px;
+        min-width: 80px;
+      }
+
+      .table-wrap {
+        overflow-x: hidden;
+      }
+
+      table {
+        width: 100%;
+        min-width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        border: 1px solid var(--line);
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      th:last-child,
+      td:last-child {
+        border-right: 0;
+      }
+
+      thead th {
+        height: 38px;
+        padding: 0 12px;
+        background: #fff;
+        color: #858d9b;
+        font-weight: 700;
+      }
+
+      tbody td {
+        height: 86px;
+        padding: 12px;
+        color: #4f5662;
+        line-height: 1.55;
+      }
+
+      th:nth-child(1) { width: 110px; }
+      th:nth-child(2) { width: 100px; }
+      th:nth-child(3) { width: 240px; }
+      th:nth-child(4) { width: 210px; }
+      th:nth-child(5) { width: 100px; }
+      th:nth-child(6) { width: 150px; }
+      th:nth-child(7) { width: 180px; }
+
+      .id-cell {
+        white-space: pre-line;
+        word-break: normal;
+        overflow-wrap: break-word;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 9px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      .status-ok {
+        color: var(--green);
+        background: var(--green-bg);
+        border: 1px solid #e1f3d8;
+      }
+
+      .status-disabled {
+        color: var(--orange);
+        background: #fdf6ec;
+        border: 1px solid #faecd8;
+      }
+
+      .row-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .mini {
+        height: 24px;
+        min-width: 46px;
+        color: #fff;
+        border: 0;
+        padding: 0 9px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .edit { background: var(--blue); }
+      .disable { background: var(--orange); }
+      .delete { background: var(--red); }
+
+      .empty {
+        height: 150px;
+        text-align: center;
+        color: #98a1af;
+      }
+
+      .pagination {
+        height: 52px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        gap: 12px;
+        color: #4f5662;
+        font-size: 14px;
+      }
+
+      .page-size {
+        width: 128px;
+        border-color: #d8dee9;
+        background: #fff;
+        color: #4f5662;
+      }
+
+      .pager {
+        width: 26px;
+        border: 0;
+        background: transparent;
+        color: #c1c8d3;
+      }
+
+      .page-active {
+        width: 28px;
+        border: 0;
+        background: transparent;
+        color: var(--blue);
+      }
+
+      .pagination input {
+        width: 56px;
+        height: 32px;
+        text-align: center;
+        border: 1px solid #d8dee9;
+        border-radius: 3px;
+        color: #4f5662;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        place-items: center;
+        background: rgba(16, 24, 40, 0.34);
+        z-index: 20;
+      }
+
+      .modal-backdrop.is-open {
+        display: grid;
+      }
+
+      .dialog {
+        width: 420px;
+        background: #fff;
+        border-radius: 4px;
+        box-shadow: 0 20px 45px rgba(16, 24, 40, 0.18);
+      }
+
+      .dialog header,
+      .dialog footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .dialog footer {
+        border-top: 1px solid var(--line);
+        border-bottom: 0;
+        justify-content: flex-end;
+        gap: 12px;
+      }
+
+      .dialog h2 {
+        margin: 0;
+        color: var(--text-strong);
+        font-size: 16px;
+      }
+
+      .dialog header button {
+        width: 28px;
+        height: 28px;
+        border: 0;
+        background: transparent;
+        color: #8f98a8;
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .dialog-body {
+        display: grid;
+        gap: 18px;
+        padding: 22px 20px;
+      }
+
+      .dialog-body .field {
+        justify-content: space-between;
+      }
+
+      @media (max-width: 900px) {
+        body { min-width: 0; }
+        .workspace { padding: 18px 14px; }
+        .topbar { padding: 0 14px; }
+        .topbar h1 { font-size: 16px; }
+        .account-button { font-size: 13px; }
+        .filter-panel {
+          flex-direction: column;
+          padding: 16px;
+        }
+        .filters,
+        .field,
+        .select-wrap,
+        .field input,
+        .field-wide .date-range {
+          width: 100%;
+        }
+        .field { justify-content: space-between; }
+        .filter-actions {
+          width: 100%;
+          justify-content: flex-end;
+        }
+        .pagination {
+          overflow-x: auto;
+          justify-content: flex-start;
+        }
+        .table-wrap { overflow-x: auto; }
+        table { min-width: 1060px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="topbar">
+        <button class="icon-only" aria-label="菜单">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M2 14h4"></path><path d="M10 8h4"></path><path d="M18 16h4"></path></svg>
+        </button>
+        <h1>商户角色管理</h1>
+        <button class="account-button">超级管理员 <span>⌄</span></button>
+      </header>
+
+      <section class="workspace">
+        <div class="filter-panel">
+          <div class="filters">
+            <label class="field">
+              <span>商户名称</span>
+              <span class="select-wrap">
+                <select id="merchantFilter">
+                  <option>全部</option>
+                  <option>商户A</option>
+                  <option>商户B</option>
+                </select>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+              </span>
+            </label>
+            <label class="field">
+              <span>岗位名称</span>
+              <input id="keywordFilter" placeholder="请输入岗位名称" />
+            </label>
+            <label class="field">
+              <span>状态</span>
+              <span class="select-wrap">
+                <select id="statusFilter">
+                  <option>全部</option>
+                  <option>正常</option>
+                  <option>禁用</option>
+                </select>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+              </span>
+            </label>
+            <label class="field field-wide">
+              <span>创建时间</span>
+              <span class="date-range">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M3 10h18"></path></svg>
+                <input id="startFilter" placeholder="开始时间" />
+                <span>-</span>
+                <input id="endFilter" placeholder="结束时间" />
+              </span>
+            </label>
+          </div>
+          <div class="filter-actions">
+            <button class="primary" id="queryButton">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
+              查询
+            </button>
+            <button class="ghost" id="resetButton">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.1 6.6"></path><path d="M3 12A9 9 0 0 1 18.1 5.4"></path><path d="M6 18H2v4"></path><path d="M18 6h4V2"></path></svg>
+              重置
+            </button>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="toolbar">
+            <button class="primary add-button" id="addButton">＋ 新增</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>商户</th>
+                  <th>岗位名称</th>
+                  <th>创建时间</th>
+                  <th>状态</th>
+                  <th>操作员</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="roleTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <span id="totalText">共 3 条</span>
+            <button class="page-size">10条/页 <span>⌄</span></button>
+            <button class="pager" aria-label="上一页">‹</button>
+            <button class="page-active">1</button>
+            <button class="pager" aria-label="下一页">›</button>
+            <span>前往</span>
+            <input value="1" readonly aria-label="页码" />
+            <span>页</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-backdrop" id="modalBackdrop">
+      <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+        <header>
+          <h2 id="dialogTitle">新增商户角色</h2>
+          <button id="closeDialog" aria-label="关闭">×</button>
+        </header>
+        <div class="dialog-body">
+          <label class="field">
+            <span>商户名称</span>
+            <span class="select-wrap">
+              <select>
+                <option>商户A</option>
+                <option>商户B</option>
+              </select>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+            </span>
+          </label>
+          <label class="field">
+            <span>岗位名称</span>
+            <input placeholder="请输入岗位名称" />
+          </label>
+          <label class="field">
+            <span>状态</span>
+            <span class="select-wrap">
+              <select>
+                <option>正常</option>
+                <option>禁用</option>
+              </select>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+            </span>
+          </label>
+        </div>
+        <footer>
+          <button class="ghost dialog-close">取消</button>
+          <button class="primary dialog-close">确认</button>
+        </footer>
+      </section>
+    </div>
+
+    <script>
+      const roles = [
+        {
+          id: '69e8817d8\n0b09fc9ab\n79cc0a',
+          merchant: '商户A',
+          name: '测试2',
+          createdAt: '2026-04-22 16:06:21',
+          status: '正常',
+          operator: '-',
+        },
+        {
+          id: '69e6e099b\n20f20d442\nf25e46',
+          merchant: '商户B',
+          name: 'T系列模板-前端角色',
+          createdAt: '2026-04-21 10:27:37',
+          status: '正常',
+          operator: '-',
+        },
+        {
+          id: '69d86531a\nd47aa4dc2\n0347ac',
+          merchant: '商户A',
+          name: '组长',
+          createdAt: '2026-04-10 10:49:21',
+          status: '正常',
+          operator: '-',
+        },
+      ];
+
+      const tableBody = document.querySelector('#roleTableBody');
+      const totalText = document.querySelector('#totalText');
+      const merchantFilter = document.querySelector('#merchantFilter');
+      const keywordFilter = document.querySelector('#keywordFilter');
+      const statusFilter = document.querySelector('#statusFilter');
+      const startFilter = document.querySelector('#startFilter');
+      const endFilter = document.querySelector('#endFilter');
+      const modalBackdrop = document.querySelector('#modalBackdrop');
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+
+      function renderTable(list) {
+        totalText.textContent = `共 ${list.length} 条`;
+        if (!list.length) {
+          tableBody.innerHTML = '<tr><td class="empty" colspan="7">暂无匹配数据</td></tr>';
+          return;
+        }
+        tableBody.innerHTML = list.map((role) => `
+          <tr>
+            <td class="id-cell">${escapeHtml(role.id)}</td>
+            <td>${escapeHtml(role.merchant)}</td>
+            <td>${escapeHtml(role.name)}</td>
+            <td>${escapeHtml(role.createdAt)}</td>
+            <td><span class="status status-ok">${escapeHtml(role.status)}</span></td>
+            <td>${escapeHtml(role.operator)}</td>
+            <td>
+              <div class="row-actions">
+                <button class="mini edit">编辑</button>
+                <button class="mini disable">禁用</button>
+                <button class="mini delete">删除</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      function queryRoles() {
+        const merchant = merchantFilter.value;
+        const keyword = keywordFilter.value.trim();
+        const status = statusFilter.value;
+        const start = startFilter.value.trim();
+        const end = endFilter.value.trim();
+        const result = roles.filter((role) => {
+          const matchesMerchant = merchant === '全部' || role.merchant === merchant;
+          const matchesKeyword = !keyword || role.name.includes(keyword);
+          const matchesStatus = status === '全部' || role.status === status;
+          const date = role.createdAt.slice(0, 10);
+          const matchesStart = !start || date >= start;
+          const matchesEnd = !end || date <= end;
+          return matchesMerchant && matchesKeyword && matchesStatus && matchesStart && matchesEnd;
+        });
+        renderTable(result);
+      }
+
+      document.querySelector('#queryButton').addEventListener('click', queryRoles);
+      document.querySelector('#resetButton').addEventListener('click', () => {
+        merchantFilter.value = '全部';
+        keywordFilter.value = '';
+        statusFilter.value = '全部';
+        startFilter.value = '';
+        endFilter.value = '';
+        renderTable(roles);
+      });
+      document.querySelector('#addButton').addEventListener('click', () => {
+        modalBackdrop.classList.add('is-open');
+      });
+      document.querySelector('#closeDialog').addEventListener('click', () => {
+        modalBackdrop.classList.remove('is-open');
+      });
+      document.querySelectorAll('.dialog-close').forEach((button) => {
+        button.addEventListener('click', () => modalBackdrop.classList.remove('is-open'));
+      });
+      modalBackdrop.addEventListener('click', (event) => {
+        if (event.target === modalBackdrop) {
+          modalBackdrop.classList.remove('is-open');
+        }
+      });
+
+      renderTable(roles);
+    </script>
+  </body>
+</html>
