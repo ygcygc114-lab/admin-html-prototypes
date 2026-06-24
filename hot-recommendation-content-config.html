@@ -1704,7 +1704,7 @@
                   <label><input type="radio" name="coverStyle" value="horizontal" /> 横图 16:9</label>
                   <label><input type="radio" name="coverStyle" value="vertical" /> 竖图 3:4</label>
                 </div>
-                <div class="field-hint" id="coverStyleHint">自动适配：长视频 16:9；短视频、漫画、小说 3:4；帖子由前端模板决定。手动选择横图或竖图时，前端按用户选择展示。</div>
+                <div class="field-hint" id="coverStyleHint">自动适配：长视频 16:9；短视频、漫画、小说 3:4。手动选择横图或竖图时，前端按用户选择展示。</div>
               </div>
             </div>
 
@@ -2205,7 +2205,7 @@
 
         <section class="prd-section">
           <h3>一、需求背景</h3>
-          <p>平台菜单支持配置不同层级和不同内容类型。除首页固定模块外，普通菜单也需要控制展示位内容来源和内容列表封面样式，以满足长视频、短视频、漫画、帖子、小说等不同内容在前台的展示差异。</p>
+          <p>平台菜单支持配置不同层级和不同内容类型。除首页固定模块外，普通菜单也需要控制展示位内容来源；长视频、短视频、漫画、小说需要配置内容列表封面样式，帖子则由帖子模板决定展示样式。</p>
           <p>当前普通菜单只有基础信息、类型和内容选择，缺少对展示位优先内容、排序和列表封面比例的统一配置能力。</p>
         </section>
 
@@ -2213,7 +2213,7 @@
           <h3>二、需求目标</h3>
           <ol>
             <li>普通菜单支持配置「展示位内容设置」，可选择自动选择或运营指定。</li>
-            <li>普通菜单支持配置「内容列表样式」，可选择自动适配、横图 16:9、竖图 3:4。</li>
+            <li>普通菜单在内容类型为长视频、短视频、漫画、小说时支持配置「内容列表样式」，可选择自动适配、横图 16:9、竖图 3:4；内容类型为帖子时不展示该选项。</li>
             <li>「内容选择」和「排版和样式」仅在菜单类型为「展示媒体内容」时展示并生效；其他菜单类型不展示这两块配置。</li>
             <li>本规则仅作用于普通菜单，不影响首页固定功能模块中的热门推荐配置。</li>
             <li>运营指定内容支持排序，排序值在当前菜单内唯一，数值越大越靠前。</li>
@@ -2292,7 +2292,7 @@
             <li>当展示位内容设置为「运营指定」且已存在运营指定内容时，切换内容类型如会导致部分已选内容不在新范围内，系统需提示用户确认。</li>
             <li>用户确认切换后，系统切换到新内容类型，并移除不符合新范围的运营指定内容；仍符合新范围的内容继续保留。</li>
             <li>用户取消切换后，内容类型、展示位内容设置和已选运营指定内容保持原值。</li>
-            <li>帖子为特例：自动适配时展示样式由前端模板决定；用户手动选择横图 16:9 或竖图 3:4 时，仍按用户选择展示。切换到帖子时仍需遵循当前菜单实际内容范围和运营指定内容校验。</li>
+            <li>帖子为特例：内容类型切换为「帖子」时，隐藏「内容列表样式」选项；前台展示样式由帖子模板决定。切换到帖子时仍需遵循当前菜单实际内容范围和运营指定内容校验。</li>
           </ol>
         </section>
 
@@ -2341,7 +2341,7 @@
             <tbody>
               <tr>
                 <td>自动适配</td>
-                <td>系统按内容类型默认适配：长视频 16:9；短视频、漫画、小说 3:4；帖子在自动适配时由前端模板决定。</td>
+                <td>系统按内容类型默认适配：长视频 16:9；短视频、漫画、小说 3:4。内容类型为帖子时不展示内容列表样式选项，由帖子模板决定。</td>
               </tr>
               <tr>
                 <td>横图 16:9</td>
@@ -2353,13 +2353,13 @@
               </tr>
             </tbody>
           </table>
-          <div class="prd-note">手动选择横图 16:9 或竖图 3:4 时优先级高于自动适配，前端必须按用户选择展示，包括帖子内容。封面图展示不得拉伸变形；当图片原始比例与目标比例不一致时，前端使用等比填充并居中裁剪。</div>
+          <div class="prd-note">手动选择横图 16:9 或竖图 3:4 时优先级高于自动适配，前端必须按用户选择展示。该配置不适用于帖子内容；帖子内容前台样式由帖子模板决定。封面图展示不得拉伸变形；当图片原始比例与目标比例不一致时，前端使用等比填充并居中裁剪。</div>
         </section>
 
         <section class="prd-section">
           <h3>十、保存校验</h3>
           <ol>
-            <li>菜单类型为「展示媒体内容」时，保存展示位内容设置、运营指定内容、排序值和内容列表样式。</li>
+            <li>菜单类型为「展示媒体内容」时，保存展示位内容设置、运营指定内容和排序值；内容类型为长视频、短视频、漫画、小说时保存内容列表样式，内容类型为帖子时不保存、不校验内容列表样式。</li>
             <li>展示位内容设置为「运营指定」时，校验运营指定内容数量不少于 10 条且不超过 50 条。</li>
             <li>展示位内容设置为「运营指定」时，校验排序值在当前菜单内唯一。</li>
             <li>展示位内容设置为「运营指定」时，校验已选内容仍属于当前菜单实际内容范围。</li>
@@ -2410,15 +2410,15 @@
             <li>展示位内容设置为「自动选择」时，切换内容类型不触发确认。</li>
             <li>切换内容类型导致已选运营指定内容超出新范围时，系统提示确认。</li>
             <li>用户确认后，移除不符合新范围的内容；用户取消后，保留原内容类型和已选内容。</li>
-            <li>帖子内容切换时仍需遵循当前菜单实际内容范围和运营指定内容校验。</li>
+            <li>切换为帖子内容时，隐藏「内容列表样式」选项，并仍需遵循当前菜单实际内容范围和运营指定内容校验。</li>
           </ol>
 
           <h4>11.5 内容列表样式</h4>
           <ol>
-            <li>内容列表样式支持自动适配、横图 16:9、竖图 3:4。</li>
-            <li>自动适配时，长视频默认 16:9；短视频、漫画、小说默认 3:4；帖子由前端模板决定。</li>
+            <li>内容类型为长视频、短视频、漫画、小说时，内容列表样式支持自动适配、横图 16:9、竖图 3:4。</li>
+            <li>内容类型为帖子时，不展示内容列表样式选项。</li>
+            <li>自动适配时，长视频默认 16:9；短视频、漫画、小说默认 3:4。</li>
             <li>用户手动选择横图 16:9 或竖图 3:4 时，前台必须按用户选择展示，不得被内容类型强制覆盖。</li>
-            <li>用户手动选择横图 16:9 或竖图 3:4 时，帖子内容也必须按用户选择展示。</li>
             <li>前台封面图按目标比例等比填充并居中裁剪，不允许拉伸变形。</li>
           </ol>
 
@@ -2672,6 +2672,7 @@
     function syncCoverStyleOptions() {
       const isMediaContent = normalMenuType.value === '展示媒体内容';
       const isManualSlot = normalSlotSourceInputs.some((input) => input.checked && input.value === 'manual');
+      const isPostContent = normalContentType.value === '帖子';
       normalContentCard.classList.toggle('hidden', !isMediaContent);
       normalLayoutCard.classList.toggle('hidden', !isMediaContent);
       normalTypeHint.classList.toggle('hidden', isMediaContent);
@@ -2679,7 +2680,7 @@
       normalLayoutCard.hidden = !isMediaContent;
       slotSourceRow.classList.toggle('hidden', !isMediaContent);
       normalSlotManualCard.classList.toggle('hidden', !isMediaContent || !isManualSlot);
-      coverStyleRow.classList.toggle('hidden', !isMediaContent);
+      coverStyleRow.classList.toggle('hidden', !isMediaContent || isPostContent);
 
       if (!isMediaContent) {
         return;
@@ -2690,7 +2691,7 @@
         input.disabled = false;
       });
 
-      coverStyleHint.textContent = '自动适配：长视频 16:9；短视频、漫画、小说 3:4；帖子由前端模板决定。手动选择横图或竖图时，前端按用户选择展示。';
+      coverStyleHint.textContent = '自动适配：长视频 16:9；短视频、漫画、小说 3:4。手动选择横图或竖图时，前端按用户选择展示。';
     }
 
     function getNormalSelectedTotal() {
