@@ -791,11 +791,18 @@
       cursor: pointer;
     }
 
+    .selected-table-wrap {
+      height: 392px;
+      overflow-y: auto;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
     .content-table {
       width: 100%;
       border-collapse: collapse;
       background: #fff;
-      border: 1px solid var(--line);
+      border: 0;
       font-size: 12px;
     }
 
@@ -808,13 +815,49 @@
     }
 
     .content-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
       background: #f8fafc;
       color: #7b8494;
       font-weight: 600;
     }
 
-    .content-table tr.summary-hidden {
-      display: none;
+    .content-table tr[draggable="true"] {
+      cursor: grab;
+    }
+
+    .content-table tr.dragging,
+    .video-table tr.dragging {
+      opacity: .58;
+      background: #edf5ff;
+    }
+
+    .drag-cell {
+      color: #8a93a3;
+      white-space: nowrap;
+    }
+
+    .drag-handle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      height: 24px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      color: #5f6878;
+      background: #fff;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .sortable-tip {
+      display: block;
+      margin-top: 8px;
+      color: #8a93a3;
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     .empty-selected {
@@ -830,21 +873,6 @@
 
     .empty-selected.show {
       display: block;
-    }
-
-    .order-input {
-      width: 44px;
-      height: 26px;
-      border: 1px solid var(--line);
-      border-radius: 3px;
-      text-align: center;
-      color: #5e6879;
-    }
-
-    .order-input.error {
-      border-color: var(--red);
-      color: var(--red);
-      background: #fff5f5;
     }
 
     .sort-error {
@@ -996,33 +1024,9 @@
 
     .modal-filters {
       display: grid;
-      grid-template-columns: minmax(220px, 1fr) 150px 220px 90px;
+      grid-template-columns: minmax(260px, 1fr) 90px;
       gap: 10px;
       margin-bottom: 12px;
-    }
-
-    .modal-filters.no-category-filter {
-      grid-template-columns: minmax(260px, 1fr) 220px 90px;
-    }
-
-    .modal-filters.no-category-filter .video-category-filter {
-      display: none;
-    }
-
-    .scope-pill {
-      display: inline-flex;
-      min-width: 0;
-      height: 36px;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 0 12px;
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      color: #5f6878;
-      background: #f8fafc;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .selection-status {
@@ -1063,6 +1067,11 @@
       border: 1px solid var(--line);
     }
 
+    .video-table-wrap.sortable-table-wrap {
+      height: 392px;
+      max-height: 392px;
+    }
+
     .video-table {
       width: 100%;
       border-collapse: collapse;
@@ -1087,6 +1096,10 @@
       font-weight: 600;
     }
 
+    .video-table tr[draggable="true"] {
+      cursor: grab;
+    }
+
     .video-name {
       font-weight: 600;
       color: #414a59;
@@ -1099,38 +1112,6 @@
     .modal-tip {
       margin-top: 10px;
       color: #8a93a3;
-      font-size: 12px;
-    }
-
-    .scope-detail-toggle {
-      border: 0;
-      background: transparent;
-      color: var(--blue);
-      cursor: pointer;
-      padding: 0 2px;
-      font-size: 12px;
-    }
-
-    .scope-tags {
-      display: none;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .scope-tags.show {
-      display: flex;
-    }
-
-    .scope-tag {
-      height: 24px;
-      display: inline-flex;
-      align-items: center;
-      padding: 0 8px;
-      border: 1px solid #cfe2ff;
-      border-radius: 3px;
-      color: #2f6fd6;
-      background: #f5f9ff;
       font-size: 12px;
     }
 
@@ -1402,7 +1383,8 @@
           <div class="form-row">
             <div class="label">菜单 Key</div>
             <div class="field-control">
-              <input class="input" id="menuKeyInput" value="home" />
+              <input class="input" id="menuKeyInput" value="home" maxlength="50" pattern="[A-Za-z0-9]*" />
+              <div class="field-hint">仅支持大小写英文字母和阿拉伯数字，最多 50 个字符。</div>
               <div class="field-error" id="menuKeyError">菜单 Key 已存在，请重新输入</div>
             </div>
           </div>
@@ -1449,29 +1431,13 @@
             </div>
 
             <div class="form-row">
-              <div class="label">内容类型</div>
-              <div>
-                <div class="multi-select" id="contentTypeSelect">
-                  <button class="multi-select-trigger" type="button" id="contentTypeTrigger">视频</button>
-                  <div class="multi-select-menu" id="contentTypeMenu">
-                    <label class="multi-select-option"><input type="radio" name="contentType" value="视频" checked /> 视频</label>
-                    <label class="multi-select-option"><input type="radio" name="contentType" value="漫画" /> 漫画</label>
-                    <label class="multi-select-option"><input type="radio" name="contentType" value="帖子" /> 帖子</label>
-                    <label class="multi-select-option"><input type="radio" name="contentType" value="小说" /> 小说</label>
-                  </div>
-                </div>
-                <div class="field-hint">内容类型为单选；默认选择「视频」。不同内容类型对应不同分类。</div>
-              </div>
-            </div>
-
-            <div class="form-row">
               <div class="label">选择分类</div>
               <div>
                 <div class="multi-select" id="hotCategorySelect">
                   <button class="multi-select-trigger" type="button" id="hotCategoryTrigger">全部</button>
                   <div class="multi-select-menu category-panel" id="hotCategoryMenu"></div>
                 </div>
-                <div class="field-hint">分类选项跟随已选内容类型变化；分类来源于商户管理后台「老司机标签」的分类设置；「全部」表示当前已选内容类型下的全部分类。</div>
+                <div class="field-hint">分类仅支持单选；分类来源于商户管理后台「老司机标签」的分类设置；「全部」表示全部分类内容。</div>
               </div>
             </div>
 
@@ -1485,12 +1451,12 @@
 
             <div id="autoCard" class="source-card">
               <div class="source-title">自动选择规则</div>
-              <div class="hint">首页热门推荐直接展示第三方搜推引擎返回内容，展示顺序使用搜推引擎默认排序；内容范围受当前内容类型和分类范围限制。</div>
+              <div class="hint">首页热门推荐直接展示第三方搜推引擎返回内容，展示顺序使用搜推引擎默认排序；内容范围受当前分类范围限制。</div>
             </div>
 
             <div id="manualCard" class="source-card hidden">
               <div class="source-title">运营指定内容</div>
-              <div class="hint">仅可选择当前内容类型和分类范围内设为推荐且已上架的内容；最少选择 10 条，最多选择 50 条。该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。排序数值越大越靠前。</div>
+              <div class="hint">仅可选择当前分类范围内设为推荐且已上架的内容；最少选择 10 条，最多选择 50 条。该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。拖动内容行调整展示优先级，越靠上越优先。</div>
               <div class="field-hint">运营指定内容会优先参与首屏和「换一批」展示，未填满当前批次时由首页默认推荐内容补足，并按内容 ID 去重。</div>
 
               <div class="selected-header">
@@ -1501,21 +1467,22 @@
                 <button class="add-btn" type="button" id="addContent">添加内容</button>
               </div>
 
-              <table class="content-table">
-                <thead>
-                  <tr>
-                    <th style="width: 38%;">内容名称</th>
-                    <th style="width: 16%;">类型</th>
-                    <th style="width: 18%;">分类</th>
-                    <th style="width: 16%;">排序</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody id="contentRows"></tbody>
-              </table>
+              <div class="selected-table-wrap">
+                <table class="content-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 46%;">内容名称</th>
+                      <th style="width: 18%;">类型</th>
+                      <th style="width: 18%;">排序</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="contentRows"></tbody>
+                </table>
+              </div>
               <div class="empty-selected" id="emptySelected">暂无已选内容</div>
-              <div class="sort-error" id="sortError">排序值需为 1-50 的整数，且不可重复。</div>
-              <button class="manage-all" type="button" id="manageAll">查看全部</button>
+              <div class="sortable-tip" id="sortError">拖动内容行调整排序；列表固定展示 10 条高度，最多 50 条，可滚动展示。</div>
+              <button class="manage-all" type="button" id="manageAll">管理全部</button>
             </div>
 
             <div class="rule-box">
@@ -1562,7 +1529,11 @@
 
             <div class="form-row">
               <div class="label">菜单 Key</div>
-              <input class="input" id="normalMenuKey" value="app_center" />
+              <div class="field-control">
+                <input class="input" id="normalMenuKey" value="appCenter" maxlength="50" pattern="[A-Za-z0-9]*" />
+                <div class="field-hint">仅支持大小写英文字母和阿拉伯数字，最多 50 个字符。</div>
+                <div class="field-error" id="normalMenuKeyError">菜单 Key 已存在，请重新输入</div>
+              </div>
             </div>
 
             <div class="form-row">
@@ -1678,22 +1649,23 @@
                 </div>
                 <button class="add-btn" type="button" id="normalAddContent">添加内容</button>
               </div>
-              <table class="content-table">
-                <thead>
-                  <tr>
-                    <th style="width: 38%;">内容名称</th>
-                    <th style="width: 16%;">类型</th>
-                    <th style="width: 18%;">分类</th>
-                    <th style="width: 16%;">排序</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody id="normalContentRows"></tbody>
-              </table>
+              <div class="selected-table-wrap">
+                <table class="content-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 46%;">内容名称</th>
+                      <th style="width: 18%;">类型</th>
+                      <th style="width: 18%;">排序</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="normalContentRows"></tbody>
+                </table>
+              </div>
               <div class="empty-selected show" id="normalEmptySelected">暂无已选内容</div>
-              <div class="sort-error" id="normalSortError">排序值需为 1-50 的整数，且不可重复。</div>
-              <button class="manage-all" type="button" id="normalManageAll">查看全部</button>
-              <div class="field-hint">支持设置排序值；排序值在当前菜单内唯一，数值越大越靠前，不限制 0-10。切换内容类型时，系统将提示确认并移除不符合新范围的已选内容。</div>
+              <div class="sortable-tip" id="normalSortError">拖动内容行调整排序；列表固定展示 10 条高度，最多 50 条，可滚动展示。</div>
+              <button class="manage-all" type="button" id="normalManageAll">管理全部</button>
+              <div class="field-hint">支持拖动排序，越靠上越优先；切换内容类型时，系统将提示确认并移除不符合新范围的已选内容。</div>
             </div>
 
             <div class="form-row style-option-row" id="coverStyleRow">
@@ -1750,33 +1722,24 @@
         <div class="limit-tip" id="limitTip">至少选择 10 条运营指定内容，最多可选择 50 条。</div>
         <div class="modal-filters" id="videoFilters">
           <input class="input" id="videoKeyword" placeholder="请输入内容名称" />
-          <select class="select video-category-filter" id="videoCategoryFilter"></select>
-          <div class="scope-pill" id="videoScopeLabel">当前范围：全部</div>
           <button class="search-btn" type="button" id="filterVideos">查询</button>
         </div>
         <div class="selection-status" id="selectionStatus">
           <span>已选 <strong id="modalSelectedCount">0</strong>/<strong id="modalMaxCount">50</strong></span>
           <span class="muted" id="modalRemainCount">至少还需选择 10 条</span>
         </div>
-        <div class="modal-tip" id="categoryScopeTip">
-          <span id="categoryScopeText">当前可选范围：当前内容类型下全部分类中设为推荐且已上架的内容。</span>
-          <button class="scope-detail-toggle" type="button" id="toggleScopeDetail" style="display: none;">展开</button>
-          <div class="scope-tags" id="scopeTags"></div>
-        </div>
-
         <div class="video-table-wrap" id="videoPickerWrap">
           <table class="video-table">
             <thead id="videoTableHead"></thead>
             <tbody id="videoRows"></tbody>
           </table>
         </div>
-        <div class="video-table-wrap" id="manageWrap" style="display: none;">
+        <div class="video-table-wrap sortable-table-wrap" id="manageWrap" style="display: none;">
           <table class="video-table">
             <thead>
               <tr>
                 <th>内容名称</th>
                 <th style="width: 90px;">类型</th>
-                <th style="width: 100px;">分类</th>
                 <th style="width: 110px;">排序</th>
                 <th style="width: 80px;">操作</th>
               </tr>
@@ -1814,7 +1777,7 @@
           </div>
           <div class="prd-summary-item">
             <strong>核心限制</strong>
-            <span>运营指定内容最少 10 条、最多 50 条，且只能从当前内容类型和分类范围内设为推荐、已上架的内容中选择。</span>
+            <span>运营指定内容最少 10 条、最多 50 条，且只能从当前分类范围内设为推荐、已上架的内容中选择。</span>
           </div>
           <div class="prd-summary-item">
             <strong>展示边界</strong>
@@ -1857,37 +1820,31 @@
             <tbody>
               <tr>
                 <td>自动选择</td>
-                <td>使用第三方搜推引擎返回的默认推荐内容；展示顺序使用搜推引擎默认排序，后台不额外配置排序值；内容范围受当前选择的内容类型和分类范围限制。</td>
+                <td>使用第三方搜推引擎返回的默认推荐内容；展示顺序使用搜推引擎默认排序，后台不额外配置人工排序；内容范围受当前选择的分类范围限制。</td>
               </tr>
               <tr>
                 <td>运营指定</td>
-                <td>运营从当前内容类型和分类范围内设为推荐且已上架的内容中选择内容用于首页展示；最少 10 条，最多 50 条。</td>
+                <td>运营从当前分类范围内设为推荐且已上架的内容中选择内容用于首页展示；最少 10 条，最多 50 条。</td>
               </tr>
             </tbody>
           </table>
         </section>
 
         <section class="prd-section">
-          <h3>五、内容类型与分类范围规则</h3>
+          <h3>五、分类范围规则</h3>
           <ol>
-            <li>「内容类型」用于控制热门推荐可展示的媒体内容范围，支持单选；可选项为系统固定枚举：视频、漫画、帖子、小说。</li>
-            <li>默认选择「视频」内容类型；默认分类为「全部」。</li>
-            <li>不同内容类型对应不同分类集合，分类选项需根据已选内容类型动态展示。</li>
-            <li>切换内容类型后，分类自动回到「全部」。</li>
-            <li>如展示内容来源为「运营指定」且已存在运营指定内容，切换内容类型会导致已选内容不在新范围内时，系统需提示用户确认；确认后保留仍符合新范围的内容，自动移除不符合范围的内容；取消后内容类型、分类范围和已选内容保持不变。</li>
-            <li>如展示内容来源为「自动选择」，切换内容类型不触发确认；分类自动回到「全部」，系统中暂存的运营指定内容自动移除不符合新范围的内容。</li>
-            <li>「选择分类」用于在已选内容类型下继续控制热门推荐的内容范围，支持选择一个或多个分类。</li>
-            <li>分类选项来源于商户管理后台「老司机标签」的分类设置；除「全部」外，其余分类均按内容类型读取对应配置。</li>
-            <li>当分类数量较多时，分类选择使用可搜索的多选面板展示。</li>
-            <li>分类面板按当前内容类型展示分类，支持按分类名称搜索。</li>
+            <li>「选择分类」用于控制热门推荐的内容范围，仅支持单选。</li>
+            <li>默认分类为「全部」；「全部」表示全部分类内容。</li>
+            <li>分类选项来源于商户管理后台「老司机标签」的分类设置。</li>
+            <li>当分类数量较多时，分类选择使用可搜索的单选面板展示。</li>
+            <li>分类面板支持按分类名称搜索。</li>
             <li>分类面板展示已选摘要，并通过「取消 / 确定」控制本次选择是否生效。</li>
-            <li>选择分类触发器在选择 1-2 个具体分类时展示分类名称，选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
-            <li>选择「全部」时，自动选择和运营指定均可覆盖当前已选内容类型下的全部分类内容；「全部」不包含未选中的内容类型。</li>
+            <li>选择分类触发器展示当前选中的分类名称；选择「全部」时展示「全部」。</li>
+            <li>选择「全部」时，自动选择和运营指定均可覆盖全部分类内容。</li>
             <li>「全部」与具体分类互斥；选择「全部」时取消已选具体分类，选择具体分类时自动取消「全部」。</li>
-            <li>选择多个具体分类时，多个分类合并为一个内容池，自动选择内容、运营指定可选内容、搜推补足内容均限制在该分类范围内。</li>
+            <li>选择具体分类时，自动选择内容、运营指定可选内容、搜推补足内容均限制在该单个分类范围内。</li>
             <li>添加内容弹窗的内容范围由外层已选分类决定，不允许选择分类范围外的内容。</li>
-            <li>添加内容弹窗可提供分类筛选，用于在当前分类范围内快速查看内容；该筛选不改变外层内容类型和分类范围。</li>
-            <li>运营指定内容必须同时满足当前内容类型、当前分类范围、设为推荐、已上架四个条件。</li>
+            <li>运营指定内容必须同时满足当前分类范围、设为推荐、已上架三个条件。</li>
             <li>当展示内容来源为「运营指定」且已存在运营指定内容时，切换分类范围需提示用户确认；确认后保留仍符合新分类范围的内容，自动移除不符合范围的内容。</li>
             <li>当展示内容来源为「自动选择」时，切换分类范围不需要清空确认；如系统中暂存有运营指定内容，切换后自动移除不符合新分类范围的内容。</li>
             <li>用户取消切换时，分类范围保持原值，已选运营指定内容不变。</li>
@@ -1898,17 +1855,12 @@
           <h3>六、运营指定内容选择规则</h3>
           <ol>
             <li>点击「添加内容」时，系统打开内容选择弹窗。</li>
-            <li>弹窗仅展示当前内容类型和分类范围内设为推荐且已上架的内容。</li>
-            <li>当前分类范围为「全部」时，弹窗可展示当前内容类型下全部分类中设为推荐且已上架的内容。</li>
-            <li>弹窗内容范围由外层「内容类型」和「选择分类」共同决定，不允许选择范围外的内容。</li>
-            <li>当外层分类范围为「全部」或选择多个具体分类时，弹窗展示分类筛选；当外层仅选择一个具体分类时，隐藏分类筛选。</li>
-            <li>弹窗分类筛选仅用于在当前内容类型和分类范围内缩小列表，不改变外层内容类型和分类范围。</li>
+            <li>弹窗仅展示当前分类范围内设为推荐且已上架的内容。</li>
+            <li>当前分类范围为「全部」时，弹窗可展示全部分类中设为推荐且已上架的内容。</li>
+            <li>弹窗内容范围由外层「选择分类」决定，不允许选择范围外的内容。</li>
             <li>支持按内容名称搜索。</li>
-            <li>弹窗列表展示「内容名称」；当前分类范围为「全部」或选择多个具体分类时，额外展示「分类」列。</li>
-            <li>由于内容类型为单选，内容选择弹窗不展示「类型」列；右侧已选内容区域和管理弹窗可保留「类型」列，方便识别内容媒资类型。</li>
-            <li>当前仅选择一个具体分类时，弹窗隐藏「分类」列。</li>
-            <li>弹窗顶部「当前范围」在选择 1-2 个具体分类时直接展示分类名称；选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
-            <li>选择 3 个及以上具体分类时，当前可选范围说明展示前 3 个分类和总数量，并提供「展开 / 收起」查看全部分类标签。</li>
+            <li>弹窗列表展示勾选框、「内容名称」和「类型」，不展示分类字段。</li>
+            <li>右侧已选内容区域和管理弹窗展示「内容名称」「类型」「排序」「操作」，不展示「分类」列。</li>
             <li>弹窗不展示「推荐状态」列，因为列表内容均已满足设为推荐条件。</li>
             <li>弹窗不展示「选择状态」列，是否可选通过复选框状态表达。</li>
             <li>支持勾选一条或多条内容。</li>
@@ -1927,13 +1879,12 @@
         <section class="prd-section">
           <h3>七、已选内容管理规则</h3>
           <ol>
-            <li>右侧区域显示已选数量，例如「已选内容 3/50」，数量限制为所有内容类型、所有分类合计 10-50 条。</li>
+            <li>右侧区域显示已选数量，例如「已选内容 3/50」，数量限制为当前热门推荐配置下合计 10-50 条。</li>
             <li>无已选内容时，右侧区域显示「暂无已选内容」。</li>
-            <li>默认仅展示前 3 条已选内容，避免右侧面板过长。</li>
-            <li>当已选内容超过 3 条时，显示「查看全部 X 条」。</li>
-            <li>点击「查看全部」打开管理弹窗。</li>
-            <li>管理弹窗中展示全部已选内容。</li>
-            <li>管理弹窗支持调整排序和移除内容。</li>
+            <li>已选内容列表固定为 10 条数据的可视高度。</li>
+            <li>已选内容列表可展示全部已选内容，最多 50 条；超过 10 条时列表内部滚动。</li>
+            <li>用户拖动内容行调整排序时，列表支持自动滚动，便于把内容拖到更靠前或更靠后的位置。</li>
+            <li>管理弹窗中展示全部已选内容，并与右侧列表保持同样的拖拽排序和移除能力。</li>
             <li>移除内容后，已选数量同步更新。</li>
           </ol>
         </section>
@@ -1941,14 +1892,12 @@
         <section class="prd-section">
           <h3>八、排序规则</h3>
           <ol>
-            <li>运营指定内容支持设置排序值。</li>
-            <li>排序字段仅作用于运营指定内容在首页热门推荐展示层中的展示优先级。</li>
-            <li>排序值范围为 1-50，且同一批运营指定内容中必须全局唯一，不按内容类型或分类分别计算。</li>
-            <li>排序数值越大，展示优先级越高，越靠前展示。</li>
-            <li>添加内容时，系统自动分配未占用的排序值，优先分配当前可用的最大排序值。</li>
-            <li>展示内容来源为「运营指定」时，排序值为空、非整数、超出 1-50 或与其他内容重复，系统需提示错误并禁止保存。</li>
-            <li>展示内容来源为「自动选择」时，运营指定内容不生效，隐藏的排序错误不阻塞保存。</li>
-            <li>排序规则不回写、不修改第三方搜推引擎默认推荐结果及默认排序。</li>
+            <li>运营指定内容通过拖拽内容行调整排序，不再填写排序数字。</li>
+            <li>列表顺序即展示优先级，越靠上的内容展示优先级越高。</li>
+            <li>新增内容默认追加到已选内容列表末尾，用户可通过拖拽调整位置。</li>
+            <li>拖拽排序仅作用于首页热门推荐展示层中的运营指定内容优先级。</li>
+            <li>展示内容来源为「自动选择」时，暂存的运营指定内容顺序不生效、不阻止保存。</li>
+            <li>拖拽排序规则不回写、不修改第三方搜推引擎默认推荐结果及默认排序。</li>
           </ol>
         </section>
 
@@ -1957,12 +1906,12 @@
           <ol>
             <li>热门推荐启用后，首页展示热门推荐模块。</li>
             <li>搜推引擎仍负责热门推荐的默认推荐结果及默认排序。</li>
-            <li>若展示内容来源为「自动选择」，直接按当前内容类型和分类范围内的搜推引擎默认结果展示；当选择多个分类时，需将当前内容范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
+            <li>若展示内容来源为「自动选择」，直接按当前分类范围内的搜推引擎默认结果展示；系统需将当前分类范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
             <li>若展示内容来源为「运营指定」，首页展示层优先展示运营指定内容。</li>
-            <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，剩余展示位置由当前内容类型和分类范围内的搜推引擎默认推荐内容补足。</li>
+            <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，剩余展示位置由当前分类范围内的搜推引擎默认推荐内容补足。</li>
             <li>展示位数量由首页模板或前端展示规则决定，后台不配置展示位数量。</li>
             <li>首页前端存在「换一批」时，运营指定内容作为展示优先队列参与首屏和后续批次展示。</li>
-            <li>如果运营指定内容数量超过一批展示数量，首屏只展示排序靠前的 N 条，剩余运营指定内容进入后续「换一批」。</li>
+            <li>如果运营指定内容数量超过一批展示数量，首屏只展示列表中靠前的 N 条，剩余运营指定内容进入后续「换一批」。</li>
             <li>点击「换一批」时，系统优先继续展示未展示过的运营指定内容；运营指定内容消耗完后，再展示首页热门推荐默认内容的后续分页数据。</li>
             <li>每批展示数量由首页前端模板或内容接口分页参数决定，后台不单独配置批次数量。</li>
             <li>如运营指定内容与搜推引擎返回内容重复，或已在历史批次展示过，展示层按内容 ID 去重。</li>
@@ -1975,134 +1924,124 @@
           <h3>十、异常规则</h3>
           <ol>
             <li>热门推荐未启用时，首页不展示热门推荐模块。</li>
-            <li>展示内容来源为「运营指定」但未选择内容时，允许保存；首页按当前内容类型和分类范围内的搜推引擎默认推荐内容展示。</li>
-            <li>保存时需校验运营指定内容是否仍满足当前内容类型、当前分类范围、设为推荐、已上架条件；不满足时提示用户处理并禁止保存。</li>
-            <li>前台展示时，如运营指定内容后续变为未设为推荐或未上架，该内容不展示，并由当前内容类型和分类范围内的搜推引擎默认推荐内容补足。</li>
-            <li>展示内容来源为「运营指定」时，如运营指定内容不足当前批次展示数量，由当前内容类型和分类范围内的搜推引擎默认推荐内容补足。</li>
+            <li>展示内容来源为「运营指定」但未选择内容时，允许保存；首页按当前分类范围内的搜推引擎默认推荐内容展示。</li>
+            <li>保存时需校验运营指定内容是否仍满足当前分类范围、设为推荐、已上架条件；不满足时提示用户处理并禁止保存。</li>
+            <li>前台展示时，如运营指定内容后续变为未设为推荐或未上架，该内容不展示，并由当前分类范围内的搜推引擎默认推荐内容补足。</li>
+            <li>展示内容来源为「运营指定」时，如运营指定内容不足当前批次展示数量，由当前分类范围内的搜推引擎默认推荐内容补足。</li>
             <li>搜推引擎无返回内容，且无已上架运营指定内容时，热门推荐模块不展示内容。</li>
             <li>已选内容达到 50 条时，不允许继续勾选新增内容；用户仍可进入内容选择弹窗取消已选内容后再新增。</li>
             <li>已添加的内容在弹窗中回显为已勾选，取消勾选并确认后可移除。</li>
-            <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可暂存但不生效；再次切回「运营指定」时，如内容仍符合当前内容类型、当前分类范围、设为推荐、已上架条件，则继续回显，否则不展示。</li>
-            <li>展示内容来源为「运营指定」且存在已选内容时，切换内容类型或分类范围并确认后，保留仍符合新范围的内容，自动移除不符合范围的内容。</li>
-            <li>展示内容来源为「运营指定」且存在已选内容时，切换内容类型或分类范围并取消后，内容类型、分类范围和已选运营指定内容保持不变。</li>
-            <li>展示内容来源为「自动选择」时，切换内容类型或分类范围不触发确认；如系统中暂存有运营指定内容，切换后自动移除不符合新范围的内容。</li>
+            <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可暂存但不生效；再次切回「运营指定」时，如内容仍符合当前分类范围、设为推荐、已上架条件，则继续回显，否则不展示。</li>
+            <li>展示内容来源为「运营指定」且存在已选内容时，切换分类范围并确认后，保留仍符合新范围的内容，自动移除不符合范围的内容。</li>
+            <li>展示内容来源为「运营指定」且存在已选内容时，切换分类范围并取消后，分类范围和已选运营指定内容保持不变。</li>
+            <li>展示内容来源为「自动选择」时，切换分类范围不触发确认；如系统中暂存有运营指定内容，切换后自动移除不符合新范围的内容。</li>
           </ol>
         </section>
 
 <section class="prd-section">
           <h3>十一、后台交互示例</h3>
           <div class="prd-code">热门推荐：启用 / 禁用
-内容类型：视频
-选择分类：二次元、欧美
-说明：内容类型默认选择视频；不同内容类型对应不同分类；分类选项来源于商户管理后台「老司机标签」的分类设置；可选择多个分类合并为一个内容范围；「全部」与具体分类互斥。
+选择分类：二次元
+说明：分类选项来源于商户管理后台「老司机标签」的分类设置；分类仅支持单选；「全部」表示全部分类内容。
 
 展示内容来源：
 ○ 自动选择
-  首页热门推荐直接展示当前内容类型和分类范围内的搜推引擎返回内容，展示顺序使用搜推引擎默认排序。
+  首页热门推荐直接展示当前分类范围内的搜推引擎返回内容，展示顺序使用搜推引擎默认排序。
 
 ○ 运营指定
-  仅可选择当前内容类型和分类范围内设为推荐且已上架的内容；可选择多条。
+  仅可选择当前分类范围内设为推荐且已上架的内容；可选择多条。
   该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。
-  排序数值越大越靠前。
+  通过拖动内容行调整排序，越靠上越优先。
 
 已选内容 3/50        添加内容
 
-内容名称        类型        分类        排序        操作
-凡人修仙传      视频        二次元      10         移除
-星海爆料        视频        欧美        9          移除
-长安幻夜        视频        国漫        8          移除
+内容名称        类型        排序        操作
+凡人修仙传      视频        拖动       移除
+星海爆料        视频        拖动       移除
+长安幻夜        视频        拖动       移除
 
-查看全部 50 条</div>
+说明：已选内容列表固定展示 10 条高度，最多 50 条；超过 10 条后列表内部滚动，拖动排序时也可滚动。</div>
           <div class="prd-code" style="margin-top: 10px;">选择推荐内容弹窗：
-[请输入内容名称]  [全部已选分类]  当前范围：已选 5 个分类  [查询]
+[请输入内容名称]  [查询]
 
 已选 3/50                         至少还需选择 7 条
 提示：至少选择 10 条运营指定内容，当前还差 7 条。
-当前可选范围：二次元、欧美、日韩 等 5 个分类下设为推荐且已上架的内容。展开
+内容名称          类型
+凡人修仙传        视频
+异世界冒险日记    视频
+星海爆料          视频
 
-展开后：
-二次元  欧美  日韩  短剧  影视解说
-
-内容名称        类型        分类
-凡人修仙传      视频        二次元
-异世界冒险日记  视频        二次元
-星海爆料        视频        欧美
-
-说明：弹窗分类筛选仅在当前范围内缩小列表，不改变外层内容类型和分类范围；不展示推荐状态和选择状态；已选内容通过复选框回显，取消勾选并确认后移除。</div>
+说明：外层选择分类仅支持单选；弹窗不提供分类筛选，不展示分类字段；不展示推荐状态和选择状态；已选内容通过复选框回显，取消勾选并确认后移除。</div>
         </section>
 
         <section class="prd-section">
           <h3>十二、验收标准</h3>
+          <h4>12.1 基础配置</h4>
           <ol>
-            <li>热门推荐配置中支持选择「展示内容来源」。</li>
-            <li>热门推荐配置中支持选择「内容类型」，内容类型支持单选，可选项为系统固定枚举：视频、漫画、帖子、小说。</li>
-            <li>内容类型默认选择「视频」。</li>
-            <li>每个内容类型对应不同分类集合，分类选项需根据已选内容类型动态展示。</li>
-            <li>内容类型变化后，分类默认回到「全部」。</li>
-            <li>展示内容来源为「运营指定」且已存在运营指定内容时切换内容类型，如会导致已选内容不在新范围内，系统需提示确认；确认后保留仍符合新范围的内容，自动移除不符合范围的内容。</li>
-            <li>展示内容来源为「运营指定」且已存在运营指定内容时切换内容类型，用户取消后内容类型、分类范围和已选内容保持原值。</li>
-            <li>展示内容来源为「自动选择」时切换内容类型，不触发确认；分类默认回到「全部」，如系统中暂存有运营指定内容，自动移除不符合新范围的内容。</li>
-            <li>热门推荐分类下拉选项来源于商户管理后台「老司机标签」的分类设置。</li>
-            <li>默认分类为「全部」。</li>
-            <li>「全部」表示当前已选内容类型下的全部分类，不包含未选中的内容类型。</li>
-            <li>热门推荐「选择分类」支持选择一个或多个分类。</li>
-            <li>分类数量较多时，「选择分类」使用可搜索的多选面板。</li>
-            <li>分类面板按当前内容类型展示分类，并支持按分类名称搜索。</li>
-            <li>分类面板展示已选摘要，并支持「取消 / 确定」；点击「确定」后分类选择生效。</li>
-            <li>选择分类触发器在选择 1-2 个具体分类时展示分类名称，选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
-            <li>「全部」与具体分类互斥；选择「全部」时取消已选具体分类，选择具体分类时取消「全部」。</li>
-            <li>选择多个具体分类时，多个分类合并为一个内容池。</li>
-            <li>展示内容来源支持「自动选择」和「运营指定」。</li>
-            <li>自动选择时，首页热门推荐使用当前内容类型和分类范围内的搜推引擎默认推荐内容。</li>
-            <li>运营指定时，点击添加内容打开内容选择弹窗。</li>
-            <li>内容选择弹窗仅展示当前内容类型和分类范围内设为推荐且已上架的内容。</li>
-            <li>当前分类范围为「全部」时，内容选择弹窗可展示当前内容类型下全部分类中设为推荐且已上架的内容。</li>
-            <li>内容选择弹窗的内容范围由外层「内容类型」和「选择分类」共同决定，不允许选择范围外的内容。</li>
-            <li>当外层分类范围为「全部」或选择多个具体分类时，内容选择弹窗展示分类筛选；当外层仅选择一个具体分类时，隐藏分类筛选。</li>
-            <li>内容选择弹窗分类筛选仅用于在当前内容类型和分类范围内缩小列表，不改变外层内容类型和分类范围。</li>
-            <li>内容选择弹窗支持按内容名称搜索。</li>
-            <li>内容选择弹窗不展示「推荐状态」列。</li>
-            <li>内容选择弹窗不展示「选择状态」列，是否可选通过复选框状态表达。</li>
-            <li>内容类型为单选时，内容选择弹窗不展示「类型」列。</li>
-            <li>右侧已选内容区域和管理弹窗可展示「类型」列，用于识别内容媒资类型。</li>
-            <li>当前分类范围为「全部」或选择多个具体分类时，内容选择弹窗展示「分类」列；当前仅选择一个具体分类时隐藏「分类」列。</li>
-            <li>内容选择弹窗顶部「当前范围」在选择 1-2 个具体分类时展示分类名称，选择 3 个及以上具体分类时展示「已选 X 个分类」。</li>
-            <li>选择 3 个及以上具体分类时，内容选择弹窗支持展开查看全部分类标签，并支持收起。</li>
-            <li>内容选择弹窗显示已选数量、最小可选数量和最大可选数量。</li>
-            <li>运营指定内容最少支持选择 10 条，最多支持选择 50 条，数量上下限按全部已选内容合计计算，不按内容类型或分类分别计算。</li>
-            <li>少于 10 条时，内容选择弹窗「确认选择」按钮置灰不可提交；保存运营指定配置时也需校验数量不低于 10 条。</li>
-            <li>达到 50 条后，不允许继续勾选新增内容。</li>
-            <li>达到 50 条后，添加入口可展示为「调整内容」，用于进入弹窗取消已选内容。</li>
-            <li>达到 50 条后，仍允许进入内容选择弹窗取消已选内容；取消后可继续选择新内容。</li>
-            <li>首次进入运营指定配置时，默认无已选内容，内容选择弹窗不默认勾选任何内容。</li>
-            <li>已添加的内容在弹窗中回显为已勾选，支持取消勾选后移除。</li>
-            <li>右侧已选内容区域显示「已选内容 X/50」。</li>
-            <li>右侧无已选内容时显示「暂无已选内容」。</li>
-            <li>右侧默认展示前 3 条已选内容。</li>
-            <li>超过 3 条时，支持通过「查看全部」管理全部内容。</li>
-            <li>已选内容支持移除。</li>
-            <li>已选内容支持设置排序。</li>
-            <li>排序值只能填写 1-50 的整数。</li>
-            <li>同一批运营指定内容中的排序值不可重复，排序值在全部已选内容内全局唯一。</li>
-            <li>排序数值越大，展示优先级越高。</li>
-            <li>添加内容时，系统自动分配未占用的排序值，优先分配当前可用的最大排序值。</li>
-            <li>展示内容来源为「运营指定」时，排序值为空、非整数、超出范围或重复，系统提示错误并禁止保存。</li>
-            <li>展示内容来源为「自动选择」时，运营指定内容不生效，隐藏的排序错误不影响保存。</li>
-            <li>自动选择时，如选择多个分类，系统需将当前内容范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
-            <li>运营指定内容仅影响首页热门推荐模块中的展示内容选择与展示优先级，不回写、不修改搜推引擎默认推荐结果。</li>
-            <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，可由当前内容类型和分类范围内的搜推引擎默认推荐内容补足。</li>
-            <li>首页前端点击「换一批」时，优先继续展示未展示过的运营指定内容；运营指定内容消耗完后展示首页热门推荐默认内容的后续分页数据。</li>
-            <li>首页热门推荐所有批次按内容 ID 去重，不重复展示已出现过的运营指定内容和搜推默认内容。</li>
-            <li>展示位数量由首页模板或前端展示规则决定，后台不配置展示位数量。</li>
-            <li>展示内容来源为「运营指定」但未选择内容时允许保存，首页按当前内容类型和分类范围内的搜推引擎默认推荐内容展示。</li>
-            <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可暂存但不生效；再次切回「运营指定」时，符合当前条件的内容继续回显。</li>
-            <li>运营指定内容与搜推引擎内容重复时，展示层只展示一次。</li>
-            <li>后台不支持配置热门推荐展示样式和展示位置。</li>
-            <li>保存时需校验运营指定内容是否仍满足当前内容类型、当前分类范围、设为推荐、已上架条件；不满足时提示用户处理并禁止保存。</li>
-            <li>前台展示时，如运营指定内容后续变为未设为推荐或未上架，该内容不展示，并由当前内容类型和分类范围内的搜推引擎默认推荐内容补足。</li>
-            <li>展示内容来源为「运营指定」且已存在运营指定内容时切换内容类型或分类范围，系统需提示确认；确认后保留仍符合新范围的内容，自动移除不符合范围的内容。</li>
-            <li>展示内容来源为「运营指定」且已存在运营指定内容时切换内容类型或分类范围，用户取消后内容类型、分类范围和已选内容保持原值。</li>
-            <li>展示内容来源为「自动选择」时切换内容类型或分类范围，不触发确认；如系统中暂存有运营指定内容，切换后自动移除不符合新范围的内容。</li>
+            <li>首页热门推荐支持启用和禁用。</li>
+            <li>热门推荐支持配置「展示位内容设置」，可选项为「自动选择」和「运营指定」。</li>
+            <li>后台不提供首页热门推荐展示位置和展示样式配置。</li>
+          </ol>
+
+          <h4>12.2 分类范围</h4>
+          <ol>
+            <li>「选择分类」仅支持单选，可选择「全部」或一个具体分类。</li>
+            <li>分类选项来源于商户管理后台「老司机标签」分类设置。</li>
+            <li>默认分类为「全部」；「全部」表示全部分类内容。</li>
+            <li>分类面板支持按分类名称搜索，点击「确定」后分类选择生效。</li>
+            <li>选择具体分类后，自动选择、运营指定可选内容和前台补足内容均限制在该分类范围内。</li>
+          </ol>
+
+          <h4>12.3 内容选择弹窗</h4>
+          <ol>
+            <li>选择「运营指定」后，点击「添加内容」打开内容选择弹窗。</li>
+            <li>弹窗仅展示当前分类范围内设为推荐且已上架的内容。</li>
+            <li>弹窗支持按内容名称搜索。</li>
+            <li>弹窗不展示分类筛选、不展示「当前范围」、不展示「推荐状态」列、不展示「选择状态」列。</li>
+            <li>弹窗列表展示勾选框、「内容名称」和「类型」，不展示「分类」列。</li>
+            <li>首次进入运营指定配置时，弹窗不默认勾选任何内容。</li>
+            <li>已添加内容再次打开弹窗时需回显为已勾选，取消勾选并确认后从已选内容中移除。</li>
+          </ol>
+
+          <h4>12.4 运营指定内容</h4>
+          <ol>
+            <li>运营指定内容数量必须不少于 10 条且不超过 50 条。</li>
+            <li>少于 10 条时，「确认选择」按钮置灰不可提交；保存时也需禁止保存运营指定配置。</li>
+            <li>达到 50 条后，不允许继续勾选新增内容；取消已选内容后可继续新增。</li>
+            <li>已选内容区域展示「已选内容 X/50」；无内容时展示「暂无已选内容」。</li>
+            <li>已选内容列表固定为 10 条数据的可视高度；超过 10 条后列表内部滚动展示。</li>
+            <li>已选内容列表最多展示 50 条已选内容。</li>
+            <li>已选内容区域和管理弹窗展示内容名称、类型、排序和操作，不展示分类列。</li>
+            <li>已选内容支持移除，移除后数量、排序和弹窗勾选状态同步更新。</li>
+          </ol>
+
+          <h4>12.5 拖拽排序</h4>
+          <ol>
+            <li>运营指定内容支持通过拖动内容行调整排序。</li>
+            <li>列表顺序即展示优先级，越靠上的内容优先级越高。</li>
+            <li>新增内容默认追加到已选内容列表末尾。</li>
+            <li>拖动内容行时，列表支持滚动，用户可以将内容拖到列表任意位置。</li>
+            <li>展示位内容设置为「运营指定」时，保存列表当前顺序。</li>
+            <li>展示位内容设置为「自动选择」时，暂存的运营指定内容顺序不生效、不阻止保存。</li>
+          </ol>
+
+          <h4>12.6 切换与暂存</h4>
+          <ol>
+            <li>展示位内容设置为「运营指定」且已有已选内容时，切换分类范围如导致内容超出新范围，系统需提示确认。</li>
+            <li>用户确认切换后，系统保留仍符合新范围的内容，并自动移除不符合新范围的内容。</li>
+            <li>用户取消切换后，分类范围和已选运营指定内容保持原值。</li>
+            <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可在当前编辑页暂存但不生效。</li>
+            <li>从「自动选择」切回「运营指定」时，仍符合当前分类范围、推荐状态和上架状态的内容继续回显。</li>
+          </ol>
+
+          <h4>12.7 前台展示</h4>
+          <ol>
+            <li>自动选择时，首页热门推荐展示当前分类范围内的搜推引擎默认结果。</li>
+            <li>运营指定时，前台优先展示运营指定内容；运营指定内容不足当前批次展示数量时，由搜推默认内容补足。</li>
+            <li>首页前端点击「换一批」时，优先继续展示未展示过的运营指定内容；运营指定内容消耗完后展示默认内容后续分页数据。</li>
+            <li>所有批次按内容 ID 去重，不重复展示已出现过的运营指定内容和搜推默认内容。</li>
+            <li>运营指定内容后续变为未推荐、未上架或不在当前范围内时，前台不展示该内容，并由搜推默认内容补足。</li>
+            <li>运营指定内容只影响首页热门推荐展示层，不回写、不修改搜推引擎默认推荐结果。</li>
           </ol>
         </section>
         </div>
@@ -2119,7 +2058,7 @@
           </div>
           <div class="prd-summary-item">
             <strong>保存提示</strong>
-            <span>重复时阻止保存并提示「菜单 Key 已存在，请重新输入」，最终以服务端校验为准。</span>
+            <span>重复或格式不符合要求时阻止保存；菜单 Key 仅支持大小写英文字母和阿拉伯数字，最多 50 个字符。</span>
           </div>
         </div>
 
@@ -2151,8 +2090,12 @@
                 <td>用户编辑菜单并修改菜单 Key 时，系统校验修改后的菜单 Key 是否已被当前商户、当前项目下其他菜单使用；未修改菜单 Key 时允许保存，当前菜单自身不参与重复校验。</td>
               </tr>
               <tr>
+                <td>输入限制</td>
+                <td>菜单 Key 仅允许填写大小写英文字母和阿拉伯数字，不允许输入中文、空格、下划线、短横线及其他特殊字符；最大长度为 50 个字符。</td>
+              </tr>
+              <tr>
                 <td>提示文案</td>
-                <td>菜单 Key 重复时，阻止保存并提示「菜单 Key 已存在，请重新输入」。</td>
+                <td>菜单 Key 重复时，阻止保存并提示「菜单 Key 已存在，请重新输入」；格式不符合要求时，提示「菜单 Key 仅支持大小写英文字母和阿拉伯数字，最多 50 个字符」。</td>
               </tr>
               <tr>
                 <td>保存校验</td>
@@ -2179,7 +2122,11 @@
             <li>不同商户的不同项目下，允许创建相同菜单 Key 的菜单。</li>
             <li>编辑菜单时，如果将菜单 Key 修改为当前商户、当前项目下其他菜单已使用的 Key，系统不允许保存。</li>
             <li>编辑菜单时，如果菜单 Key 未修改，系统允许正常保存。</li>
+            <li>菜单 Key 仅允许填写大小写英文字母和阿拉伯数字。</li>
+            <li>菜单 Key 最大长度为 50 个字符。</li>
+            <li>菜单 Key 不允许输入中文、空格、下划线、短横线及其他特殊字符。</li>
             <li>菜单 Key 重复时，系统提示「菜单 Key 已存在，请重新输入」。</li>
+            <li>菜单 Key 格式不符合要求时，系统提示「菜单 Key 仅支持大小写英文字母和阿拉伯数字，最多 50 个字符」。</li>
             <li>菜单 Key 唯一性校验必须以服务端校验结果为准。</li>
             <li>菜单 Key 唯一性判断维度为「商户 + 项目 + 菜单 Key」。</li>
             <li>已删除菜单不影响新菜单使用相同菜单 Key，前提是系统采用逻辑删除且业务确认已删除数据不参与唯一性校验。</li>
@@ -2216,7 +2163,7 @@
             <li>普通菜单在内容类型为长视频、短视频、漫画、小说时支持配置「内容列表样式」，可选择自动适配、横图 16:9、竖图 3:4；内容类型为帖子时不展示该选项。</li>
             <li>「内容选择」和「排版和样式」仅在菜单类型为「展示媒体内容」时展示并生效；其他菜单类型不展示这两块配置。</li>
             <li>本规则仅作用于普通菜单，不影响首页固定功能模块中的热门推荐配置。</li>
-            <li>运营指定内容支持排序，排序值在当前菜单内唯一，数值越大越靠前。</li>
+            <li>运营指定内容支持拖拽排序，列表越靠上展示优先级越高。</li>
             <li>前端「换一批」需按当前菜单内容数据继续分页，运营指定内容作为优先队列参与前几批展示。</li>
             <li>手动选择横图或竖图时，前端必须按用户选择展示，不再因内容类型强制改写。</li>
           </ol>
@@ -2271,16 +2218,17 @@
           <h3>五、运营指定内容规则</h3>
           <ol>
             <li>选择「运营指定」后，展示「运营指定内容」配置区。</li>
-            <li>普通菜单「运营指定」需与首页运营指定保持一致交互，包括已选内容表格、添加内容弹窗、查看全部管理弹窗、排序编辑和移除能力。</li>
+            <li>普通菜单「运营指定」需与首页运营指定保持一致交互，包括已选内容表格、添加内容弹窗、拖拽排序和移除能力。</li>
             <li>点击「添加内容」打开内容选择弹窗。</li>
             <li>弹窗仅展示当前菜单实际内容范围内已上架的内容。</li>
             <li>普通菜单内容选择弹窗不展示「全部分类」筛选，避免运营误以为可跨当前菜单范围切换分类；内容范围以当前菜单实际内容范围为准。</li>
             <li>运营指定内容最少 10 条、最多 50 条，数量上下限按当前菜单合计计算。</li>
             <li>少于 10 条时，内容选择弹窗「确认选择」按钮置灰不可提交；保存运营指定配置时也需校验数量不低于 10 条。</li>
             <li>达到 50 条后，不允许继续新增，但允许移除已选内容后继续添加。</li>
-            <li>运营指定内容支持排序，排序值在当前菜单内唯一。</li>
-            <li>排序值不限定在 0-10；只要是有效数值且在当前菜单内不重复即可。</li>
-            <li>排序数值越大，展示优先级越高，越靠前展示。</li>
+            <li>运营指定内容支持拖拽排序，不再填写排序数字。</li>
+            <li>已选内容列表固定为 10 条数据的可视高度，最多 50 条；超过 10 条后列表内部滚动。</li>
+            <li>用户拖动内容行时，列表支持滚动，可将内容拖到任意位置。</li>
+            <li>列表顺序即展示优先级，越靠上的内容展示优先级越高。</li>
             <li>保存时需校验已选内容是否仍属于当前菜单实际内容范围；不满足时提示用户处理并禁止保存。</li>
           </ol>
         </section>
@@ -2305,17 +2253,17 @@
             <li>默认内容排序使用该菜单原本的内容列表排序规则，例如后台配置排序、发布时间、热度、推荐权重或接口默认返回顺序，具体以现有菜单内容接口规则为准。</li>
             <li>每批展示数量由前端模板或内容接口分页参数决定，后台不单独配置批次数量。</li>
             <li>前端首次进入菜单或首次加载展示位时，如为「自动选择」，直接展示当前菜单默认内容的第一页。</li>
-            <li>前端首次进入菜单或首次加载展示位时，如为「运营指定」，先按运营指定排序值展示，排序值越大越靠前。</li>
-            <li>如果运营指定内容数量超过一批展示数量，第一页只展示排序靠前的 N 条，剩余运营指定内容进入后续「换一批」。</li>
+            <li>前端首次进入菜单或首次加载展示位时，如为「运营指定」，先按运营指定列表顺序展示，越靠上越优先。</li>
+            <li>如果运营指定内容数量超过一批展示数量，第一页只展示列表中靠前的 N 条，剩余运营指定内容进入后续「换一批」。</li>
             <li>点击「换一批」时，系统优先继续展示未展示过的运营指定内容；运营指定内容消耗完后，再展示当前菜单默认内容的后续分页数据。</li>
             <li>当某一批运营指定内容不足当前批次展示数量时，剩余位置由当前菜单默认内容按原排序补足。</li>
             <li>所有批次都需要去重；当前菜单默认内容不得重复展示已经作为运营指定展示过的内容，也不得重复展示历史批次已展示过的内容。</li>
             <li>运营指定内容后续变为未上架、不可见或不再属于当前菜单实际内容范围时，前端不展示该内容，并由当前菜单默认内容补足。</li>
           </ol>
           <div class="prd-code">示例：一批展示 6 条，运营指定 14 条
-第 1 批：运营指定排序第 1-6 条
-第 2 批：运营指定排序第 7-12 条
-第 3 批：运营指定排序第 13-14 条 + 当前菜单默认内容补足 4 条
+第 1 批：运营指定列表第 1-6 条
+第 2 批：运营指定列表第 7-12 条
+第 3 批：运营指定列表第 13-14 条 + 当前菜单默认内容补足 4 条
 第 4 批及以后：当前菜单默认内容继续分页，并排除前面已展示内容</div>
         </section>
 
@@ -2359,9 +2307,9 @@
         <section class="prd-section">
           <h3>十、保存校验</h3>
           <ol>
-            <li>菜单类型为「展示媒体内容」时，保存展示位内容设置、运营指定内容和排序值；内容类型为长视频、短视频、漫画、小说时保存内容列表样式，内容类型为帖子时不保存、不校验内容列表样式。</li>
+            <li>菜单类型为「展示媒体内容」时，保存展示位内容设置、运营指定内容和拖拽后的列表顺序；内容类型为长视频、短视频、漫画、小说时保存内容列表样式，内容类型为帖子时不保存、不校验内容列表样式。</li>
             <li>展示位内容设置为「运营指定」时，校验运营指定内容数量不少于 10 条且不超过 50 条。</li>
-            <li>展示位内容设置为「运营指定」时，校验排序值在当前菜单内唯一。</li>
+            <li>展示位内容设置为「运营指定」时，保存当前已选内容列表顺序。</li>
             <li>展示位内容设置为「运营指定」时，校验已选内容仍属于当前菜单实际内容范围。</li>
             <li>菜单类型仍为「展示媒体内容」且展示位内容设置为「自动选择」时，运营指定内容可在当前编辑页暂存但不生效，隐藏排序错误不阻止保存。</li>
             <li>菜单类型为非「展示媒体内容」时，不提交、不保存、不校验内容选择、展示位内容设置和内容列表样式的生效值。</li>
@@ -2388,8 +2336,8 @@
             <li>运营指定内容只能选择当前菜单实际内容范围内已上架、可见的内容。</li>
             <li>运营指定内容最少支持 10 条，最多支持 50 条。</li>
             <li>达到 50 条后，不允许继续新增运营指定内容；移除已选内容后可继续新增。</li>
-            <li>运营指定内容排序值在当前菜单内唯一，数值越大越靠前。</li>
-            <li>排序值不限制为 0-10。</li>
+            <li>运营指定内容支持拖拽排序，越靠上越优先。</li>
+            <li>已选内容列表固定 10 条数据高度，最多 50 条，超过 10 条后内部滚动。</li>
             <li>保存时，如运营指定内容不在当前菜单实际内容范围内，系统应提示用户处理并禁止保存。</li>
           </ol>
 
@@ -2398,7 +2346,7 @@
             <li>普通菜单默认内容来自当前菜单自身关联或配置的内容数据。</li>
             <li>默认内容由当前菜单配置和内容接口返回结果决定，不按关联方式拆分展示规则。</li>
             <li>每批展示数量由前端模板或内容接口分页参数决定，后台不单独配置批次数量。</li>
-            <li>首次加载展示位时，运营指定内容按排序值优先展示。</li>
+            <li>首次加载展示位时，运营指定内容按已选列表顺序优先展示。</li>
             <li>运营指定内容超过一批展示数量时，剩余运营指定内容在后续「换一批」中继续优先展示。</li>
             <li>运营指定内容消耗完后，「换一批」展示当前菜单默认内容的后续分页数据。</li>
             <li>所有批次展示内容需要去重，不重复展示已出现过的运营指定内容和默认内容。</li>
@@ -2474,7 +2422,7 @@
     const contentTypeSelect = document.getElementById('contentTypeSelect');
     const contentTypeTrigger = document.getElementById('contentTypeTrigger');
     const contentTypeMenu = document.getElementById('contentTypeMenu');
-    const contentTypeInputs = [...contentTypeMenu.querySelectorAll('input[type="radio"]')];
+    const contentTypeInputs = contentTypeMenu ? [...contentTypeMenu.querySelectorAll('input[type="radio"]')] : [];
     const hotCategorySelect = document.getElementById('hotCategorySelect');
     const hotCategoryTrigger = document.getElementById('hotCategoryTrigger');
     const hotCategoryMenu = document.getElementById('hotCategoryMenu');
@@ -2492,6 +2440,7 @@
     const menuConfigPanel = document.getElementById('menuConfigPanel');
     const normalMenuName = document.getElementById('normalMenuName');
     const normalMenuKey = document.getElementById('normalMenuKey');
+    const normalMenuKeyError = document.getElementById('normalMenuKeyError');
     const normalMenuSort = document.getElementById('normalMenuSort');
     const normalMenuType = document.getElementById('normalMenuType');
     const normalTypeHint = document.getElementById('normalTypeHint');
@@ -2521,8 +2470,6 @@
     const videoTableHead = document.getElementById('videoTableHead');
     const videoRows = document.getElementById('videoRows');
     const videoKeyword = document.getElementById('videoKeyword');
-    const videoCategoryFilter = document.getElementById('videoCategoryFilter');
-    const videoScopeLabel = document.getElementById('videoScopeLabel');
     const filterVideos = document.getElementById('filterVideos');
     const modalTitle = document.getElementById('modalTitle');
     const videoFilters = document.getElementById('videoFilters');
@@ -2530,10 +2477,6 @@
     const modalSelectedCount = document.getElementById('modalSelectedCount');
     const modalMaxCount = document.getElementById('modalMaxCount');
     const modalRemainCount = document.getElementById('modalRemainCount');
-    const categoryScopeTip = document.getElementById('categoryScopeTip');
-    const categoryScopeText = document.getElementById('categoryScopeText');
-    const toggleScopeDetail = document.getElementById('toggleScopeDetail');
-    const scopeTags = document.getElementById('scopeTags');
     const videoPickerWrap = document.getElementById('videoPickerWrap');
     const manageWrap = document.getElementById('manageWrap');
     const manageRows = document.getElementById('manageRows');
@@ -2545,30 +2488,30 @@
     const MAX_SELECTED = 50;
     const SUMMARY_LIMIT = 3;
     const currentMenuKey = 'home';
-    const existingMenuKeys = ['home', 'app_center', 'category', 'ai', 'long_video', 'short_video', 'ranking', 'post_a', 'comic_zone', 'post_featured'];
     const menuKeyMap = {
       首页: 'home',
-      应用中心: 'app_center',
-      应用中心子菜单1: 'app_center_sub_1',
-      应用B组: 'app_b_group',
+      应用中心: 'appCenter',
+      应用中心子菜单1: 'appCenterSub1',
+      应用B组: 'appBGroup',
       分类: 'category',
-      二级菜单: 'second_menu',
+      二级菜单: 'secondMenu',
       AI: 'ai',
-      长视频A: 'long_video_a',
-      三级菜单: 'third_menu',
-      短视频: 'short_video',
+      长视频A: 'longVideoA',
+      三级菜单: 'thirdMenu',
+      短视频: 'shortVideo',
       排行榜: 'ranking',
-      帖子A: 'post_a',
-      漫画专区: 'comic_zone',
-      帖子精选: 'post_featured',
-      星间爆料: 'star_news',
-      特别推荐: 'special_recommend'
+      帖子A: 'postA',
+      漫画专区: 'comicZone',
+      帖子精选: 'postFeatured',
+      星间爆料: 'starNews',
+      特别推荐: 'specialRecommend'
     };
+    const existingMenuKeys = Object.values(menuKeyMap);
     let modalMode = 'select';
     let previousHotCategories = ['全部'];
     let pendingHotCategories = ['全部'];
-    let previousContentTypes = ['视频'];
-    let pendingContentTypes = ['视频'];
+    let previousContentTypes = [];
+    let pendingContentTypes = [];
     let pendingScopeChangeType = 'category';
     let modalSelectedNames = new Set();
     let scopeDetailExpanded = false;
@@ -2579,6 +2522,7 @@
       帖子: ['推荐', '攻略', '讨论', '测评', '活动'],
       小说: ['玄幻', '都市', '言情', '悬疑', '武侠']
     };
+    const hotContentTypes = Object.keys(contentTypeCategories);
     const videoList = [
       { id: 'v001', type: '视频', name: '凡人修仙传', category: '二次元', status: '已上架' },
       { id: 'v003', type: '视频', name: '异世界冒险日记', category: '二次元', status: '已上架' },
@@ -2662,7 +2606,7 @@
     }
 
     function getModalContentTypes() {
-      return activeManualContext === 'normal' ? [getNormalContentTypeForModal()] : getSelectedContentTypes();
+      return activeManualContext === 'normal' ? [getNormalContentTypeForModal()] : hotContentTypes;
     }
 
     function getModalCategories() {
@@ -2717,8 +2661,9 @@
       const selectedTypes = [getNormalContentTypeForModal()];
       [...normalContentRows.querySelectorAll('tr')].forEach((row) => {
         const cells = row.querySelectorAll('td');
+        const sourceVideo = videoList.find((item) => item.name === cells[0].textContent.trim());
         const type = cells[1].textContent.trim();
-        const category = cells[2].textContent.trim();
+        const category = sourceVideo?.category || '';
         if (!isCategoryInScope(type, category, ['全部'], selectedTypes)) {
           row.remove();
         }
@@ -2744,7 +2689,8 @@
       rightPanelTitle.textContent = `菜单信息：${level}`;
       rightPanel.classList.add('compact');
       normalMenuName.value = name;
-      normalMenuKey.value = menuKeyMap[name] || `menu_${index + 1}`;
+      normalMenuKey.value = menuKeyMap[name] || `menu${index + 1}`;
+      normalMenuKey.dataset.currentKey = normalMenuKey.value;
       normalMenuSort.value = String(2399 - Math.max(index - 1, 0));
       homeConfigPanel.classList.add('hidden');
       menuConfigPanel.classList.remove('hidden');
@@ -2828,8 +2774,9 @@
       const rows = [...contentRows.querySelectorAll('tr')];
       rows.forEach((row) => {
         const cells = row.querySelectorAll('td');
+        const sourceVideo = videoList.find((item) => item.name === cells[0].textContent.trim());
         const type = cells[1].textContent.trim();
-        const category = cells[2].textContent.trim();
+        const category = sourceVideo?.category || '';
         if (!isCategoryInScope(type, category, categories, selectedTypes)) {
           row.remove();
         }
@@ -2843,12 +2790,11 @@
     }
 
     function getSelectedContentTypes() {
-      const selected = contentTypeInputs.filter((input) => input.checked).map((input) => input.value);
-      return selected.length ? selected : ['视频'];
+      return hotContentTypes;
     }
 
     function setSelectedContentTypes(types) {
-      const nextTypes = [types[0] || '视频'];
+      const nextTypes = Array.isArray(types) && types.length ? types : hotContentTypes;
       contentTypeInputs.forEach((input) => {
         input.checked = nextTypes.includes(input.value);
       });
@@ -2856,57 +2802,53 @@
     }
 
     function updateContentTypeTrigger() {
+      if (!contentTypeTrigger) return;
       contentTypeTrigger.innerHTML = `<span>${getSelectedContentTypes().join('、')}</span>`;
     }
 
     function getCategoryKey(type, category) {
-      return `${type}::${category}`;
+      return category;
     }
 
     function parseCategoryKey(key) {
-      const [type, ...categoryParts] = key.split('::');
-      return { type, category: categoryParts.join('::') };
+      return { type: '', category: key };
     }
 
     function getCategoryLabel(key, selectedTypesOverride) {
       if (key === '全部') return '全部';
-      const { type, category } = parseCategoryKey(key);
-      const selectedTypes = Array.isArray(selectedTypesOverride) ? selectedTypesOverride : getSelectedContentTypes();
-      return selectedTypes.length > 1 ? `${type}-${category}` : category;
+      return parseCategoryKey(key).category;
     }
 
     function renderHotCategoryOptions(selectedCategories = getSelectedCategories()) {
-      const selectedTypes = getSelectedContentTypes();
-      const selectedSet = new Set(selectedCategories.length ? selectedCategories : ['全部']);
+      const selectedCategory = selectedCategories[0] || '全部';
       const keyword = categorySearchKeyword.trim();
-      const groups = selectedTypes.map((type) => {
-        const options = (contentTypeCategories[type] || [])
-          .filter((category) => !keyword || category.includes(keyword) || `${type}-${category}`.includes(keyword))
-          .map((category) => {
-          const key = getCategoryKey(type, category);
-          const label = selectedTypes.length > 1 ? `${type}-${category}` : category;
-          const checked = selectedSet.has(key) ? 'checked' : '';
-          return `<label class="multi-select-option"><input type="checkbox" value="${key}" ${checked} /> ${label}</label>`;
+      let selectedCategoryRendered = selectedCategory === '全部';
+      const categories = [...new Set(Object.values(contentTypeCategories).flat())];
+      const options = categories
+        .filter((category) => !keyword || category.includes(keyword))
+        .map((category) => {
+          const key = getCategoryKey('', category);
+          const checked = selectedCategory === key ? 'checked' : '';
+          if (selectedCategory === key) selectedCategoryRendered = true;
+          return `<label class="multi-select-option"><input type="radio" name="hotCategory" value="${key}" ${checked} /> ${category}</label>`;
         }).join('');
-        if (!options) return '';
-        const title = selectedTypes.length > 1 ? `<div class="category-group-title">${type}</div>` : '';
-        return `${title}${options}`;
-      }).join('');
-      const allChecked = selectedSet.has('全部') ? 'checked' : '';
-      const summary = getCategorySummaryText([...selectedSet]);
+      const allChecked = selectedCategory === '全部' ? 'checked' : '';
+      const summary = getCategorySummaryText([selectedCategory]);
+      const hiddenSelectedInput = selectedCategoryRendered ? '' : `<input type="radio" name="hotCategory" value="${selectedCategory}" checked hidden />`;
       hotCategoryMenu.innerHTML = `
         <input class="category-search" id="categorySearchInput" placeholder="搜索分类名称" value="${categorySearchKeyword}" />
         <div class="category-selected-summary" id="categorySelectedSummary">${summary}</div>
         <div class="category-options">
-          <label class="multi-select-option"><input type="checkbox" value="全部" ${allChecked} /> 全部</label>
-          ${groups || '<div class="category-empty">暂无匹配分类</div>'}
+          <label class="multi-select-option"><input type="radio" name="hotCategory" value="全部" ${allChecked} /> 全部</label>
+          ${options || '<div class="category-empty">暂无匹配分类</div>'}
+          ${hiddenSelectedInput}
         </div>
         <div class="category-actions">
           <button class="ghost-btn" type="button" id="cancelCategoryPanel">取消</button>
           <button class="save-btn" type="button" id="confirmCategoryPanel">确定</button>
         </div>
       `;
-      hotCategoryInputs = [...hotCategoryMenu.querySelectorAll('input[type="checkbox"]')];
+      hotCategoryInputs = [...hotCategoryMenu.querySelectorAll('input[type="radio"]')];
       bindHotCategoryPanel();
       if (categorySearchKeyword) {
         const searchInput = hotCategoryMenu.querySelector('#categorySearchInput');
@@ -2935,19 +2877,17 @@
 
     function getCategorySummaryText(categories = getSelectedCategories()) {
       if (isAllCategoryScope(categories)) return '已选：全部';
-      if (categories.length <= 2) return `已选：${categories.map(getCategoryLabel).join('、')}`;
-      return `已选：${categories.slice(0, 2).map(getCategoryLabel).join('、')} 等 ${categories.length} 个分类`;
+      return `已选：${getCategoryLabel(categories[0])}`;
     }
 
     function getShortCategoryScopeText(categories = getSelectedCategories()) {
       if (isAllCategoryScope(categories)) return '全部';
-      if (categories.length <= 2) return categories.map(getCategoryLabel).join('、');
-      return `已选 ${categories.length} 个分类`;
+      return getCategoryLabel(categories[0]);
     }
 
     function getCategoryScopeTipText(categories = getSelectedCategories()) {
       if (isAllCategoryScope(categories)) {
-        return '当前可选范围：当前内容类型下全部分类中设为推荐且已上架的内容。';
+        return '当前可选范围：全部分类中设为推荐且已上架的内容。';
       }
       if (categories.length <= 2) {
         return `当前可选范围：${categories.map(getCategoryLabel).join('、')}分类下设为推荐且已上架的内容。`;
@@ -2961,7 +2901,7 @@
     }
 
     function setSelectedCategories(categories) {
-      const nextCategories = categories.length ? categories : ['全部'];
+      const nextCategories = [categories[0] || '全部'];
       hotCategoryInputs.forEach((input) => {
         input.checked = nextCategories.includes(input.value);
       });
@@ -2975,16 +2915,7 @@
     }
 
     function normalizeCategorySelection(changedInput) {
-      if (changedInput.value === '全部' && changedInput.checked) {
-        setSelectedCategories(['全部']);
-        return;
-      }
-
-      if (changedInput.value !== '全部' && changedInput.checked) {
-        hotCategoryInputs.find((input) => input.value === '全部').checked = false;
-      }
-
-      if (getRawSelectedCategories().length === 0) {
+      if (!changedInput.checked || getRawSelectedCategories().length === 0) {
         setSelectedCategories(['全部']);
         return;
       }
@@ -3070,12 +3001,12 @@
       });
     }
 
-    contentTypeTrigger.addEventListener('click', () => {
+    contentTypeTrigger?.addEventListener('click', () => {
       contentTypeSelect.classList.toggle('open');
     });
 
     document.addEventListener('click', (event) => {
-      if (!contentTypeSelect.contains(event.target)) {
+      if (contentTypeSelect && !contentTypeSelect.contains(event.target)) {
         contentTypeSelect.classList.remove('open');
       }
     });
@@ -3160,10 +3091,6 @@
         ? `仅展示当前菜单实际内容范围内已上架的内容；至少选择 ${MIN_SELECTED} 条，最多选择 ${MAX_SELECTED} 条，确认后加入运营指定内容。`
         : `仅展示设为推荐且已上架的内容；至少选择 ${MIN_SELECTED} 条，最多选择 ${MAX_SELECTED} 条，确认后加入运营指定内容。`;
       modalSelectedNames = new Set(getSelectedNames(context));
-      scopeDetailExpanded = false;
-      videoCategoryFilter.value = '__all__';
-      syncVideoCategoryFilter();
-      renderVideoCategoryFilter();
       renderVideoTableHead();
       renderVideoRows();
       contentModal.classList.add('open');
@@ -3181,7 +3108,7 @@
       manageWrap.style.display = 'block';
       confirmVideos.style.display = 'none';
       limitTip.classList.remove('show');
-      modalTip.textContent = `需满足 ${MIN_SELECTED}-${MAX_SELECTED} 条；可在此查看全部已选内容、调整排序或移除内容。排序数值越大越靠前。`;
+      modalTip.textContent = `需满足 ${MIN_SELECTED}-${MAX_SELECTED} 条；可在此管理全部已选内容、拖动排序或移除内容。越靠上展示优先级越高。`;
       renderManageRows(context);
       contentModal.classList.add('open');
       contentModal.setAttribute('aria-hidden', 'false');
@@ -3195,15 +3122,6 @@
       }
     });
 
-    contentRows.addEventListener('input', (event) => {
-      if (event.target.classList.contains('order-input')) {
-        validateSortValues('home');
-        if (modalMode === 'manage' && contentModal.classList.contains('open')) {
-          renderManageRows(activeManualContext);
-        }
-      }
-    });
-
     normalContentRows.addEventListener('click', (event) => {
       if (event.target.classList.contains('danger')) {
         event.target.closest('tr').remove();
@@ -3212,27 +3130,20 @@
       }
     });
 
-    normalContentRows.addEventListener('input', (event) => {
-      if (event.target.classList.contains('order-input')) {
-        validateSortValues('normal');
-        if (modalMode === 'manage' && contentModal.classList.contains('open')) {
-          renderManageRows(activeManualContext);
-        }
-      }
-    });
-
     function getSelectedNames(context = 'home') {
       return [...getManualContext(context).rows.querySelectorAll('tr td:first-child')].map((cell) => cell.textContent.trim());
     }
 
     function getSelectedRowData(context = 'home') {
-      return [...getManualContext(context).rows.querySelectorAll('tr')].map((row) => {
+      const rows = [...getManualContext(context).rows.querySelectorAll('tr')];
+      return rows.map((row, index) => {
         const cells = row.querySelectorAll('td');
+        const sourceVideo = videoList.find((item) => item.name === cells[0].textContent.trim());
         return {
           name: cells[0].textContent.trim(),
           type: cells[1].textContent.trim(),
-          category: cells[2].textContent.trim(),
-          order: cells[3].querySelector('input').value
+          category: sourceVideo?.category || '',
+          order: index + 1
         };
       });
     }
@@ -3248,15 +3159,19 @@
       contextElements.addButton.textContent = rows.length >= MAX_SELECTED ? '调整内容' : '添加内容';
       contextElements.empty.classList.toggle('show', rows.length === 0);
       rows.forEach((row, index) => {
-        row.classList.toggle('summary-hidden', index >= SUMMARY_LIMIT);
+        row.draggable = true;
+        row.dataset.name = row.dataset.name || row.querySelector('td')?.textContent.trim() || '';
+        row.dataset.order = String(index + 1);
+        const dragText = row.querySelector('.drag-index');
+        if (dragText) dragText.textContent = `第 ${index + 1}`;
       });
-      contextElements.manageAll.textContent = `查看全部 ${rows.length} 条`;
-      contextElements.manageAll.classList.toggle('show', rows.length > SUMMARY_LIMIT);
+      contextElements.manageAll.textContent = `管理全部 ${rows.length} 条`;
+      contextElements.manageAll.classList.toggle('show', rows.length > 10);
       validateSortValues(context);
     }
 
     function getOrderInputs(context = 'home') {
-      return [...getManualContext(context).rows.querySelectorAll('.order-input')];
+      return [];
     }
 
     function getUsedSortValues(context = 'home') {
@@ -3266,72 +3181,54 @@
     }
 
     function getNextSortValue(context = 'home') {
-      const used = new Set(getUsedSortValues(context));
-      for (let value = MAX_SELECTED; value >= 1; value -= 1) {
-        if (!used.has(value)) return value;
-      }
       return 1;
     }
 
     function validateSortValues(context = 'home') {
       const contextElements = getManualContext(context);
-      const inputs = getOrderInputs(context);
-      const counts = new Map();
-      let message = '';
+      contextElements.sortError.textContent = '拖动内容行调整排序；列表固定展示 10 条高度，最多 50 条，可滚动展示。';
+      contextElements.sortError.classList.remove('show');
+      saveSettings.disabled = false;
+      return true;
+    }
 
-      inputs.forEach((input) => {
-        input.classList.remove('error');
-        const raw = input.value.trim();
-        const value = Number(raw);
-        const invalid = raw === '' || !Number.isInteger(value) || value < 1 || value > MAX_SELECTED;
-        if (invalid) {
-          input.classList.add('error');
-          message = `排序值只能填写 1-${MAX_SELECTED} 的整数。`;
-          return;
-        }
-        counts.set(value, (counts.get(value) || 0) + 1);
-      });
-
-      inputs.forEach((input) => {
-        const value = Number(input.value);
-        if (counts.get(value) > 1) {
-          input.classList.add('error');
-          message = '排序值不可重复，请为每条内容设置唯一排序。';
-        }
-      });
-
-      if (modalMode === 'manage' && activeManualContext === context) {
-        manageRows.querySelectorAll('.manage-order').forEach((input) => {
-          input.classList.remove('error');
-          const sourceInput = inputs[Number(input.dataset.index)];
-          if (sourceInput?.classList.contains('error')) {
-            input.classList.add('error');
-          }
-        });
+    function sanitizeMenuKeyInput(input) {
+      const sanitized = input.value.replace(/[^A-Za-z0-9]/g, '').slice(0, 50);
+      if (input.value !== sanitized) {
+        input.value = sanitized;
       }
+    }
 
-      contextElements.sortError.textContent = message || `排序值范围为 1-${MAX_SELECTED}，且不可重复；数值越大越靠前。`;
-      const shouldBlockHome = context === 'home' && !homeConfigPanel.classList.contains('hidden') && isManualSourceActive() && Boolean(message);
-      const shouldBlockNormal = context === 'normal' && !menuConfigPanel.classList.contains('hidden') && normalSlotSourceInputs.some((input) => input.checked && input.value === 'manual') && Boolean(message);
-      const shouldBlock = shouldBlockHome || shouldBlockNormal;
-      contextElements.sortError.classList.toggle('show', shouldBlock);
-      const hasHomeError = getOrderInputs('home').some((input) => input.classList.contains('error'));
-      const hasNormalError = getOrderInputs('normal').some((input) => input.classList.contains('error'));
-      const blockHomeSave = !homeConfigPanel.classList.contains('hidden') && isManualSourceActive() && hasHomeError;
-      const blockNormalSave = !menuConfigPanel.classList.contains('hidden') && normalSlotSourceInputs.some((input) => input.checked && input.value === 'manual') && hasNormalError;
-      saveSettings.disabled = blockHomeSave || blockNormalSave;
+    function validateMenuKeyInput(input, errorElement, { showError = false, currentKey = '' } = {}) {
+      sanitizeMenuKeyInput(input);
+      const nextKey = input.value.trim();
+      const isFormatInvalid = nextKey === '' || !/^[A-Za-z0-9]{1,50}$/.test(nextKey);
+      const isDuplicate = !isFormatInvalid && nextKey !== currentKey && existingMenuKeys.includes(nextKey);
+      let message = '';
+      if (isFormatInvalid) {
+        message = '菜单 Key 仅支持大小写英文字母和阿拉伯数字，最多 50 个字符';
+      } else if (isDuplicate) {
+        message = '菜单 Key 已存在，请重新输入';
+      }
+      input.classList.toggle('error', showError && Boolean(message));
+      errorElement.textContent = message || '菜单 Key 已存在，请重新输入';
+      errorElement.classList.toggle('show', showError && Boolean(message));
       return !message;
     }
 
     function validateMenuKey({ showError = false } = {}) {
-      const nextKey = menuKeyInput.value.trim();
-      const isDuplicate = nextKey !== currentMenuKey && existingMenuKeys.includes(nextKey);
-      menuKeyInput.classList.toggle('error', showError && isDuplicate);
-      menuKeyError.classList.toggle('show', showError && isDuplicate);
-      return !isDuplicate;
+      return validateMenuKeyInput(menuKeyInput, menuKeyError, { showError, currentKey: currentMenuKey });
+    }
+
+    function validateNormalMenuKey({ showError = false } = {}) {
+      return validateMenuKeyInput(normalMenuKey, normalMenuKeyError, {
+        showError,
+        currentKey: normalMenuKey.dataset.currentKey || ''
+      });
     }
 
     menuKeyInput.addEventListener('input', () => {
+      sanitizeMenuKeyInput(menuKeyInput);
       validateMenuKey({ showError: menuKeyError.classList.contains('show') });
     });
 
@@ -3340,73 +3237,35 @@
       validateMenuKey({ showError: false });
     });
 
-    saveSettings.addEventListener('click', () => {
-      if (homeConfigPanel.classList.contains('hidden')) return;
-      menuKeyInput.value = menuKeyInput.value.trim();
-      const canSaveMenuKey = validateMenuKey({ showError: true });
-      if (!canSaveMenuKey) {
-        menuKeyInput.focus();
-      }
+    normalMenuKey.addEventListener('input', () => {
+      sanitizeMenuKeyInput(normalMenuKey);
+      validateNormalMenuKey({ showError: normalMenuKeyError.classList.contains('show') });
     });
 
-    function syncVideoCategoryFilter() {
-      const scopeCategories = getModalCategories();
-      const shouldShowDetail = !isAllCategoryScope(scopeCategories) && scopeCategories.length > 2;
-      videoScopeLabel.textContent = `当前范围：${getShortCategoryScopeText(scopeCategories)}`;
-      videoScopeLabel.title = shouldShowDetail ? getCategoryScopeText(scopeCategories) : '';
-      categoryScopeText.textContent = getCategoryScopeTipText(scopeCategories);
-      toggleScopeDetail.style.display = shouldShowDetail ? 'inline' : 'none';
-      toggleScopeDetail.textContent = scopeDetailExpanded ? '收起' : '展开';
-      scopeTags.classList.toggle('show', shouldShowDetail && scopeDetailExpanded);
-      scopeTags.innerHTML = shouldShowDetail
-        ? scopeCategories.map((category) => `<span class="scope-tag">${getCategoryLabel(category, getModalContentTypes())}</span>`).join('')
-        : '';
-    }
+    normalMenuKey.addEventListener('blur', () => {
+      normalMenuKey.value = normalMenuKey.value.trim();
+      validateNormalMenuKey({ showError: false });
+    });
 
-    toggleScopeDetail.addEventListener('click', () => {
-      scopeDetailExpanded = !scopeDetailExpanded;
-      syncVideoCategoryFilter();
+    saveSettings.addEventListener('click', () => {
+      if (!homeConfigPanel.classList.contains('hidden')) {
+        menuKeyInput.value = menuKeyInput.value.trim();
+        const canSaveMenuKey = validateMenuKey({ showError: true });
+        if (!canSaveMenuKey) {
+          menuKeyInput.focus();
+        }
+        return;
+      }
+
+      normalMenuKey.value = normalMenuKey.value.trim();
+      const canSaveNormalMenuKey = validateNormalMenuKey({ showError: true });
+      if (!canSaveNormalMenuKey) {
+        normalMenuKey.focus();
+      }
     });
 
     function getEffectiveVideoCategories() {
       return getModalCategories();
-    }
-
-    function getFilterableVideoCategories() {
-      const scopeCategories = getModalCategories();
-      if (isAllCategoryScope(scopeCategories)) {
-        const selectedTypes = getModalContentTypes();
-        return selectedTypes.flatMap((type) => (contentTypeCategories[type] || []).map((category) => getCategoryKey(type, category)));
-      }
-      return scopeCategories;
-    }
-
-    function renderVideoCategoryFilter() {
-      const scopeCategories = getModalCategories();
-      const filterableCategories = getFilterableVideoCategories();
-      const shouldShowFilter = activeManualContext !== 'normal' && (isAllCategoryScope(scopeCategories) || scopeCategories.length > 1);
-      videoFilters.classList.toggle('no-category-filter', !shouldShowFilter);
-
-      if (!shouldShowFilter) {
-        videoCategoryFilter.innerHTML = '<option value="__all__">全部分类</option>';
-        videoCategoryFilter.value = '__all__';
-        return;
-      }
-
-      const allLabel = isAllCategoryScope(scopeCategories) ? '全部分类' : '全部已选分类';
-      videoCategoryFilter.innerHTML = [
-        `<option value="__all__">${allLabel}</option>`,
-        ...filterableCategories.map((category) => `<option value="${category}">${getCategoryLabel(category, getModalContentTypes())}</option>`)
-      ].join('');
-
-      if (![...videoCategoryFilter.options].some((option) => option.value === videoCategoryFilter.value)) {
-        videoCategoryFilter.value = '__all__';
-      }
-    }
-
-    function shouldShowCategoryColumn() {
-      const categories = getModalCategories();
-      return isAllCategoryScope(categories) || categories.length > 1;
     }
 
     function shouldShowTypeColumn() {
@@ -3415,13 +3274,11 @@
 
     function renderVideoTableHead() {
       const typeColumn = shouldShowTypeColumn() ? '<th style="width: 90px;">类型</th>' : '';
-      const categoryColumn = shouldShowCategoryColumn() ? '<th style="width: 100px;">分类</th>' : '';
       videoTableHead.innerHTML = `
         <tr>
           <th style="width: 44px;"></th>
           <th>内容名称</th>
           ${typeColumn}
-          ${categoryColumn}
         </tr>
       `;
     }
@@ -3429,14 +3286,12 @@
     function renderVideoRows() {
       const keyword = videoKeyword.value.trim();
       const categories = getEffectiveVideoCategories();
-      const selectedFilterCategory = videoCategoryFilter.value;
       const selectedTypes = getModalContentTypes();
       const reachedLimit = modalSelectedNames.size >= MAX_SELECTED;
       const filtered = videoList.filter((video) => {
         const matchKeyword = !keyword || video.name.includes(keyword);
         const matchCategory = isCategoryInScope(video.type, video.category, categories, selectedTypes);
-        const matchFilterCategory = selectedFilterCategory === '__all__' || getCategoryKey(video.type, video.category) === selectedFilterCategory;
-        return matchKeyword && matchCategory && matchFilterCategory;
+        return matchKeyword && matchCategory;
       });
 
       videoRows.innerHTML = filtered.map((video) => {
@@ -3444,17 +3299,104 @@
         const checked = isSelected ? 'checked' : '';
         const limited = !isSelected && reachedLimit ? 'disabled' : '';
         const typeCell = shouldShowTypeColumn() ? `<td>${video.type}</td>` : '';
-        const categoryCell = shouldShowCategoryColumn() ? `<td>${video.category}</td>` : '';
         return `
           <tr class="${isSelected ? 'video-row-added' : ''}">
             <td><input type="checkbox" value="${video.id}" data-name="${video.name}" ${checked} ${limited} /></td>
             <td><span class="video-name">${video.name}</span></td>
             ${typeCell}
-            ${categoryCell}
           </tr>
         `;
       }).join('');
       updateModalSelectionStatus();
+    }
+
+    function getDragAfterRow(tbody, y) {
+      const rows = [...tbody.querySelectorAll('tr[draggable="true"]:not(.dragging)')];
+      return rows.reduce((closest, row) => {
+        const box = row.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: row };
+        }
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+
+    function autoScrollSortableList(tbody, clientY) {
+      const wrap = tbody.closest('.selected-table-wrap, .video-table-wrap');
+      if (!wrap) return;
+      const rect = wrap.getBoundingClientRect();
+      const threshold = 44;
+      if (clientY < rect.top + threshold) {
+        wrap.scrollTop -= 14;
+      } else if (clientY > rect.bottom - threshold) {
+        wrap.scrollTop += 14;
+      }
+    }
+
+    function reorderRowsByNames(context, names) {
+      const rowsContainer = getManualContext(context).rows;
+      const rows = [...rowsContainer.querySelectorAll('tr')];
+      const rowMap = new Map(rows.map((row) => [row.dataset.name || row.querySelector('td')?.textContent.trim(), row]));
+      const fragment = document.createDocumentFragment();
+      names.forEach((name) => {
+        const row = rowMap.get(name);
+        if (row) fragment.appendChild(row);
+      });
+      rows.forEach((row) => {
+        if (!fragment.contains(row)) fragment.appendChild(row);
+      });
+      rowsContainer.appendChild(fragment);
+    }
+
+    function bindSortableRows(tbody, getContext, { syncToSource = false } = {}) {
+      let draggedRow = null;
+
+      tbody.addEventListener('dragstart', (event) => {
+        const row = event.target.closest('tr[draggable="true"]');
+        if (!row || event.target.closest('button, input, a')) return;
+        draggedRow = row;
+        row.classList.add('dragging');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', row.dataset.name || '');
+      });
+
+      tbody.addEventListener('dragover', (event) => {
+        if (!draggedRow) return;
+        event.preventDefault();
+        autoScrollSortableList(tbody, event.clientY);
+        const afterRow = getDragAfterRow(tbody, event.clientY);
+        if (!afterRow) {
+          tbody.appendChild(draggedRow);
+        } else {
+          tbody.insertBefore(draggedRow, afterRow);
+        }
+      });
+
+      tbody.addEventListener('drop', (event) => {
+        if (draggedRow) event.preventDefault();
+      });
+
+      tbody.addEventListener('dragend', () => {
+        if (!draggedRow) return;
+        draggedRow.classList.remove('dragging');
+        const context = getContext();
+
+        if (syncToSource) {
+          const names = [...tbody.querySelectorAll('tr')].map((row) => row.dataset.name);
+          reorderRowsByNames(context, names);
+          updateSelectedSummary(context);
+          renderManageRows(context);
+        } else {
+          updateSelectedSummary(context);
+          if (modalMode === 'manage' && contentModal.classList.contains('open') && activeManualContext === context) {
+            renderManageRows(context);
+          }
+        }
+
+        validateSortValues(context);
+        draggedRow = null;
+      });
     }
 
     function getPendingCheckedCount() {
@@ -3488,14 +3430,11 @@
         const cells = row.querySelectorAll('td');
         const name = cells[0].textContent.trim();
         const type = cells[1].textContent.trim();
-        const category = cells[2].textContent.trim();
-        const order = cells[3].querySelector('input').value;
         return `
-          <tr data-name="${name}">
+          <tr data-name="${name}" draggable="true">
             <td><span class="video-name">${name}</span></td>
             <td>${type}</td>
-            <td>${category}</td>
-            <td><input class="order-input manage-order" value="${order}" data-index="${index}" /></td>
+            <td class="drag-cell"><span class="drag-handle">拖动</span> <span class="drag-index">第 ${index + 1}</span></td>
             <td><button class="link-btn danger manage-remove" type="button" data-index="${index}">移除</button></td>
           </tr>
         `;
@@ -3511,7 +3450,6 @@
     cancelModal.addEventListener('click', closeContentModal);
     filterVideos.addEventListener('click', renderVideoRows);
     videoKeyword.addEventListener('input', renderVideoRows);
-    videoCategoryFilter.addEventListener('change', renderVideoRows);
     videoRows.addEventListener('change', (event) => {
       if (event.target.matches('input[type="checkbox"]')) {
         const name = event.target.dataset.name;
@@ -3542,16 +3480,15 @@
 
       contextElements.rows.innerHTML = '';
       nextNames.forEach((name) => {
-        const existing = existingMap.get(name);
         const video = videoList.find((item) => item.name === name);
         if (!video) return;
-        const sortValue = existing?.order || getNextSortValue(context);
         const row = document.createElement('tr');
+        row.draggable = true;
+        row.dataset.name = video.name;
         row.innerHTML = `
           <td>${video.name}</td>
           <td>${video.type}</td>
-          <td>${video.category}</td>
-          <td><input class="order-input" value="${sortValue}" /></td>
+          <td class="drag-cell"><span class="drag-handle">拖动</span> <span class="drag-index">第 1</span></td>
           <td><button class="link-btn danger" type="button">移除</button></td>
         `;
         contextElements.rows.appendChild(row);
@@ -3559,16 +3496,6 @@
       updateSelectedSummary(context);
       validateSortValues(context);
       closeContentModal();
-    });
-
-    manageRows.addEventListener('input', (event) => {
-      if (event.target.classList.contains('manage-order')) {
-        const index = Number(event.target.dataset.index);
-        const context = activeManualContext;
-        const sourceRow = getManualContext(context).rows.querySelectorAll('tr')[index];
-        sourceRow.querySelector('.order-input').value = event.target.value;
-        validateSortValues(context);
-      }
     });
 
     manageRows.addEventListener('click', (event) => {
@@ -3581,6 +3508,10 @@
         renderManageRows(context);
       }
     });
+
+    bindSortableRows(contentRows, () => 'home');
+    bindSortableRows(normalContentRows, () => 'normal');
+    bindSortableRows(manageRows, () => activeManualContext, { syncToSource: true });
 
     tree.querySelector('.node')?.classList.add('active');
     syncCoverStyleOptions();
