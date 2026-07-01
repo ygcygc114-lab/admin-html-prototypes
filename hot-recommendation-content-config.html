@@ -899,6 +899,12 @@
       color: var(--red);
     }
 
+    .link-btn:disabled,
+    .link-btn.danger:disabled {
+      color: #b8c0cc;
+      cursor: not-allowed;
+    }
+
     .recommend-tag {
       display: inline-flex;
       height: 22px;
@@ -1869,6 +1875,7 @@
             <li>弹窗中展示当前已选数量、最小可选数量和最大可选数量，例如「已选 3/50」「至少还需选择 7 条」。</li>
             <li>当已选数量达到 10 条后，弹窗展示剩余可选数量，例如「本次还可选择 40 条」。</li>
             <li>运营指定内容最少需选择 10 条；少于 10 条时，「确认选择」按钮置灰不可提交。</li>
+            <li>已选内容数量等于 10 条时，列表中的「移除」按钮置灰不可点击；如需替换内容，用户需先添加新内容，再移除旧内容。</li>
             <li>达到 50 条上限后，不允许继续勾选新增内容。</li>
             <li>达到 50 条上限后，添加入口可展示为「调整内容」，用于进入弹窗取消已选内容。</li>
             <li>达到 50 条上限后，仍允许进入内容选择弹窗取消已选内容；取消后可继续选择新内容。</li>
@@ -1885,7 +1892,7 @@
             <li>已选内容列表可展示全部已选内容，最多 50 条；超过 10 条时列表内部滚动。</li>
             <li>用户拖动内容行调整排序时，列表支持自动滚动，便于把内容拖到更靠前或更靠后的位置。</li>
             <li>管理弹窗中展示全部已选内容，并与右侧列表保持同样的拖拽排序和移除能力。</li>
-            <li>移除内容后，已选数量同步更新。</li>
+            <li>已选内容数量大于 10 条时允许移除；移除后已选数量同步更新。</li>
           </ol>
         </section>
 
@@ -2007,12 +2014,13 @@
           <ol>
             <li>运营指定内容数量必须不少于 10 条且不超过 50 条。</li>
             <li>少于 10 条时，「确认选择」按钮置灰不可提交；保存时也需禁止保存运营指定配置。</li>
+            <li>已选内容数量等于 10 条时，「移除」按钮置灰不可点击；用户需先添加新内容，使数量大于 10 条后再移除旧内容。</li>
             <li>达到 50 条后，不允许继续勾选新增内容；取消已选内容后可继续新增。</li>
             <li>已选内容区域展示「已选内容 X/50」；无内容时展示「暂无已选内容」。</li>
             <li>已选内容列表固定为 10 条数据的可视高度；超过 10 条后列表内部滚动展示。</li>
             <li>已选内容列表最多展示 50 条已选内容。</li>
             <li>已选内容区域和管理弹窗展示内容名称、类型、排序和操作，不展示分类列。</li>
-            <li>已选内容支持移除，移除后数量、排序和弹窗勾选状态同步更新。</li>
+            <li>已选内容数量大于 10 条时支持移除，移除后数量、排序和弹窗勾选状态同步更新。</li>
           </ol>
 
           <h4>12.5 拖拽排序</h4>
@@ -2224,6 +2232,7 @@
             <li>普通菜单内容选择弹窗不展示「全部分类」筛选，避免运营误以为可跨当前菜单范围切换分类；内容范围以当前菜单实际内容范围为准。</li>
             <li>运营指定内容最少 10 条、最多 50 条，数量上下限按当前菜单合计计算。</li>
             <li>少于 10 条时，内容选择弹窗「确认选择」按钮置灰不可提交；保存运营指定配置时也需校验数量不低于 10 条。</li>
+            <li>已选内容数量等于 10 条时，移除按钮置灰；如需替换内容，需先添加新内容，再移除旧内容。</li>
             <li>达到 50 条后，不允许继续新增，但允许移除已选内容后继续添加。</li>
             <li>运营指定内容支持拖拽排序，不再填写排序数字。</li>
             <li>已选内容列表固定为 10 条数据的可视高度，最多 50 条；超过 10 条后列表内部滚动。</li>
@@ -3164,6 +3173,12 @@
         row.dataset.order = String(index + 1);
         const dragText = row.querySelector('.drag-index');
         if (dragText) dragText.textContent = `第 ${index + 1}`;
+        const removeButton = row.querySelector('.danger');
+        if (removeButton) {
+          const removeDisabled = rows.length <= MIN_SELECTED;
+          removeButton.disabled = removeDisabled;
+          removeButton.title = removeDisabled ? `至少保留 ${MIN_SELECTED} 条；如需替换，请先添加内容后再移除。` : '';
+        }
       });
       contextElements.manageAll.textContent = `管理全部 ${rows.length} 条`;
       contextElements.manageAll.classList.toggle('show', rows.length > 10);
@@ -3186,7 +3201,10 @@
 
     function validateSortValues(context = 'home') {
       const contextElements = getManualContext(context);
-      contextElements.sortError.textContent = '拖动内容行调整排序；列表固定展示 10 条高度，最多 50 条，可滚动展示。';
+      const count = getSelectedCount(context);
+      contextElements.sortError.textContent = count > 0 && count <= MIN_SELECTED
+        ? `已选内容达到最低 ${MIN_SELECTED} 条时，移除按钮置灰；如需替换，请先添加内容后再移除。拖动内容行调整排序。`
+        : '拖动内容行调整排序；列表固定展示 10 条高度，最多 50 条，可滚动展示。';
       contextElements.sortError.classList.remove('show');
       saveSettings.disabled = false;
       return true;
@@ -3426,6 +3444,7 @@
 
     function renderManageRows(context = activeManualContext) {
       const rows = [...getManualContext(context).rows.querySelectorAll('tr')];
+      const removeDisabled = rows.length <= MIN_SELECTED ? 'disabled title="至少保留 10 条；如需替换，请先添加内容后再移除。"' : '';
       manageRows.innerHTML = rows.map((row, index) => {
         const cells = row.querySelectorAll('td');
         const name = cells[0].textContent.trim();
@@ -3435,7 +3454,7 @@
             <td><span class="video-name">${name}</span></td>
             <td>${type}</td>
             <td class="drag-cell"><span class="drag-handle">拖动</span> <span class="drag-index">第 ${index + 1}</span></td>
-            <td><button class="link-btn danger manage-remove" type="button" data-index="${index}">移除</button></td>
+            <td><button class="link-btn danger manage-remove" type="button" data-index="${index}" ${removeDisabled}>移除</button></td>
           </tr>
         `;
       }).join('');
