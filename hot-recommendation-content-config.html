@@ -1437,6 +1437,21 @@
             </div>
 
             <div class="form-row">
+              <div class="label">内容选择筛选</div>
+              <div>
+                <select class="select" id="hotContentFilter">
+                  <option>全部</option>
+                  <option>长视频</option>
+                  <option>短视频</option>
+                  <option>漫画</option>
+                  <option>小说</option>
+                  <option>帖子</option>
+                </select>
+                <div class="field-hint">筛选项根据当前模板已配置的内容类型展示；示例包含长视频、短视频、漫画、小说和帖子。</div>
+              </div>
+            </div>
+
+            <div class="form-row">
               <div class="label">选择分类</div>
               <div>
                 <div class="multi-select" id="hotCategorySelect">
@@ -1457,12 +1472,12 @@
 
             <div id="autoCard" class="source-card">
               <div class="source-title">自动选择规则</div>
-              <div class="hint">首页热门推荐直接展示第三方搜推引擎返回内容，展示顺序使用搜推引擎默认排序；内容范围受当前分类范围限制。</div>
+              <div class="hint">首页热门推荐直接展示第三方搜推引擎返回内容，展示顺序使用搜推引擎默认排序；内容范围受当前内容选择筛选和分类范围限制。</div>
             </div>
 
             <div id="manualCard" class="source-card hidden">
               <div class="source-title">运营指定内容</div>
-              <div class="hint">仅可选择当前分类范围内设为推荐且已上架的内容；最少选择 10 条，最多选择 50 条。该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。拖动内容行调整展示优先级，越靠上越优先。</div>
+              <div class="hint">仅可选择当前内容选择筛选和分类范围内设为推荐且已上架的内容；最少选择 10 条，最多选择 50 条。该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。拖动内容行调整展示优先级，列表最顶部的内容优先级最高。</div>
               <div class="field-hint">运营指定内容会优先参与首屏和「换一批」展示，未填满当前批次时由首页默认推荐内容补足，并按内容 ID 去重。</div>
 
               <div class="selected-header">
@@ -1671,7 +1686,7 @@
               <div class="empty-selected show" id="normalEmptySelected">暂无已选内容</div>
               <div class="sortable-tip" id="normalSortError">拖动内容行调整排序；列表固定展示 10 条高度，最多 50 条，可滚动展示。</div>
               <button class="manage-all" type="button" id="normalManageAll">管理全部</button>
-              <div class="field-hint">支持拖动排序，越靠上越优先；切换内容类型时，系统将提示确认并移除不符合新范围的已选内容。</div>
+              <div class="field-hint">支持拖动排序，列表最顶部的内容优先级最高；切换内容类型时，系统将提示确认并移除不符合新范围的已选内容。</div>
             </div>
 
             <div class="form-row style-option-row" id="coverStyleRow">
@@ -1826,11 +1841,11 @@
             <tbody>
               <tr>
                 <td>自动选择</td>
-                <td>使用第三方搜推引擎返回的默认推荐内容；展示顺序使用搜推引擎默认排序，后台不额外配置人工排序；内容范围受当前选择的分类范围限制。</td>
+                <td>使用第三方搜推引擎返回的默认推荐内容；展示顺序使用搜推引擎默认排序，后台不额外配置人工排序；内容范围受当前内容选择筛选和分类范围限制。</td>
               </tr>
               <tr>
                 <td>运营指定</td>
-                <td>运营从当前分类范围内设为推荐且已上架的内容中选择内容用于首页展示；最少 10 条，最多 50 条。</td>
+                <td>运营从当前内容选择筛选和分类范围内设为推荐且已上架的内容中选择内容用于首页展示；最少 10 条，最多 50 条。</td>
               </tr>
             </tbody>
           </table>
@@ -1839,6 +1854,9 @@
         <section class="prd-section">
           <h3>五、分类范围规则</h3>
           <ol>
+            <li>「内容选择筛选」展示在「选择分类」上方，用于控制热门推荐可选择和可展示的内容类型范围。</li>
+            <li>内容选择筛选项根据当前模板已配置的内容类型展示；示例包括长视频、短视频、漫画、小说和帖子。</li>
+            <li>内容选择筛选默认选择「全部」；选择具体筛选项后，分类范围和可选内容均限制在该筛选项下。</li>
             <li>「选择分类」用于控制热门推荐的内容范围，仅支持单选。</li>
             <li>默认分类为「全部」；「全部」表示全部分类内容。</li>
             <li>分类选项来源于商户管理后台「老司机标签」的分类设置。</li>
@@ -1848,9 +1866,9 @@
             <li>选择分类触发器展示当前选中的分类名称；选择「全部」时展示「全部」。</li>
             <li>选择「全部」时，自动选择和运营指定均可覆盖全部分类内容。</li>
             <li>「全部」与具体分类互斥；选择「全部」时取消已选具体分类，选择具体分类时自动取消「全部」。</li>
-            <li>选择具体分类时，自动选择内容、运营指定可选内容、搜推补足内容均限制在该单个分类范围内。</li>
-            <li>添加内容弹窗的内容范围由外层已选分类决定，不允许选择分类范围外的内容。</li>
-            <li>运营指定内容必须同时满足当前分类范围、设为推荐、已上架三个条件。</li>
+            <li>选择具体分类时，自动选择内容、运营指定可选内容、搜推补足内容均限制在当前内容选择筛选和该单个分类范围内。</li>
+            <li>添加内容弹窗的内容范围由外层内容选择筛选和已选分类共同决定，不允许选择范围外的内容。</li>
+            <li>运营指定内容必须同时满足当前内容选择筛选、当前分类范围、设为推荐、已上架四个条件。</li>
             <li>当展示内容来源为「运营指定」且已存在运营指定内容时，切换分类范围需提示用户确认；确认后保留仍符合新分类范围的内容，自动移除不符合范围的内容。</li>
             <li>当展示内容来源为「自动选择」时，切换分类范围不需要清空确认；如系统中暂存有运营指定内容，切换后自动移除不符合新分类范围的内容。</li>
             <li>用户取消切换时，分类范围保持原值，已选运营指定内容不变。</li>
@@ -1861,9 +1879,9 @@
           <h3>六、运营指定内容选择规则</h3>
           <ol>
             <li>点击「添加内容」时，系统打开内容选择弹窗。</li>
-            <li>弹窗仅展示当前分类范围内设为推荐且已上架的内容。</li>
-            <li>当前分类范围为「全部」时，弹窗可展示全部分类中设为推荐且已上架的内容。</li>
-            <li>弹窗内容范围由外层「选择分类」决定，不允许选择范围外的内容。</li>
+            <li>弹窗仅展示当前内容选择筛选和分类范围内设为推荐且已上架的内容。</li>
+            <li>当前分类范围为「全部」时，弹窗可展示当前内容选择筛选下全部分类中设为推荐且已上架的内容。</li>
+            <li>弹窗内容范围由外层「内容选择筛选」和「选择分类」共同决定，不允许选择范围外的内容。</li>
             <li>支持按内容名称搜索。</li>
             <li>弹窗列表展示勾选框、「内容名称」和「类型」，不展示分类字段。</li>
             <li>右侧已选内容区域和管理弹窗展示「内容名称」「类型」「排序」「操作」，不展示「分类」列。</li>
@@ -1900,7 +1918,7 @@
           <h3>八、排序规则</h3>
           <ol>
             <li>运营指定内容通过拖拽内容行调整排序，不再填写排序数字。</li>
-            <li>列表顺序即展示优先级，越靠上的内容展示优先级越高。</li>
+            <li>列表顺序即展示优先级，用户拖动后位于列表最顶部的内容优先级最高，下面内容按列表顺序依次递减。</li>
             <li>新增内容默认追加到已选内容列表末尾，用户可通过拖拽调整位置。</li>
             <li>拖拽排序仅作用于首页热门推荐展示层中的运营指定内容优先级。</li>
             <li>展示内容来源为「自动选择」时，暂存的运营指定内容顺序不生效、不阻止保存。</li>
@@ -1913,9 +1931,9 @@
           <ol>
             <li>热门推荐启用后，首页展示热门推荐模块。</li>
             <li>搜推引擎仍负责热门推荐的默认推荐结果及默认排序。</li>
-            <li>若展示内容来源为「自动选择」，直接按当前分类范围内的搜推引擎默认结果展示；系统需将当前分类范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
+            <li>若展示内容来源为「自动选择」，直接按当前内容选择筛选和分类范围内的搜推引擎默认结果展示；系统需将当前内容选择筛选和分类范围传递给搜推引擎，由搜推引擎按默认规则返回结果。</li>
             <li>若展示内容来源为「运营指定」，首页展示层优先展示运营指定内容。</li>
-            <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，剩余展示位置由当前分类范围内的搜推引擎默认推荐内容补足。</li>
+            <li>展示内容来源为「运营指定」时，如运营指定内容不足展示位数量，剩余展示位置由当前内容选择筛选和分类范围内的搜推引擎默认推荐内容补足。</li>
             <li>展示位数量由首页模板或前端展示规则决定，后台不配置展示位数量。</li>
             <li>首页前端存在「换一批」时，运营指定内容作为展示优先队列参与首屏和后续批次展示。</li>
             <li>如果运营指定内容数量超过一批展示数量，首屏只展示列表中靠前的 N 条，剩余运营指定内容进入后续「换一批」。</li>
@@ -1932,13 +1950,13 @@
           <ol>
             <li>热门推荐未启用时，首页不展示热门推荐模块。</li>
             <li>展示内容来源为「运营指定」但未选择内容时，允许保存；首页按当前分类范围内的搜推引擎默认推荐内容展示。</li>
-            <li>保存时需校验运营指定内容是否仍满足当前分类范围、设为推荐、已上架条件；不满足时提示用户处理并禁止保存。</li>
-            <li>前台展示时，如运营指定内容后续变为未设为推荐或未上架，该内容不展示，并由当前分类范围内的搜推引擎默认推荐内容补足。</li>
-            <li>展示内容来源为「运营指定」时，如运营指定内容不足当前批次展示数量，由当前分类范围内的搜推引擎默认推荐内容补足。</li>
+            <li>保存时需校验运营指定内容是否仍满足当前内容选择筛选、当前分类范围、设为推荐、已上架条件；不满足时提示用户处理并禁止保存。</li>
+            <li>前台展示时，如运营指定内容后续变为不属于当前内容选择筛选、未设为推荐或未上架，该内容不展示，并由当前范围内的搜推引擎默认推荐内容补足。</li>
+            <li>展示内容来源为「运营指定」时，如运营指定内容不足当前批次展示数量，由当前内容选择筛选和分类范围内的搜推引擎默认推荐内容补足。</li>
             <li>搜推引擎无返回内容，且无已上架运营指定内容时，热门推荐模块不展示内容。</li>
             <li>已选内容达到 50 条时，不允许继续勾选新增内容；用户仍可进入内容选择弹窗取消已选内容后再新增。</li>
             <li>已添加的内容在弹窗中回显为已勾选，取消勾选并确认后可移除。</li>
-            <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可暂存但不生效；再次切回「运营指定」时，如内容仍符合当前分类范围、设为推荐、已上架条件，则继续回显，否则不展示。</li>
+            <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可暂存但不生效；再次切回「运营指定」时，如内容仍符合当前内容选择筛选、当前分类范围、设为推荐、已上架条件，则继续回显，否则不展示。</li>
             <li>展示内容来源为「运营指定」且存在已选内容时，切换分类范围并确认后，保留仍符合新范围的内容，自动移除不符合范围的内容。</li>
             <li>展示内容来源为「运营指定」且存在已选内容时，切换分类范围并取消后，分类范围和已选运营指定内容保持不变。</li>
             <li>展示内容来源为「自动选择」时，切换分类范围不触发确认；如系统中暂存有运营指定内容，切换后自动移除不符合新范围的内容。</li>
@@ -1948,17 +1966,18 @@
 <section class="prd-section">
           <h3>十一、后台交互示例</h3>
           <div class="prd-code">热门推荐：启用 / 禁用
+内容选择筛选：全部
 选择分类：二次元
-说明：分类选项来源于商户管理后台「老司机标签」的分类设置；分类仅支持单选；「全部」表示全部分类内容。
+说明：内容选择筛选项根据模板设置展示；示例包含长视频、短视频、漫画、小说和帖子。分类选项来源于商户管理后台「老司机标签」的分类设置；分类仅支持单选；「全部」表示全部分类内容。
 
 展示内容来源：
 ○ 自动选择
-  首页热门推荐直接展示当前分类范围内的搜推引擎返回内容，展示顺序使用搜推引擎默认排序。
+  首页热门推荐直接展示当前内容选择筛选和分类范围内的搜推引擎返回内容，展示顺序使用搜推引擎默认排序。
 
 ○ 运营指定
-  仅可选择当前分类范围内设为推荐且已上架的内容；可选择多条。
+  仅可选择当前内容选择筛选和分类范围内设为推荐且已上架的内容；可选择多条。
   该配置只影响首页展示层编排，不回写、不修改搜推引擎默认推荐结果。
-  通过拖动内容行调整排序，越靠上越优先。
+  通过拖动内容行调整排序，列表最顶部的内容优先级最高。
 
 已选内容 3/50        添加内容
 
@@ -1986,6 +2005,8 @@
           <h4>12.1 基础配置</h4>
           <ol>
             <li>首页热门推荐支持启用和禁用。</li>
+            <li>热门推荐在「选择分类」上方展示「内容选择筛选」。</li>
+            <li>内容选择筛选项根据当前模板设置展示；示例包括长视频、短视频、漫画、小说和帖子。</li>
             <li>热门推荐支持配置「展示位内容设置」，可选项为「自动选择」和「运营指定」。</li>
             <li>后台不提供首页热门推荐展示位置和展示样式配置。</li>
           </ol>
@@ -1995,14 +2016,15 @@
             <li>「选择分类」仅支持单选，可选择「全部」或一个具体分类。</li>
             <li>分类选项来源于商户管理后台「老司机标签」分类设置。</li>
             <li>默认分类为「全部」；「全部」表示全部分类内容。</li>
+            <li>切换内容选择筛选后，分类自动恢复为「全部」。</li>
             <li>分类面板支持按分类名称搜索，点击「确定」后分类选择生效。</li>
-            <li>选择具体分类后，自动选择、运营指定可选内容和前台补足内容均限制在该分类范围内。</li>
+            <li>选择具体分类后，自动选择、运营指定可选内容和前台补足内容均限制在当前内容选择筛选和分类范围内。</li>
           </ol>
 
           <h4>12.3 内容选择弹窗</h4>
           <ol>
             <li>选择「运营指定」后，点击「添加内容」打开内容选择弹窗。</li>
-            <li>弹窗仅展示当前分类范围内设为推荐且已上架的内容。</li>
+            <li>弹窗仅展示当前内容选择筛选和分类范围内设为推荐且已上架的内容。</li>
             <li>弹窗支持按内容名称搜索。</li>
             <li>弹窗不展示分类筛选、不展示「当前范围」、不展示「推荐状态」列、不展示「选择状态」列。</li>
             <li>弹窗列表展示勾选框、「内容名称」和「类型」，不展示「分类」列。</li>
@@ -2026,7 +2048,7 @@
           <h4>12.5 拖拽排序</h4>
           <ol>
             <li>运营指定内容支持通过拖动内容行调整排序。</li>
-            <li>列表顺序即展示优先级，越靠上的内容优先级越高。</li>
+            <li>列表顺序即展示优先级，用户拖动后位于列表最顶部的内容优先级最高，下面内容按列表顺序依次递减。</li>
             <li>新增内容默认追加到已选内容列表末尾。</li>
             <li>拖动内容行时，列表支持滚动，用户可以将内容拖到列表任意位置。</li>
             <li>展示位内容设置为「运营指定」时，保存列表当前顺序。</li>
@@ -2035,16 +2057,16 @@
 
           <h4>12.6 切换与暂存</h4>
           <ol>
-            <li>展示位内容设置为「运营指定」且已有已选内容时，切换分类范围如导致内容超出新范围，系统需提示确认。</li>
+            <li>展示位内容设置为「运营指定」且已有已选内容时，切换内容选择筛选或分类范围如导致内容超出新范围，系统需提示确认。</li>
             <li>用户确认切换后，系统保留仍符合新范围的内容，并自动移除不符合新范围的内容。</li>
-            <li>用户取消切换后，分类范围和已选运营指定内容保持原值。</li>
+            <li>用户取消切换后，内容选择筛选、分类范围和已选运营指定内容保持原值。</li>
             <li>从「运营指定」切换为「自动选择」时，已选运营指定内容可在当前编辑页暂存但不生效。</li>
-            <li>从「自动选择」切回「运营指定」时，仍符合当前分类范围、推荐状态和上架状态的内容继续回显。</li>
+            <li>从「自动选择」切回「运营指定」时，仍符合当前内容选择筛选、分类范围、推荐状态和上架状态的内容继续回显。</li>
           </ol>
 
           <h4>12.7 前台展示</h4>
           <ol>
-            <li>自动选择时，首页热门推荐展示当前分类范围内的搜推引擎默认结果。</li>
+            <li>自动选择时，首页热门推荐展示当前内容选择筛选和分类范围内的搜推引擎默认结果。</li>
             <li>运营指定时，前台优先展示运营指定内容；运营指定内容不足当前批次展示数量时，由搜推默认内容补足。</li>
             <li>首页前端点击「换一批」时，优先继续展示未展示过的运营指定内容；运营指定内容消耗完后展示默认内容后续分页数据。</li>
             <li>所有批次按内容 ID 去重，不重复展示已出现过的运营指定内容和搜推默认内容。</li>
@@ -2171,7 +2193,7 @@
             <li>普通菜单在内容类型为长视频、短视频、漫画、小说时支持配置「内容列表样式」，可选择自动适配、横图 16:9、竖图 3:4；内容类型为帖子时不展示该选项。</li>
             <li>「内容选择」和「排版和样式」仅在菜单类型为「展示媒体内容」时展示并生效；其他菜单类型不展示这两块配置。</li>
             <li>本规则仅作用于普通菜单，不影响首页固定功能模块中的热门推荐配置。</li>
-            <li>运营指定内容支持拖拽排序，列表越靠上展示优先级越高。</li>
+            <li>运营指定内容支持拖拽排序，列表最顶部的内容优先级最高。</li>
             <li>前端「换一批」需按当前菜单内容数据继续分页，运营指定内容作为优先队列参与前几批展示。</li>
             <li>手动选择横图或竖图时，前端必须按用户选择展示，不再因内容类型强制改写。</li>
           </ol>
@@ -2237,7 +2259,7 @@
             <li>运营指定内容支持拖拽排序，不再填写排序数字。</li>
             <li>已选内容列表固定为 10 条数据的可视高度，最多 50 条；超过 10 条后列表内部滚动。</li>
             <li>用户拖动内容行时，列表支持滚动，可将内容拖到任意位置。</li>
-            <li>列表顺序即展示优先级，越靠上的内容展示优先级越高。</li>
+            <li>列表顺序即展示优先级，用户拖动后位于列表最顶部的内容优先级最高，下面内容按列表顺序依次递减。</li>
             <li>保存时需校验已选内容是否仍属于当前菜单实际内容范围；不满足时提示用户处理并禁止保存。</li>
           </ol>
         </section>
@@ -2262,7 +2284,7 @@
             <li>默认内容排序使用该菜单原本的内容列表排序规则，例如后台配置排序、发布时间、热度、推荐权重或接口默认返回顺序，具体以现有菜单内容接口规则为准。</li>
             <li>每批展示数量由前端模板或内容接口分页参数决定，后台不单独配置批次数量。</li>
             <li>前端首次进入菜单或首次加载展示位时，如为「自动选择」，直接展示当前菜单默认内容的第一页。</li>
-            <li>前端首次进入菜单或首次加载展示位时，如为「运营指定」，先按运营指定列表顺序展示，越靠上越优先。</li>
+            <li>前端首次进入菜单或首次加载展示位时，如为「运营指定」，先按运营指定列表顺序展示，列表最顶部的内容优先级最高。</li>
             <li>如果运营指定内容数量超过一批展示数量，第一页只展示列表中靠前的 N 条，剩余运营指定内容进入后续「换一批」。</li>
             <li>点击「换一批」时，系统优先继续展示未展示过的运营指定内容；运营指定内容消耗完后，再展示当前菜单默认内容的后续分页数据。</li>
             <li>当某一批运营指定内容不足当前批次展示数量时，剩余位置由当前菜单默认内容按原排序补足。</li>
@@ -2345,7 +2367,7 @@
             <li>运营指定内容只能选择当前菜单实际内容范围内已上架、可见的内容。</li>
             <li>运营指定内容最少支持 10 条，最多支持 50 条。</li>
             <li>达到 50 条后，不允许继续新增运营指定内容；移除已选内容后可继续新增。</li>
-            <li>运营指定内容支持拖拽排序，越靠上越优先。</li>
+            <li>运营指定内容支持拖拽排序，列表最顶部的内容优先级最高。</li>
             <li>已选内容列表固定 10 条数据高度，最多 50 条，超过 10 条后内部滚动。</li>
             <li>保存时，如运营指定内容不在当前菜单实际内容范围内，系统应提示用户处理并禁止保存。</li>
           </ol>
@@ -2433,6 +2455,7 @@
     const contentTypeMenu = document.getElementById('contentTypeMenu');
     const contentTypeInputs = contentTypeMenu ? [...contentTypeMenu.querySelectorAll('input[type="radio"]')] : [];
     const hotCategorySelect = document.getElementById('hotCategorySelect');
+    const hotContentFilter = document.getElementById('hotContentFilter');
     const hotCategoryTrigger = document.getElementById('hotCategoryTrigger');
     const hotCategoryMenu = document.getElementById('hotCategoryMenu');
     let hotCategoryInputs = [];
@@ -2519,36 +2542,37 @@
     let modalMode = 'select';
     let previousHotCategories = ['全部'];
     let pendingHotCategories = ['全部'];
-    let previousContentTypes = [];
-    let pendingContentTypes = [];
+    let previousContentTypes = ['长视频', '短视频', '漫画', '小说', '帖子'];
+    let pendingContentTypes = ['长视频', '短视频', '漫画', '小说', '帖子'];
     let pendingScopeChangeType = 'category';
     let modalSelectedNames = new Set();
     let scopeDetailExpanded = false;
     let categorySearchKeyword = '';
     const contentTypeCategories = {
-      视频: ['二次元', '欧美', '国漫', '日韩', '短剧', '影视解说'],
+      长视频: ['二次元', '欧美', '国漫', '日韩'],
+      短视频: ['短剧', '影视解说', '二次元'],
       漫画: ['日漫', '国漫', '韩漫', '恋爱', '热血'],
+      小说: ['玄幻', '都市', '言情', '悬疑', '武侠'],
       帖子: ['推荐', '攻略', '讨论', '测评', '活动'],
-      小说: ['玄幻', '都市', '言情', '悬疑', '武侠']
     };
     const hotContentTypes = Object.keys(contentTypeCategories);
     const videoList = [
-      { id: 'v001', type: '视频', name: '凡人修仙传', category: '二次元', status: '已上架' },
-      { id: 'v003', type: '视频', name: '异世界冒险日记', category: '二次元', status: '已上架' },
-      { id: 'v013', type: '视频', name: '星河战队物语', category: '二次元', status: '已上架' },
-      { id: 'v014', type: '视频', name: '魔法学院纪事', category: '二次元', status: '已上架' },
-      { id: 'v015', type: '视频', name: '机甲少女前线', category: '二次元', status: '已上架' },
-      { id: 'v016', type: '视频', name: '勇者转生日记', category: '二次元', status: '已上架' },
-      { id: 'v017', type: '视频', name: '风之大陆冒险', category: '二次元', status: '已上架' },
-      { id: 'v018', type: '视频', name: '幻想都市夜行', category: '二次元', status: '已上架' },
-      { id: 'v019', type: '视频', name: '超能社团事件簿', category: '二次元', status: '已上架' },
-      { id: 'v020', type: '视频', name: '月影契约', category: '二次元', status: '已上架' },
-      { id: 'v002', type: '视频', name: '星海爆料', category: '欧美', status: '已上架' },
-      { id: 'v004', type: '视频', name: '洛城追击', category: '欧美', status: '已上架' },
-      { id: 'v005', type: '视频', name: '长安幻夜', category: '国漫', status: '已上架' },
-      { id: 'v006', type: '视频', name: '东京恋爱物语', category: '日韩', status: '已上架' },
-      { id: 'v007', type: '视频', name: '三分钟看懂悬疑片', category: '影视解说', status: '已上架' },
-      { id: 'v008', type: '视频', name: '逆袭短剧合集', category: '短剧', status: '已上架' },
+      { id: 'v001', type: '长视频', name: '凡人修仙传', category: '二次元', status: '已上架' },
+      { id: 'v003', type: '长视频', name: '异世界冒险日记', category: '二次元', status: '已上架' },
+      { id: 'v013', type: '长视频', name: '星河战队物语', category: '二次元', status: '已上架' },
+      { id: 'v014', type: '长视频', name: '魔法学院纪事', category: '二次元', status: '已上架' },
+      { id: 'v015', type: '长视频', name: '机甲少女前线', category: '二次元', status: '已上架' },
+      { id: 'v016', type: '长视频', name: '勇者转生日记', category: '二次元', status: '已上架' },
+      { id: 'v017', type: '长视频', name: '风之大陆冒险', category: '二次元', status: '已上架' },
+      { id: 'v018', type: '长视频', name: '幻想都市夜行', category: '二次元', status: '已上架' },
+      { id: 'v019', type: '长视频', name: '超能社团事件簿', category: '二次元', status: '已上架' },
+      { id: 'v020', type: '长视频', name: '月影契约', category: '二次元', status: '已上架' },
+      { id: 'v002', type: '长视频', name: '星海爆料', category: '欧美', status: '已上架' },
+      { id: 'v004', type: '长视频', name: '洛城追击', category: '欧美', status: '已上架' },
+      { id: 'v005', type: '长视频', name: '长安幻夜', category: '国漫', status: '已上架' },
+      { id: 'v006', type: '长视频', name: '东京恋爱物语', category: '日韩', status: '已上架' },
+      { id: 'v007', type: '短视频', name: '三分钟看懂悬疑片', category: '影视解说', status: '已上架' },
+      { id: 'v008', type: '短视频', name: '逆袭短剧合集', category: '短剧', status: '已上架' },
       { id: 'm001', type: '漫画', name: '星轨骑士团', category: '日漫', status: '已上架' },
       { id: 'm002', type: '漫画', name: '长街少年', category: '国漫', status: '已上架' },
       { id: 'm003', type: '漫画', name: '心动便利店', category: '恋爱', status: '已上架' },
@@ -2611,7 +2635,8 @@
     function getNormalContentTypeForModal() {
       const type = normalContentType.value;
       if (type === '漫画' || type === '帖子' || type === '小说') return type;
-      return '视频';
+      if (type === '短视频') return '短视频';
+      return '长视频';
     }
 
     function getModalContentTypes() {
@@ -2799,11 +2824,13 @@
     }
 
     function getSelectedContentTypes() {
-      return hotContentTypes;
+      const selected = hotContentFilter.value;
+      return selected === '全部' ? hotContentTypes : [selected];
     }
 
     function setSelectedContentTypes(types) {
       const nextTypes = Array.isArray(types) && types.length ? types : hotContentTypes;
+      hotContentFilter.value = nextTypes.length === hotContentTypes.length ? '全部' : nextTypes[0];
       contentTypeInputs.forEach((input) => {
         input.checked = nextTypes.includes(input.value);
       });
@@ -2832,7 +2859,8 @@
       const selectedCategory = selectedCategories[0] || '全部';
       const keyword = categorySearchKeyword.trim();
       let selectedCategoryRendered = selectedCategory === '全部';
-      const categories = [...new Set(Object.values(contentTypeCategories).flat())];
+      const selectedTypes = getSelectedContentTypes();
+      const categories = [...new Set(selectedTypes.flatMap((type) => contentTypeCategories[type] || []))];
       const options = categories
         .filter((category) => !keyword || category.includes(keyword))
         .map((category) => {
@@ -2937,7 +2965,7 @@
       pendingHotCategories = nextCategories;
       pendingContentTypes = nextContentTypes;
       if (type === 'contentType') {
-        scopeConfirmBody.innerHTML = '当前已选择运营指定内容。切换内容类型后，部分已选内容可能不在新的内容范围内，确认后将自动移除不符合范围的内容，并将分类重置为 <strong id="pendingCategoryText">全部</strong>。';
+        scopeConfirmBody.innerHTML = '当前已选择运营指定内容。切换内容选择筛选后，部分已选内容可能不在新的内容范围内，确认后将自动移除不符合范围的内容，并将分类重置为 <strong id="pendingCategoryText">全部</strong>。';
       } else {
         scopeConfirmBody.innerHTML = '当前已选择运营指定内容。切换到 <strong id="pendingCategoryText">新分类范围</strong> 后，部分已选内容可能不在新的分类范围内，确认后将自动移除不符合范围的内容。';
       }
@@ -3009,6 +3037,32 @@
         hotCategorySelect.classList.remove('open');
       });
     }
+
+    function applyContentFilterSelection(nextTypes) {
+      const nextCategories = ['全部'];
+      const hasOutOfScopeContent = getSelectedCount() > 0
+        && getSelectedRowData().some((item) => !isCategoryInScope(item.type, item.category, nextCategories, nextTypes));
+
+      if (isManualSourceActive() && hasOutOfScopeContent) {
+        setSelectedContentTypes(previousContentTypes);
+        categorySearchKeyword = '';
+        renderHotCategoryOptions(previousHotCategories);
+        setSelectedCategories(previousHotCategories);
+        openScopeConfirmModal({ type: 'contentType', nextCategories, nextContentTypes: nextTypes });
+        return;
+      }
+
+      categorySearchKeyword = '';
+      renderHotCategoryOptions(nextCategories);
+      setSelectedCategories(nextCategories);
+      previousHotCategories = [...nextCategories];
+      previousContentTypes = [...nextTypes];
+      pruneSelectedContentByCategories(nextCategories, nextTypes);
+    }
+
+    hotContentFilter.addEventListener('change', () => {
+      applyContentFilterSelection(getSelectedContentTypes());
+    });
 
     contentTypeTrigger?.addEventListener('click', () => {
       contentTypeSelect.classList.toggle('open');
@@ -3117,7 +3171,7 @@
       manageWrap.style.display = 'block';
       confirmVideos.style.display = 'none';
       limitTip.classList.remove('show');
-      modalTip.textContent = `需满足 ${MIN_SELECTED}-${MAX_SELECTED} 条；可在此管理全部已选内容、拖动排序或移除内容。越靠上展示优先级越高。`;
+      modalTip.textContent = `需满足 ${MIN_SELECTED}-${MAX_SELECTED} 条；可在此管理全部已选内容、拖动排序或移除内容。列表最顶部的内容优先级最高。`;
       renderManageRows(context);
       contentModal.classList.add('open');
       contentModal.setAttribute('aria-hidden', 'false');
