@@ -33,7 +33,8 @@
 
     button,
     input,
-    select {
+    select,
+    textarea {
       font: inherit;
     }
 
@@ -299,7 +300,18 @@
       grid-column: 1 / -1;
     }
 
+    .menu-form #normalSeoCard {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 16px;
+      row-gap: 0;
+    }
+
     .menu-form .config-card:first-child .section-title,
+    .menu-form #normalSeoCard .section-title,
+    .menu-form #normalSeoCard .seo-toggle-row,
+    .menu-form #normalSeoCard .seo-default-tip,
     .menu-form #normalLayoutCard .section-title,
     .menu-form #normalLayoutCard .slot-source-row,
     .menu-form #normalLayoutCard .normal-slot-manual,
@@ -338,14 +350,26 @@
     }
 
     .input,
-    .select {
+    .select,
+    .textarea {
       width: 100%;
-      height: 36px;
       border: 1px solid var(--line);
       border-radius: 4px;
       background: #fff;
       color: #586174;
+    }
+
+    .input,
+    .select {
+      height: 36px;
       padding: 0 12px;
+    }
+
+    .textarea {
+      height: 74px;
+      padding: 10px 12px;
+      resize: none;
+      line-height: 1.5;
     }
 
     .multi-select {
@@ -557,8 +581,17 @@
       font-size: 12px;
     }
 
+    .seo-fields {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 16px;
+      align-items: start;
+    }
+
     .style-option-row.hidden,
-    .slot-source-row.hidden {
+    .slot-source-row.hidden,
+    .seo-fields.hidden {
       display: none;
     }
 
@@ -1249,6 +1282,47 @@
       line-height: 1.6;
     }
 
+    .prd-doc-info {
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .prd-doc-info table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .prd-doc-info th,
+    .prd-doc-info td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      color: #5f6878;
+      line-height: 1.65;
+    }
+
+    .prd-doc-info tr:last-child th,
+    .prd-doc-info tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .prd-doc-info th {
+      width: 140px;
+      color: #3f4858;
+      background: #f8fafc;
+      font-weight: 700;
+    }
+
+    .change-list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
     .prd-section {
       padding: 14px 0;
       border-top: 1px solid var(--line);
@@ -1388,7 +1462,7 @@
 
           <div class="form-row">
             <div class="label">菜单名称</div>
-            <input class="input" value="首页" />
+            <input class="input" id="homeMenuName" value="首页" />
           </div>
 
           <div class="form-row">
@@ -1406,6 +1480,37 @@
               <button type="button">−</button>
               <input value="20" />
               <button type="button">＋</button>
+            </div>
+          </div>
+
+          <div class="module-block">
+            <div class="section-title">SEO 设置</div>
+            <div class="field-hint seo-default-tip">可直接填写首页 Title、Keywords、Description；未填写字段由前端按首页信息默认生成。</div>
+
+            <div class="seo-fields">
+              <div class="form-row">
+                <div class="label">页面 Title</div>
+                <div class="field-control">
+                  <input class="input" id="homeSeoTitle" maxlength="500" placeholder="首页 - 站点名称" />
+                  <div class="field-hint">最多 500 个字符，用于页面 &lt;title&gt;。</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="label">页面 Keywords</div>
+                <div class="field-control">
+                  <input class="input" id="homeSeoKeywords" maxlength="500" placeholder="多个关键词用逗号分隔" />
+                  <div class="field-hint">最多 500 个字符，用于 meta keywords。</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="label">页面 Description</div>
+                <div class="field-control">
+                  <textarea class="textarea" id="homeSeoDescription" maxlength="500" placeholder="请输入首页描述，最多 500 个字符"></textarea>
+                  <div class="field-hint">最多 500 个字符，用于 meta description。</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1585,6 +1690,38 @@
             <div class="form-row">
               <div class="label">菜单背景图</div>
               <button class="upload-btn" type="button">↥ 点击上传</button>
+            </div>
+          </div>
+
+          <div class="config-card" id="normalSeoCard">
+            <div class="section-title">SEO 设置</div>
+
+            <div class="field-hint seo-default-tip" id="normalSeoDefaultTip">可直接填写页面 Title、Keywords、Description；未填写字段由前端按菜单信息默认生成。</div>
+
+            <div class="seo-fields" id="normalSeoFields">
+              <div class="form-row">
+                <div class="label">页面 Title</div>
+                <div class="field-control">
+                  <input class="input" id="normalSeoTitle" maxlength="500" placeholder="默认取菜单名称 + 站点名称" />
+                  <div class="field-hint">最多 500 个字符，用于页面 &lt;title&gt;。</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="label">页面 Keywords</div>
+                <div class="field-control">
+                  <input class="input" id="normalSeoKeywords" maxlength="500" placeholder="多个关键词用逗号分隔" />
+                  <div class="field-hint">最多 500 个字符，用于 meta keywords。</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="label">页面 Description</div>
+                <div class="field-control">
+                  <textarea class="textarea" id="normalSeoDescription" maxlength="500" placeholder="请输入页面描述，最多 500 个字符"></textarea>
+                  <div class="field-hint">最多 500 个字符，用于 meta description。</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1812,6 +1949,41 @@
             <strong>展示边界</strong>
             <span>后台只配置展示内容来源；展示位置和样式由首页模板决定。</span>
           </div>
+          <div class="prd-summary-item">
+            <strong>首页 SEO</strong>
+            <span>首页支持直接配置 Title、Keywords、Description，三个字段均最多 500 个字符。</span>
+          </div>
+        </div>
+
+        <div class="prd-doc-info">
+          <table>
+            <tbody>
+              <tr>
+                <th>文档版本</th>
+                <td>V1.5</td>
+              </tr>
+              <tr>
+                <th>更新时间</th>
+                <td>2026-07-08</td>
+              </tr>
+              <tr>
+                <th>适用范围</th>
+                <td>首页配置、首页固定功能模块 - 热门推荐</td>
+              </tr>
+              <tr>
+                <th>本次变更</th>
+                <td>
+                  <ul class="change-list">
+                    <li>新增内容选择筛选，支持按模板配置的内容类型控制热门推荐范围。</li>
+                    <li>运营指定内容数量限制统一为最少 10 条、最多 50 条。</li>
+                    <li>运营指定内容排序改为拖拽排序，列表最顶部优先级最高。</li>
+                    <li>内容选择弹窗取消分类列和分类筛选，按当前外层筛选范围展示。</li>
+                    <li>新增首页「SEO 设置」，直接配置 Title、Keywords、Description，未填写字段默认兜底。</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <section class="prd-section">
@@ -1828,17 +2000,32 @@
             <li>运营可指定一条或多条设为推荐且已上架的内容，用于首页热门推荐模块展示。</li>
             <li>运营指定内容仅作用于首页热门推荐模块的展示层编排。</li>
             <li>热门推荐的展示位置和展示样式由首页模板决定，后台不提供样式配置。</li>
+            <li>首页支持配置页面 Title、Keywords、Description，三个字段均最多 500 个字符。</li>
           </ol>
         </section>
 
         <section class="prd-section">
           <h3>三、功能入口</h3>
-          <p>配置入口保持不变：设置模板菜单权限 - 首页 - 首页固定功能模块 - 热门推荐。</p>
-          <div class="prd-note">本次新增能力仅作用于首页「热门推荐」模块。</div>
+          <p>首页 TDK 配置入口：设置模板菜单权限 - 首页 - SEO 设置。</p>
+          <p>首页热门推荐配置入口保持不变：设置模板菜单权限 - 首页 - 首页固定功能模块 - 热门推荐。</p>
+          <div class="prd-note">首页 TDK 属于首页级配置；热门推荐运营指定属于首页固定功能模块配置，两者互不影响。</div>
         </section>
 
         <section class="prd-section">
-          <h3>四、功能说明</h3>
+          <h3>四、首页 TDK 配置规则</h3>
+          <ol>
+            <li>首页配置区展示「SEO 设置」。</li>
+            <li>首页「SEO 设置」直接展示页面 Title、页面 Keywords、页面 Description 三个字段，不提供 TDK 来源选择。</li>
+            <li>页面 Title 最多 500 个字符，用于前端页面 &lt;title&gt;。</li>
+            <li>页面 Keywords 最多 500 个字符，用于 &lt;meta name="keywords"&gt;；多个关键词允许使用中文逗号或英文逗号分隔。</li>
+            <li>页面 Description 最多 500 个字符，用于 &lt;meta name="description"&gt;。</li>
+            <li>运营填写的字段由前端优先使用；单个字段为空时，该字段按首页默认生成规则兜底。</li>
+            <li>首页 TDK 配置只影响首页 SEO 信息，不影响每日更新、热门推荐、随机推荐等首页固定功能模块。</li>
+          </ol>
+        </section>
+
+        <section class="prd-section">
+          <h3>五、热门推荐功能说明</h3>
           <table class="prd-table">
             <thead>
               <tr>
@@ -1860,7 +2047,7 @@
         </section>
 
         <section class="prd-section">
-          <h3>五、分类范围规则</h3>
+          <h3>六、分类范围规则</h3>
           <ol>
             <li>「内容选择筛选」展示在「选择分类」上方，用于控制热门推荐可选择和可展示的内容类型范围。</li>
             <li>内容选择筛选项根据当前模板已配置的内容类型展示；示例包括长视频、短视频、漫画、小说和帖子。</li>
@@ -1884,7 +2071,7 @@
         </section>
 
         <section class="prd-section">
-          <h3>六、运营指定内容选择规则</h3>
+          <h3>七、运营指定内容选择规则</h3>
           <ol>
             <li>点击「添加内容」时，系统打开内容选择弹窗。</li>
             <li>弹窗仅展示当前内容选择筛选和分类范围内设为推荐且已上架的内容。</li>
@@ -1910,7 +2097,7 @@
         </section>
 
         <section class="prd-section">
-          <h3>七、已选内容管理规则</h3>
+          <h3>八、已选内容管理规则</h3>
           <ol>
             <li>右侧区域显示已选数量，例如「已选内容 3/50」，数量限制为当前热门推荐配置下合计 10-50 条。</li>
             <li>无已选内容时，右侧区域显示「暂无已选内容」。</li>
@@ -1923,7 +2110,7 @@
         </section>
 
         <section class="prd-section">
-          <h3>八、排序规则</h3>
+          <h3>九、排序规则</h3>
           <ol>
             <li>运营指定内容通过拖拽内容行调整排序，不再填写排序数字。</li>
             <li>列表顺序即展示优先级，用户拖动后位于列表最顶部的内容优先级最高，下面内容按列表顺序依次递减。</li>
@@ -1935,7 +2122,7 @@
         </section>
 
         <section class="prd-section">
-          <h3>九、展示层规则</h3>
+          <h3>十、展示层规则</h3>
           <ol>
             <li>热门推荐启用后，首页展示热门推荐模块。</li>
             <li>搜推引擎仍负责热门推荐的默认推荐结果及默认排序。</li>
@@ -1954,7 +2141,7 @@
         </section>
 
         <section class="prd-section">
-          <h3>十、异常规则</h3>
+          <h3>十一、异常规则</h3>
           <ol>
             <li>热门推荐未启用时，首页不展示热门推荐模块。</li>
             <li>展示内容来源为「运营指定」但未选择内容时，允许保存；首页按当前分类范围内的搜推引擎默认推荐内容展示。</li>
@@ -1972,7 +2159,7 @@
         </section>
 
 <section class="prd-section">
-          <h3>十一、后台交互示例</h3>
+          <h3>十二、后台交互示例</h3>
           <div class="prd-code">热门推荐：启用 / 禁用
 内容选择筛选：全部
 选择分类：二次元
@@ -2009,8 +2196,21 @@
         </section>
 
         <section class="prd-section">
-          <h3>十二、验收标准</h3>
-          <h4>12.1 基础配置</h4>
+          <h3>十三、验收标准</h3>
+          <h4>13.1 首页 TDK 配置</h4>
+          <ol>
+            <li>进入首页配置页，页面展示「SEO 设置」配置区。</li>
+            <li>「SEO 设置」内直接展示 Title 输入框。</li>
+            <li>「SEO 设置」内直接展示 Keywords 输入框。</li>
+            <li>「SEO 设置」内直接展示 Description 多行输入框。</li>
+            <li>页面不展示 TDK 来源选项，也不展示「默认生成 / 自定义 TDK」单选项。</li>
+            <li>Title、Keywords、Description 任一字段输入超过 500 个字符时，系统不允许继续输入或保存时提示超长。</li>
+            <li>填写 Title、Keywords、Description 后保存，再次进入首页配置时需回显已保存内容。</li>
+            <li>Title、Keywords、Description 中某个字段为空并保存时，该字段在前端使用首页默认生成结果兜底。</li>
+            <li>修改首页 TDK 并保存，不影响每日更新、热门推荐、随机推荐等首页固定功能模块配置。</li>
+          </ol>
+
+          <h4>13.2 基础配置</h4>
           <ol>
             <li>首页热门推荐支持启用和禁用。</li>
             <li>热门推荐在「选择分类」上方展示「内容选择筛选」。</li>
@@ -2019,7 +2219,7 @@
             <li>后台不提供首页热门推荐展示位置和展示样式配置。</li>
           </ol>
 
-          <h4>12.2 分类范围</h4>
+          <h4>13.3 分类范围</h4>
           <ol>
             <li>「选择分类」仅支持单选，可选择「全部」或一个具体分类。</li>
             <li>分类选项来源于商户管理后台「老司机标签」分类设置。</li>
@@ -2029,7 +2229,7 @@
             <li>选择具体分类后，自动选择、运营指定可选内容和前台补足内容均限制在当前内容选择筛选和分类范围内。</li>
           </ol>
 
-          <h4>12.3 内容选择弹窗</h4>
+          <h4>13.4 内容选择弹窗</h4>
           <ol>
             <li>选择「运营指定」后，点击「添加内容」打开内容选择弹窗。</li>
             <li>弹窗仅展示当前内容选择筛选和分类范围内设为推荐且已上架的内容。</li>
@@ -2040,7 +2240,7 @@
             <li>已添加内容再次打开弹窗时需回显为已勾选，取消勾选并确认后从已选内容中移除。</li>
           </ol>
 
-          <h4>12.4 运营指定内容</h4>
+          <h4>13.5 运营指定内容</h4>
           <ol>
             <li>运营指定内容数量必须不少于 10 条且不超过 50 条。</li>
             <li>少于 10 条时，「确认选择」按钮置灰不可提交；保存时也需禁止保存运营指定配置。</li>
@@ -2053,7 +2253,7 @@
             <li>已选内容数量大于 10 条时支持移除，移除后数量、排序和弹窗勾选状态同步更新。</li>
           </ol>
 
-          <h4>12.5 拖拽排序</h4>
+          <h4>13.6 拖拽排序</h4>
           <ol>
             <li>运营指定内容支持通过拖动内容行调整排序。</li>
             <li>列表顺序即展示优先级，用户拖动后位于列表最顶部的内容优先级最高，下面内容按列表顺序依次递减。</li>
@@ -2063,7 +2263,7 @@
             <li>展示位内容设置为「自动选择」时，暂存的运营指定内容顺序不生效、不阻止保存。</li>
           </ol>
 
-          <h4>12.6 切换与暂存</h4>
+          <h4>13.7 切换与暂存</h4>
           <ol>
             <li>展示位内容设置为「运营指定」且已有已选内容时，切换内容选择筛选或分类范围如导致内容超出新范围，系统需提示确认。</li>
             <li>用户确认切换后，系统保留仍符合新范围的内容，并自动移除不符合新范围的内容。</li>
@@ -2072,7 +2272,7 @@
             <li>从「自动选择」切回「运营指定」时，仍符合当前内容选择筛选、分类范围、推荐状态和上架状态的内容继续回显。</li>
           </ol>
 
-          <h4>12.7 前台展示</h4>
+          <h4>13.8 前台展示</h4>
           <ol>
             <li>自动选择时，首页热门推荐展示当前内容选择筛选和分类范围内的搜推引擎默认结果。</li>
             <li>运营指定时，前台优先展示运营指定内容；运营指定内容不足当前批次展示数量时，由搜推默认内容补足。</li>
@@ -2098,6 +2298,35 @@
             <strong>保存提示</strong>
             <span>重复或格式不符合要求时阻止保存；菜单 Key 仅支持大小写英文字母和阿拉伯数字，最多 50 个字符。</span>
           </div>
+        </div>
+
+        <div class="prd-doc-info">
+          <table>
+            <tbody>
+              <tr>
+                <th>文档版本</th>
+                <td>V1.1</td>
+              </tr>
+              <tr>
+                <th>更新时间</th>
+                <td>2026-07-03</td>
+              </tr>
+              <tr>
+                <th>适用范围</th>
+                <td>新增菜单、编辑菜单、菜单 Key 保存校验</td>
+              </tr>
+              <tr>
+                <th>本次变更</th>
+                <td>
+                  <ul class="change-list">
+                    <li>补充菜单 Key 输入限制：仅支持大小写英文字母和阿拉伯数字。</li>
+                    <li>补充菜单 Key 最大长度限制：50 个字符。</li>
+                    <li>明确唯一性维度为「商户 + 项目 + 菜单 Key」。</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <section class="prd-section">
@@ -2186,6 +2415,40 @@
             <strong>样式优先级</strong>
             <span>自动适配按内容类型默认规则展示；手动选择横图或竖图时，前台必须按用户选择展示。</span>
           </div>
+          <div class="prd-summary-item">
+            <strong>SEO 配置</strong>
+            <span>普通菜单支持设置菜单级 TDK；Title、Keywords、Description 均最多 500 个字符。</span>
+          </div>
+        </div>
+
+        <div class="prd-doc-info">
+          <table>
+            <tbody>
+              <tr>
+                <th>文档版本</th>
+                <td>V1.5</td>
+              </tr>
+              <tr>
+                <th>更新时间</th>
+                <td>2026-07-03</td>
+              </tr>
+              <tr>
+                <th>适用范围</th>
+                <td>普通菜单编辑页；不包含首页固定功能模块</td>
+              </tr>
+              <tr>
+                <th>本次新增/变更</th>
+                <td>
+                  <ul class="change-list">
+                    <li>新增普通菜单「SEO 设置」，直接配置 Title、Keywords、Description。</li>
+                    <li>Title、Keywords、Description 三个字段均最多 500 个字符。</li>
+                    <li>TDK 配置适用于所有普通菜单，不受菜单类型是否为「展示媒体内容」影响。</li>
+                    <li>普通菜单运营指定内容交互对齐首页运营指定：支持添加内容弹窗、10-50 条限制和拖拽排序。</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <section class="prd-section">
@@ -2204,6 +2467,7 @@
             <li>运营指定内容支持拖拽排序，列表最顶部的内容优先级最高。</li>
             <li>前端「换一批」需按当前菜单内容数据继续分页，运营指定内容作为优先队列参与前几批展示。</li>
             <li>手动选择横图或竖图时，前端必须按用户选择展示，不再因内容类型强制改写。</li>
+            <li>普通菜单支持配置菜单级 TDK，用于控制前台页面 Title、Keywords、Description，三个字段均最多 500 个字符。</li>
           </ol>
         </section>
 
@@ -2214,6 +2478,7 @@
             <li>适用于菜单类型为「展示媒体内容」的菜单。</li>
             <li>媒体内容包括：长视频、短视频、漫画、帖子、小说。</li>
             <li>菜单类型为「AI工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
+            <li>TDK 配置适用于所有普通菜单，不受菜单类型是否为「展示媒体内容」影响。</li>
             <li>不适用于首页固定功能模块；首页热门推荐仍按「首页热门推荐配置」规则执行，包括 10-50 条运营指定数量限制。</li>
           </ol>
         </section>
@@ -2317,7 +2582,20 @@
         </section>
 
         <section class="prd-section">
-          <h3>九、内容列表样式规则</h3>
+          <h3>九、TDK 配置规则</h3>
+          <ol>
+            <li>普通菜单展示「SEO 设置」配置区。</li>
+            <li>普通菜单直接展示页面 Title、页面 Keywords、页面 Description 三个字段，不再提供 TDK 来源选择。</li>
+            <li>页面 Title 最多 500 个字符，用于前端页面 &lt;title&gt;。</li>
+            <li>页面 Keywords 最多 500 个字符，用于 &lt;meta name="keywords"&gt;；多个关键词允许使用中文逗号或英文逗号分隔。</li>
+            <li>页面 Description 最多 500 个字符，用于 &lt;meta name="description"&gt;。</li>
+            <li>运营填写的字段由前端优先使用；单个字段为空时，该字段按默认生成规则兜底，避免前台 SEO 信息为空。</li>
+            <li>TDK 配置只影响该普通菜单对应前台页面的 SEO 信息，不影响菜单 Key、内容选择、展示位、排版样式和内容排序。</li>
+          </ol>
+        </section>
+
+        <section class="prd-section">
+          <h3>十、内容列表样式规则</h3>
           <table class="prd-table">
             <thead>
               <tr>
@@ -2344,7 +2622,7 @@
         </section>
 
         <section class="prd-section">
-          <h3>十、保存校验</h3>
+          <h3>十一、保存校验</h3>
           <ol>
             <li>菜单类型为「展示媒体内容」时，保存展示位内容设置、运营指定内容和拖拽后的列表顺序；内容类型为长视频、短视频、漫画、小说时保存内容列表样式，内容类型为帖子时不保存、不校验内容列表样式。</li>
             <li>展示位内容设置为「运营指定」时，校验运营指定内容数量不少于 10 条且不超过 50 条。</li>
@@ -2352,12 +2630,14 @@
             <li>展示位内容设置为「运营指定」时，校验已选内容仍属于当前菜单实际内容范围。</li>
             <li>菜单类型仍为「展示媒体内容」且展示位内容设置为「自动选择」时，运营指定内容可在当前编辑页暂存但不生效，隐藏排序错误不阻止保存。</li>
             <li>菜单类型为非「展示媒体内容」时，不提交、不保存、不校验内容选择、展示位内容设置和内容列表样式的生效值。</li>
+            <li>保存时提交 Title、Keywords、Description；字段为空时允许保存，并由前端按默认生成规则兜底。</li>
+            <li>保存时校验 Title、Keywords、Description 均不超过 500 个字符。</li>
           </ol>
         </section>
 
         <section class="prd-section">
-          <h3>十一、验收标准</h3>
-          <h4>11.1 菜单类型显隐与保存</h4>
+          <h3>十二、验收标准</h3>
+          <h4>12.1 菜单类型显隐与保存</h4>
           <ol>
             <li>普通菜单类型为「展示媒体内容」时，展示「内容选择」和「排版和样式」。</li>
             <li>普通菜单类型为「AI工具」「应用中心」「全部分类」「展示子菜单」时，不展示「内容选择」和「排版和样式」。</li>
@@ -2367,7 +2647,7 @@
             <li>保存非「展示媒体内容」菜单后再次进入编辑页，不应将此前隐藏暂存字段作为生效配置回显。</li>
           </ol>
 
-          <h4>11.2 展示位内容设置</h4>
+          <h4>12.2 展示位内容设置</h4>
           <ol>
             <li>菜单类型为「展示媒体内容」时，展示位内容设置支持「自动选择」和「运营指定」。</li>
             <li>选择「自动选择」时，不展示运营指定内容配置区；前台按当前菜单默认内容展示。</li>
@@ -2380,7 +2660,7 @@
             <li>保存时，如运营指定内容不在当前菜单实际内容范围内，系统应提示用户处理并禁止保存。</li>
           </ol>
 
-          <h4>11.3 默认内容与换一批</h4>
+          <h4>12.3 默认内容与换一批</h4>
           <ol>
             <li>普通菜单默认内容来自当前菜单自身关联或配置的内容数据。</li>
             <li>默认内容由当前菜单配置和内容接口返回结果决定，不按关联方式拆分展示规则。</li>
@@ -2392,7 +2672,7 @@
             <li>运营指定内容后续变为未上架、不可见或不再属于当前菜单实际内容范围时，前台不展示该内容，并由当前菜单默认内容补足。</li>
           </ol>
 
-          <h4>11.4 内容类型切换</h4>
+          <h4>12.4 内容类型切换</h4>
           <ol>
             <li>展示位内容设置为「自动选择」时，切换内容类型不触发确认。</li>
             <li>切换内容类型导致已选运营指定内容超出新范围时，系统提示确认。</li>
@@ -2400,7 +2680,7 @@
             <li>切换为帖子内容时，隐藏「内容列表样式」选项，并仍需遵循当前菜单实际内容范围和运营指定内容校验。</li>
           </ol>
 
-          <h4>11.5 内容列表样式</h4>
+          <h4>12.5 内容列表样式</h4>
           <ol>
             <li>内容类型为长视频、短视频、漫画、小说时，内容列表样式支持自动适配、横图 16:9、竖图 3:4。</li>
             <li>内容类型为帖子时，不展示内容列表样式选项。</li>
@@ -2409,11 +2689,24 @@
             <li>前台封面图按目标比例等比填充并居中裁剪，不允许拉伸变形。</li>
           </ol>
 
-          <h4>11.6 范围隔离</h4>
+          <h4>12.6 TDK 配置</h4>
+          <ol>
+            <li>进入任意普通菜单编辑页，页面展示「SEO 设置」配置区。</li>
+            <li>首次进入时，页面直接展示 Title、Keywords、Description 三个输入项。</li>
+            <li>Title、Keywords、Description 任一字段输入超过 500 个字符时，系统不允许继续输入或保存时提示超长。</li>
+            <li>填写 Title、Keywords、Description 后保存，再次进入该菜单时需回显已保存的 TDK 内容。</li>
+            <li>前端打开该菜单页面时，优先使用后台保存的 Title、Keywords、Description。</li>
+            <li>Title、Keywords、Description 中某个字段为空并保存时，该字段在前端使用默认生成结果兜底。</li>
+            <li>菜单类型切换为「AI工具」「应用中心」「全部分类」「展示子菜单」后，仍可配置并保存 TDK。</li>
+            <li>修改 TDK 并保存，不应影响菜单 Key、菜单类型、内容选择、展示位内容设置、内容列表样式和运营指定内容排序。</li>
+          </ol>
+
+          <h4>12.7 范围隔离</h4>
           <ol>
             <li>普通菜单展示配置不影响首页热门推荐配置；首页热门推荐按 10-50 条运营指定数量限制执行。</li>
             <li>普通菜单运营指定内容数量限制为 10-50 条，与首页热门推荐的 10-50 条限制相互独立，分别按各自模块计算。</li>
             <li>普通菜单的内容列表样式配置不影响首页热门推荐模块，首页热门推荐仍由首页模板决定展示位置和样式。</li>
+            <li>普通菜单 TDK 配置不影响首页固定功能模块；首页 SEO 如需配置，应由首页或全站 SEO 配置单独承接。</li>
           </ol>
         </section>
         </div>
@@ -2472,6 +2765,8 @@
     const selectedCount = document.getElementById('selectedCount');
     const sortError = document.getElementById('sortError');
     const saveSettings = document.getElementById('saveSettings');
+    const homeMenuName = document.getElementById('homeMenuName');
+    const homeSeoTitle = document.getElementById('homeSeoTitle');
     const menuKeyInput = document.getElementById('menuKeyInput');
     const menuKeyError = document.getElementById('menuKeyError');
     const rightPanelTitle = document.getElementById('rightPanelTitle');
@@ -2482,6 +2777,7 @@
     const normalMenuKey = document.getElementById('normalMenuKey');
     const normalMenuKeyError = document.getElementById('normalMenuKeyError');
     const normalMenuSort = document.getElementById('normalMenuSort');
+    const normalSeoTitle = document.getElementById('normalSeoTitle');
     const normalMenuType = document.getElementById('normalMenuType');
     const normalTypeHint = document.getElementById('normalTypeHint');
     const normalContentCard = document.getElementById('normalContentCard');
@@ -2655,6 +2951,14 @@
       return activeManualContext === 'normal' ? ['全部'] : getSelectedCategories();
     }
 
+    function syncHomeSeoFields() {
+      homeSeoTitle.placeholder = homeMenuName.value ? `${homeMenuName.value} - 站点名称` : '首页 - 站点名称';
+    }
+
+    function syncNormalSeoFields() {
+      normalSeoTitle.placeholder = normalMenuName.value ? `${normalMenuName.value} - 站点名称` : '默认取菜单名称 + 站点名称';
+    }
+
     function syncCoverStyleOptions() {
       const isMediaContent = normalMenuType.value === '展示媒体内容';
       const isManualSlot = normalSlotSourceInputs.some((input) => input.checked && input.value === 'manual');
@@ -2720,6 +3024,7 @@
       rightPanel.classList.remove('compact');
       homeConfigPanel.classList.remove('hidden');
       menuConfigPanel.classList.add('hidden');
+      syncHomeSeoFields();
       validateSortValues();
     }
 
@@ -2736,6 +3041,7 @@
       normalMenuSort.value = String(2399 - Math.max(index - 1, 0));
       homeConfigPanel.classList.add('hidden');
       menuConfigPanel.classList.remove('hidden');
+      syncNormalSeoFields();
       syncCoverStyleOptions();
       saveSettings.disabled = false;
     }
@@ -2753,6 +3059,8 @@
     });
 
     normalMenuType.addEventListener('change', syncCoverStyleOptions);
+    homeMenuName.addEventListener('input', syncHomeSeoFields);
+    normalMenuName.addEventListener('input', syncNormalSeoFields);
     normalContentType.addEventListener('change', handleNormalContentTypeChange);
     normalSlotSourceInputs.forEach((input) => {
       input.addEventListener('change', syncCoverStyleOptions);
@@ -3597,6 +3905,8 @@
     bindSortableRows(manageRows, () => activeManualContext, { syncToSource: true });
 
     tree.querySelector('.node')?.classList.add('active');
+    syncHomeSeoFields();
+    syncNormalSeoFields();
     syncCoverStyleOptions();
     renderHotCategoryOptions(['全部']);
     updateContentTypeTrigger();
